@@ -5,23 +5,22 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.formatter.Formatters;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class UserPersistenceTest {
+public abstract class IntegrationTest {
 
 	@Deployment
 	public static Archive<?> createDeployment() {
-		return ShrinkWrap.create(WebArchive.class).addAsResource("test-persistence.xml")
-				.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-	}
+		WebArchive war = ShrinkWrap.create(WebArchive.class)
+				.addAsResource("test-persistence.xml", "META-INF/persistence.xml")
+				.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+				.addPackages(true, Package.getPackage("com.kpiorecki.parking.core"));
 
-	@Test
-	public void test() {
-		Assert.assertTrue(true);
-	}
+		war.writeTo(System.out, Formatters.VERBOSE);
 
+		return war;
+	}
 }
