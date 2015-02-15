@@ -12,8 +12,8 @@ import org.joda.time.DateTime;
 public class Booking {
 
 	private Integer id;
-	private Parking parking;
-	private User user;
+//	private Parking parking;
+//	private User user;
 	private DateTime date;
 	private DateTime creationTime;
 
@@ -27,23 +27,23 @@ public class Booking {
 		this.id = id;
 	}
 
-	@Column(nullable = false)
-	public Parking getParking() {
-		return parking;
-	}
+//	@Column(nullable = false)
+//	public Parking getParking() {
+//		return parking;
+//	}
+//
+//	public void setParking(Parking parking) {
+//		this.parking = parking;
+//	}
 
-	public void setParking(Parking parking) {
-		this.parking = parking;
-	}
-
-	@Column(nullable = false)
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
+//	@Column(nullable = false)
+//	public User getUser() {
+//		return user;
+//	}
+//
+//	public void setUser(User user) {
+//		this.user = user;
+//	}
 
 	@Column(nullable = false)
 	public DateTime getDate() {

@@ -1,13 +1,13 @@
 package com.kpiorecki.parking.core.entity;
 
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "Users")
 public class User {
 
 	private Integer id;
@@ -15,7 +15,8 @@ public class User {
 	private String email;
 	private String phone;
 	private Boolean active;
-	private Set<Vehicle> vehicles;
+
+	// private Set<Vehicle> vehicles;
 
 	@Id
 	@GeneratedValue
@@ -62,11 +63,11 @@ public class User {
 		this.active = active;
 	}
 
-	public Set<Vehicle> getVehicles() {
-		return vehicles;
-	}
-
-	public void setVehicles(Set<Vehicle> vehicles) {
-		this.vehicles = vehicles;
-	}
+	// public Set<Vehicle> getVehicles() {
+	// return vehicles;
+	// }
+	//
+	// public void setVehicles(Set<Vehicle> vehicles) {
+	// this.vehicles = vehicles;
+	// }
 }

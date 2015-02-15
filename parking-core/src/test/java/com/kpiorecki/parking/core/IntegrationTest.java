@@ -8,9 +8,13 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.formatter.Formatters;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RunWith(Arquillian.class)
 public abstract class IntegrationTest {
+
+	protected static final Logger logger = LoggerFactory.getLogger(IntegrationTest.class);
 
 	@Deployment
 	public static Archive<?> createDeployment() {
@@ -19,7 +23,8 @@ public abstract class IntegrationTest {
 				.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
 				.addPackages(true, Package.getPackage("com.kpiorecki.parking.core"));
 
-		war.writeTo(System.out, Formatters.VERBOSE);
+		String warContent = war.toString(Formatters.VERBOSE);
+		logger.debug(warContent);
 
 		return war;
 	}

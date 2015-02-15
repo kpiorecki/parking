@@ -1,7 +1,5 @@
 package com.kpiorecki.parking.core.entity;
 
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,9 +13,9 @@ public class Schedule {
 
 	private Integer id;
 	private DateTime date;
-	private Parking parking;
+//	private Parking parking;
 	private Boolean locked;
-	private Set<User> users;
+//	private Set<User> users;
 	private Integer version;
 
 	@Id
@@ -39,14 +37,14 @@ public class Schedule {
 		this.date = date;
 	}
 
-	@Column(nullable = false)
-	public Parking getParking() {
-		return parking;
-	}
-
-	public void setParking(Parking parking) {
-		this.parking = parking;
-	}
+//	@Column(nullable = false)
+//	public Parking getParking() {
+//		return parking;
+//	}
+//
+//	public void setParking(Parking parking) {
+//		this.parking = parking;
+//	}
 
 	@Column(nullable = false)
 	public Boolean isLocked() {
@@ -57,13 +55,13 @@ public class Schedule {
 		this.locked = locked;
 	}
 
-	public Set<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(Set<User> users) {
-		this.users = users;
-	}
+//	public Set<User> getUsers() {
+//		return users;
+//	}
+//
+//	public void setUsers(Set<User> users) {
+//		this.users = users;
+//	}
 
 	@Version
 	public Integer getVersion() {
