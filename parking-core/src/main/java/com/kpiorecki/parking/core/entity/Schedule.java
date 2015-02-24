@@ -4,11 +4,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.joda.time.DateTime;
 
 @Entity
+@Table(name = "Schedules")
 public class Schedule {
 
 	private Integer id;

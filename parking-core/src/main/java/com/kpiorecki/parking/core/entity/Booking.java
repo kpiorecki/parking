@@ -5,10 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
+import javax.persistence.Table;
 
 import org.joda.time.DateTime;
 
 @Entity
+@Table(name = "Bookings")
 public class Booking {
 
 	private Integer id;

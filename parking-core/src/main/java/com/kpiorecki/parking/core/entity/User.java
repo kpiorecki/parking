@@ -1,9 +1,14 @@
 package com.kpiorecki.parking.core.entity;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -15,8 +20,7 @@ public class User {
 	private String email;
 	private String phone;
 	private Boolean active;
-
-	// private Set<Vehicle> vehicles;
+	private Set<Vehicle> vehicles;
 
 	@Id
 	@GeneratedValue
@@ -63,11 +67,13 @@ public class User {
 		this.active = active;
 	}
 
-	// public Set<Vehicle> getVehicles() {
-	// return vehicles;
-	// }
-	//
-	// public void setVehicles(Set<Vehicle> vehicles) {
-	// this.vehicles = vehicles;
-	// }
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_fk")
+	public Set<Vehicle> getVehicles() {
+		return vehicles;
+	}
+
+	public void setVehicles(Set<Vehicle> vehicles) {
+		this.vehicles = vehicles;
+	}
 }

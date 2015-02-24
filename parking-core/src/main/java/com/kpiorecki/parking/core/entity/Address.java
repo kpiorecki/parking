@@ -1,8 +1,10 @@
 package com.kpiorecki.parking.core.entity;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Table;
 
 @Embeddable
+@Table(name = "Addresses")
 public class Address {
 
 	private String street;
