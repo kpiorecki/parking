@@ -7,8 +7,13 @@
 		<jta-data-source>jdbc/arquillian</jta-data-source>
 		<properties>
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+			<property name="eclipselink.ddl-generation.output-mode" value="both" />
+			<property name="eclipselink.application-location" value="target/derby" />
+			<property name="eclipselink.create-ddl-jdbc-file-name" value="ddl_create.sql" />
+			<property name="eclipselink.drop-ddl-jdbc-file-name" value="ddl_drop.sql" />
 			<property name="eclipselink.logging.level.sql" value="FINE" />
 			<property name="eclipselink.logging.parameters" value="true" />
 		</properties>
 	</persistence-unit>
 </persistence>
+    
