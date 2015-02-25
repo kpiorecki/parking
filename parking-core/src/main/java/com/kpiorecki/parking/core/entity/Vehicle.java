@@ -3,25 +3,28 @@ package com.kpiorecki.parking.core.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 
 @Entity
-@Table(name = "Vehicles")
+@Table(name = "vehicles")
 public class Vehicle {
 
-	private Integer id;
+	private Long id;
 	private String number;
 	private String model;
 	private String brand;
 
 	@Id
-	@GeneratedValue
-	public Integer getId() {
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "seq_vehicles")
+	@TableGenerator(name = "seq_vehicles", pkColumnValue = "seq_vehicles")
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

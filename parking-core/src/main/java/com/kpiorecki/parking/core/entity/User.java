@@ -6,16 +6,18 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 public class User {
 
-	private Integer id;
+	private Long id;
 	private String login;
 	private String email;
 	private String phone;
@@ -23,12 +25,13 @@ public class User {
 	private Set<Vehicle> vehicles;
 
 	@Id
-	@GeneratedValue
-	public Integer getId() {
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "seq_users")
+	@TableGenerator(name = "seq_users", pkColumnValue = "seq_users")
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

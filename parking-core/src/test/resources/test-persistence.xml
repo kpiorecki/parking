@@ -13,6 +13,7 @@
 			<property name="eclipselink.drop-ddl-jdbc-file-name" value="ddl_drop.sql" />
 			<property name="eclipselink.logging.level.sql" value="FINE" />
 			<property name="eclipselink.logging.parameters" value="true" />
+			<property name="eclipselink.target-database" value="Derby" />
 		</properties>
 	</persistence-unit>
 </persistence>
