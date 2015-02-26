@@ -1,5 +1,7 @@
 package com.kpiorecki.parking.core.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,7 +13,9 @@ import javax.persistence.Version;
 
 @Entity
 @Table(name = "records")
-public class Record {
+public class Record implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	// private Parking parking;

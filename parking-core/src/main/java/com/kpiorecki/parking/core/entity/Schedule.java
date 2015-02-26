@@ -1,5 +1,7 @@
 package com.kpiorecki.parking.core.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +15,9 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "schedules")
-public class Schedule {
+public class Schedule implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	private DateTime date;
@@ -76,4 +80,5 @@ public class Schedule {
 	public void setVersion(Integer version) {
 		this.version = version;
 	}
+
 }

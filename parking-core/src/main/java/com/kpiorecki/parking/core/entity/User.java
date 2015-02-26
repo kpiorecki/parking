@@ -1,28 +1,25 @@
 package com.kpiorecki.parking.core.entity;
 
-import java.util.Set;
+import java.io.Serializable;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends UuidEntity implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private String login;
-	private String email;
-	private String phone;
-	private Boolean active;
-	private Set<Vehicle> vehicles;
+	private String firstName;
+	private String lastName;
+	private Integer version;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "seq_users")
@@ -35,48 +32,28 @@ public class User {
 		this.id = id;
 	}
 
-	@Column(unique = true, nullable = false)
-	public String getLogin() {
-		return login;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	@Column(nullable = false)
-	public String getEmail() {
-		return email;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
-	public String getPhone() {
-		return phone;
+	@Version
+	public Integer getVersion() {
+		return version;
 	}
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	@Column(nullable = false)
-	public Boolean getActive() {
-		return active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "user_fk")
-	public Set<Vehicle> getVehicles() {
-		return vehicles;
-	}
-
-	public void setVehicles(Set<Vehicle> vehicles) {
-		this.vehicles = vehicles;
+	public void setVersion(Integer version) {
+		this.version = version;
 	}
 }

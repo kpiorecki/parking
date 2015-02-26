@@ -1,5 +1,8 @@
 package com.kpiorecki.parking.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -21,14 +24,22 @@ public class Resources {
 
 	@Produces
 	@Singleton
-	Mapper dozerMapper = new DozerBeanMapper();
+	Mapper createMapper() {
+		List<String> mappingFiles = new ArrayList<String>();
+		mappingFiles.add("dozer-mapping.xml");
+
+		DozerBeanMapper mapper = new DozerBeanMapper();
+		mapper.setMappingFiles(mappingFiles);
+
+		return mapper;
+	}
 
 	@Produces
-	public Logger createLogger(final InjectionPoint ip) {
+	Logger createLogger(final InjectionPoint ip) {
 		return LoggerFactory.getLogger(ip.getMember().getDeclaringClass());
 	}
 
-	public void close(@Disposes EntityManager entityManager) {
+	void close(@Disposes EntityManager entityManager) {
 		if (entityManager.isOpen()) {
 			entityManager.close();
 		}

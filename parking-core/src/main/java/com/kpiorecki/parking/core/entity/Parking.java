@@ -1,5 +1,6 @@
 package com.kpiorecki.parking.core.entity;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -10,16 +11,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 
 @Entity
 @Table(name = "parkings")
-public class Parking {
+public class Parking extends UuidEntity implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private String uuid;
 	private Integer capacity;
 	private Address address;
 	private Set<Record> records;
+	private Integer version;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "seq_parkings")
@@ -30,15 +34,6 @@ public class Parking {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	@Column(nullable = false, unique = true)
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
 	}
 
 	@Column(nullable = false)
@@ -65,6 +60,15 @@ public class Parking {
 
 	public void setRecords(Set<Record> records) {
 		this.records = records;
+	}
+
+	@Version
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
 	}
 
 }

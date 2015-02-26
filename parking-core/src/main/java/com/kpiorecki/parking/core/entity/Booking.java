@@ -1,5 +1,7 @@
 package com.kpiorecki.parking.core.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +15,9 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "bookings")
-public class Booking {
+public class Booking implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	// private Parking parking;
@@ -69,7 +73,7 @@ public class Booking {
 	}
 
 	@PrePersist
-	private void prePersist() {
+	protected void prePersist() {
 		this.creationTime = new DateTime();
 	}
 
