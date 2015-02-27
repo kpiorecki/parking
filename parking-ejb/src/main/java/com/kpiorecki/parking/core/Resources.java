@@ -3,7 +3,6 @@ package com.kpiorecki.parking.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Singleton;
@@ -39,9 +38,4 @@ public class Resources {
 		return LoggerFactory.getLogger(ip.getMember().getDeclaringClass());
 	}
 
-	void close(@Disposes EntityManager entityManager) {
-		if (entityManager.isOpen()) {
-			entityManager.close();
-		}
-	}
 }
