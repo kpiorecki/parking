@@ -30,6 +30,7 @@
 		<compiler-plugin-version>3.2</compiler-plugin-version>
 		<surefire-plugin-version>2.18.1</surefire-plugin-version>
 		<dependency-plugin-version>2.10</dependency-plugin-version>
+		<build-helper-plugin-version>1.9.1</build-helper-plugin-version>
 
 		<!-- dependency versions -->
 		<javaee-api-version>7.0</javaee-api-version>
@@ -196,6 +197,14 @@
 					<artifactId>maven-dependency-plugin</artifactId>
 					<version>${dependency-plugin-version}</version>
 				</plugin>
+
+				<!-- maven build-helper plugin -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>${build-helper-plugin-version}</version>
+				</plugin>
+				
 			</plugins>
 		</pluginManagement>
 	</build>
