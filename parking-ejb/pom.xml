@@ -112,9 +112,6 @@
 								<derby.stream.error.file>
 									${project.build.directory}/derby/log/derby.log
 								</derby.stream.error.file>
-								<glassfish.embedded.tmpdir>
-									${project.build.directory}/glassfish
-								</glassfish.embedded.tmpdir>
 								<java.util.logging.config.file>
 									${project.build.testOutputDirectory}/test-logging.properties
 								</java.util.logging.config.file>

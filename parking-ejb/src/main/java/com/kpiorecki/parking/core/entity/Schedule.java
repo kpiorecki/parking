@@ -19,16 +19,25 @@ public class Schedule implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
-	private DateTime date;
-	// private Parking parking;
-	private Boolean locked;
-	// private Set<User> users;
-	private Integer version;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "seq_schedules")
 	@TableGenerator(name = "seq_schedules", pkColumnValue = "seq_schedules")
+	private Long id;
+
+	@Column(nullable = false)
+	private DateTime date;
+
+	// @Column(nullable = false)
+	// private Parking parking;
+
+	@Column(nullable = false)
+	private Boolean locked;
+
+	// private Set<User> users;
+
+	@Version
+	private Integer version;
+
 	public Long getId() {
 		return id;
 	}
@@ -37,7 +46,6 @@ public class Schedule implements Serializable {
 		this.id = id;
 	}
 
-	@Column(nullable = false)
 	public DateTime getDate() {
 		return date;
 	}
@@ -46,16 +54,14 @@ public class Schedule implements Serializable {
 		this.date = date;
 	}
 
-	// @Column(nullable = false)
 	// public Parking getParking() {
 	// return parking;
 	// }
-	//
+
 	// public void setParking(Parking parking) {
 	// this.parking = parking;
 	// }
 
-	@Column(nullable = false)
 	public Boolean isLocked() {
 		return locked;
 	}
@@ -67,12 +73,11 @@ public class Schedule implements Serializable {
 	// public Set<User> getUsers() {
 	// return users;
 	// }
-	//
+
 	// public void setUsers(Set<User> users) {
 	// this.users = users;
 	// }
 
-	@Version
 	public Integer getVersion() {
 		return version;
 	}

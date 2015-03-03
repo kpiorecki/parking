@@ -19,15 +19,23 @@ public class Booking implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
-	// private Parking parking;
-	// private User user;
-	private DateTime date;
-	private DateTime creationTime;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "seq_bookings")
 	@TableGenerator(name = "seq_bookings", pkColumnValue = "seq_bookings")
+	private Long id;
+
+	// @Column(nullable = false)
+	// private Parking parking;
+
+	// @Column(nullable = false)
+	// private User user;
+
+	@Column(nullable = false)
+	private DateTime date;
+
+	@Column(nullable = false, updatable = false)
+	private DateTime creationTime;
+
 	public Long getId() {
 		return id;
 	}
@@ -36,7 +44,6 @@ public class Booking implements Serializable {
 		this.id = id;
 	}
 
-	// @Column(nullable = false)
 	// public Parking getParking() {
 	// return parking;
 	// }
@@ -45,7 +52,6 @@ public class Booking implements Serializable {
 	// this.parking = parking;
 	// }
 
-	// @Column(nullable = false)
 	// public User getUser() {
 	// return user;
 	// }
@@ -54,7 +60,6 @@ public class Booking implements Serializable {
 	// this.user = user;
 	// }
 
-	@Column(nullable = false)
 	public DateTime getDate() {
 		return date;
 	}
@@ -63,7 +68,6 @@ public class Booking implements Serializable {
 		this.date = date;
 	}
 
-	@Column(nullable = false)
 	public DateTime getCreationTime() {
 		return creationTime;
 	}

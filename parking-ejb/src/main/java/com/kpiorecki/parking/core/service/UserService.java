@@ -7,6 +7,10 @@ import com.kpiorecki.parking.core.dto.UserDto;
 @Local
 public interface UserService {
 
-	void saveUser(UserDto user);
+	void addUser(UserDto user);
+
+	void modifyUser(UserDto user);
+
+	UserDto findUser(String login);
 
 }

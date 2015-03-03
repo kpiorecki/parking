@@ -17,16 +17,26 @@ public class Record implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
-	// private Parking parking;
-	// private User user;
-	private Integer points;
-	private Boolean vip;
-	private Integer version;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "seq_records")
 	@TableGenerator(name = "seq_records", pkColumnValue = "seq_records")
+	private Long id;
+
+	// @Column(nullable = false)
+	// private Parking parking;
+
+	// @Column(nullable = false)
+	// private User user;
+
+	@Column(nullable = false)
+	private Integer points;
+
+	@Column(nullable = false)
+	private Boolean vip;
+
+	@Version
+	private Integer version;
+
 	public Long getId() {
 		return id;
 	}
@@ -35,25 +45,22 @@ public class Record implements Serializable {
 		this.id = id;
 	}
 
-	// @Column(nullable = false)
 	// public Parking getParking() {
 	// return parking;
 	// }
-	//
+
 	// public void setParking(Parking parking) {
 	// this.parking = parking;
 	// }
-	//
-	// @Column(nullable = false)
+
 	// public User getUser() {
 	// return user;
 	// }
-	//
+
 	// public void setUser(User user) {
 	// this.user = user;
 	// }
 
-	@Column(nullable = false)
 	public Integer getPoints() {
 		return points;
 	}
@@ -62,7 +69,6 @@ public class Record implements Serializable {
 		this.points = points;
 	}
 
-	@Column(nullable = false)
 	public Boolean isVip() {
 		return vip;
 	}
@@ -71,7 +77,6 @@ public class Record implements Serializable {
 		this.vip = vip;
 	}
 
-	@Version
 	public Integer getVersion() {
 		return version;
 	}

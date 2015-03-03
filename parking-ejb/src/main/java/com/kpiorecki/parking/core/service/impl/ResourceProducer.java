@@ -1,21 +1,18 @@
-package com.kpiorecki.parking.core;
+package com.kpiorecki.parking.core.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
-public class Resources {
+public class ResourceProducer {
 
 	@PersistenceContext
 	@Produces
@@ -32,10 +29,4 @@ public class Resources {
 
 		return mapper;
 	}
-
-	@Produces
-	Logger createLogger(final InjectionPoint ip) {
-		return LoggerFactory.getLogger(ip.getMember().getDeclaringClass());
-	}
-
 }
