@@ -12,8 +12,6 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import org.slf4j.Logger;
 
-import com.kpiorecki.parking.core.exception.DomainException;
-
 @Stateless
 public class GenericDao {
 
@@ -36,12 +34,11 @@ public class GenericDao {
 
 		if (results.size() == 1) {
 			E result = results.get(0);
-			logger.debug("{} - found", message);
+			logger.info("{} - found", message);
 			return result;
 		} else {
-			String exceptionMessage = String.format("%s - not found", message);
-			logger.warn(exceptionMessage);
-			throw new DomainException(exceptionMessage);
+			logger.info("{} - not found", message);
+			return null;
 		}
 	}
 }

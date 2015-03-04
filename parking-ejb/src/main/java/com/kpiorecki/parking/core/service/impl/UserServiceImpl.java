@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import com.kpiorecki.parking.core.dto.UserDto;
 import com.kpiorecki.parking.core.entity.User;
 import com.kpiorecki.parking.core.entity.User_;
+import com.kpiorecki.parking.core.exception.DomainException;
 import com.kpiorecki.parking.core.service.UserService;
 
 @Stateless
@@ -33,8 +34,12 @@ public class UserServiceImpl implements UserService {
 		logger.info(message);
 
 		User user = genericDao.findEntityByUniqueField(User_.login, userDto.getLogin());
+		if (user == null) {
+			String errorMessage = String.format("%s - user entity was not found", message);
+			logger.warn(errorMessage);
+			throw new DomainException(errorMessage);
+		}
 
-		logger.debug("{} - merging entity with dto", message);
 		mapper.map(userDto, user);
 
 		entityManager.persist(user);
@@ -45,7 +50,6 @@ public class UserServiceImpl implements UserService {
 		String message = String.format("adding user %s", userDto);
 		logger.info(message);
 
-		logger.debug("{} - creating new entity", message);
 		User user = mapper.map(userDto, User.class);
 
 		entityManager.persist(user);
@@ -56,7 +60,10 @@ public class UserServiceImpl implements UserService {
 		logger.info("finding user with login={}", login);
 
 		User user = genericDao.findEntityByUniqueField(User_.login, login);
-
-		return mapper.map(user, UserDto.class);
+		if (user == null) {
+			return null;
+		} else {
+			return mapper.map(user, UserDto.class);
+		}
 	}
 }
