@@ -61,7 +61,7 @@ public class UserServiceTest extends IntegrationTest {
 	}
 
 	@Test(expected = Exception.class)
-	public void shouldThrowExceptionWithDuplicatedLogin() {
+	public void shouldDuplicateLogin() {
 		// given
 		userService.addUser(createDefaultUser());
 
@@ -72,11 +72,36 @@ public class UserServiceTest extends IntegrationTest {
 		// then exception should be thrown
 	}
 
+	@Test
+	public void shouldDeleteUser() {
+		// given
+		userService.addUser(createDefaultUser());
+		entityManager.flush();
+
+		// when
+		userService.deleteUser(defaultLogin);
+
+		// then
+		UserDto user = userService.findUser(defaultLogin);
+		assertNull(user);
+	}
+
+	@Test(expected = Exception.class)
+	public void shouldNotDeleteUser() {
+		// given empty database
+
+		// when
+		userService.deleteUser(defaultLogin);
+
+		// then DomainException should be thrown
+	}
+
 	private UserDto createDefaultUser() {
 		UserDto user = new UserDto();
 		user.setFirstName("firstname");
 		user.setLastName("lastname");
 		user.setLogin(defaultLogin);
+		user.setEmail("user@mail.com");
 
 		return user;
 	}

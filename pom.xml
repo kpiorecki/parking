@@ -39,6 +39,7 @@
 		<logback-version>1.1.2</logback-version>
 		<joda-time-version>2.7</joda-time-version>
 		<dozer-version>5.5.1</dozer-version>
+		<hibernate-validator-version>5.0.0.Final</hibernate-validator-version>
 		<glassfish-version>4.0</glassfish-version>
 		<arquillian-version>1.1.7.Final</arquillian-version>
 		<arquillian-transaction-version>1.0.1.Final</arquillian-transaction-version>
@@ -89,6 +90,11 @@
 				<groupId>net.sf.dozer</groupId>
 				<artifactId>dozer</artifactId>
 				<version>${dozer-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-validator</artifactId>
+				<version>${hibernate-validator-version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss.arquillian</groupId>
@@ -204,7 +210,7 @@
 					<artifactId>build-helper-maven-plugin</artifactId>
 					<version>${build-helper-plugin-version}</version>
 				</plugin>
-				
+
 			</plugins>
 		</pluginManagement>
 	</build>

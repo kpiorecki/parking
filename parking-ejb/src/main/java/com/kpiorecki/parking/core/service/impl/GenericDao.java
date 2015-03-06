@@ -12,6 +12,8 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import org.slf4j.Logger;
 
+import com.kpiorecki.parking.core.exception.DomainException;
+
 @Stateless
 public class GenericDao {
 
@@ -21,9 +23,10 @@ public class GenericDao {
 	@Inject
 	private Logger logger;
 
-	public <E, V> E findEntityByUniqueField(SingularAttribute<E, V> attribute, V value) {
+	public <E, V> E findEntity(SingularAttribute<E, V> attribute, V value) {
 		Class<E> clazz = attribute.getDeclaringType().getJavaType();
-		String message = String.format("finding %s.class entity by %s=%s", clazz.getSimpleName(), attribute.getName(), value);
+		String message = String.format("finding %s.class entity by %s=%s", clazz.getSimpleName(), attribute.getName(),
+				value);
 		logger.info(message);
 
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -40,5 +43,17 @@ public class GenericDao {
 			logger.info("{} - not found", message);
 			return null;
 		}
+	}
+
+	public <E, V> E findExistingEntity(SingularAttribute<E, V> attribute, V value) {
+		E entity = findEntity(attribute, value);
+		if (entity == null) {
+			Class<E> clazz = attribute.getDeclaringType().getJavaType();
+			String message = String.format("%s.class entity with %s=%s was not found", clazz.getSimpleName(),
+					attribute.getName(), value);
+			logger.warn(message);
+			throw new DomainException(message);
+		}
+		return entity;
 	}
 }

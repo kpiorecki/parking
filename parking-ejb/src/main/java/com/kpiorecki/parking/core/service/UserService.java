@@ -11,6 +11,8 @@ public interface UserService {
 
 	void modifyUser(UserDto user);
 
+	void deleteUser(String login);
+
 	UserDto findUser(String login);
 
 }

@@ -9,6 +9,7 @@ public class UserDto implements Serializable {
 	private String login;
 	private String firstName;
 	private String lastName;
+	private String email;
 	private Integer version;
 
 	public String getLogin() {
@@ -35,6 +36,14 @@ public class UserDto implements Serializable {
 		this.lastName = lastName;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public Integer getVersion() {
 		return version;
 	}
@@ -52,10 +61,12 @@ public class UserDto implements Serializable {
 		builder.append(firstName);
 		builder.append(", lastName=");
 		builder.append(lastName);
+		builder.append(", email=");
+		builder.append(email);
 		builder.append(", version=");
 		builder.append(version);
 		builder.append("]");
-		
+
 		return builder.toString();
 	}
 

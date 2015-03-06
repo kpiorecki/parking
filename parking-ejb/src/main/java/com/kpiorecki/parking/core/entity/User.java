@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
 
+import org.hibernate.validator.constraints.Email;
+
 @Entity
 @Table(name = "users", indexes = { @Index(columnList = "login") })
 public class User implements Serializable {
@@ -31,6 +33,10 @@ public class User implements Serializable {
 
 	@Column
 	private String lastName;
+
+	@Email
+	@Column(nullable = false)
+	private String email;
 
 	@Version
 	private Integer version;
@@ -65,6 +71,14 @@ public class User implements Serializable {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public Integer getVersion() {

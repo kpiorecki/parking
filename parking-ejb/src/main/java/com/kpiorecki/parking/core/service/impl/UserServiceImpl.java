@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import com.kpiorecki.parking.core.dto.UserDto;
 import com.kpiorecki.parking.core.entity.User;
 import com.kpiorecki.parking.core.entity.User_;
-import com.kpiorecki.parking.core.exception.DomainException;
 import com.kpiorecki.parking.core.service.UserService;
 
 @Stateless
@@ -33,13 +32,7 @@ public class UserServiceImpl implements UserService {
 		String message = String.format("modifying user %s", userDto);
 		logger.info(message);
 
-		User user = genericDao.findEntityByUniqueField(User_.login, userDto.getLogin());
-		if (user == null) {
-			String errorMessage = String.format("%s - user entity was not found", message);
-			logger.warn(errorMessage);
-			throw new DomainException(errorMessage);
-		}
-
+		User user = genericDao.findExistingEntity(User_.login, userDto.getLogin());
 		mapper.map(userDto, user);
 
 		entityManager.persist(user);
@@ -47,8 +40,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void addUser(UserDto userDto) {
-		String message = String.format("adding user %s", userDto);
-		logger.info(message);
+		logger.info("adding user {}", userDto);
 
 		User user = mapper.map(userDto, User.class);
 
@@ -56,10 +48,20 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public void deleteUser(String login) {
+		String message = String.format("deleting user with login=%s", login);
+		logger.info(message);
+
+		User user = genericDao.findExistingEntity(User_.login, login);
+
+		entityManager.remove(user);
+	}
+
+	@Override
 	public UserDto findUser(String login) {
 		logger.info("finding user with login={}", login);
 
-		User user = genericDao.findEntityByUniqueField(User_.login, login);
+		User user = genericDao.findEntity(User_.login, login);
 		if (user == null) {
 			return null;
 		} else {

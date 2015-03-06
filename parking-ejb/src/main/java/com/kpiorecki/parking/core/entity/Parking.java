@@ -3,13 +3,17 @@ package com.kpiorecki.parking.core.entity;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
@@ -25,19 +29,24 @@ public class Parking implements Serializable {
 	@TableGenerator(name = "seq_parkings", pkColumnValue = "seq_parkings")
 	private Long id;
 
+	@Column(nullable = false, unique = true, updatable = false)
+	private String uuid;
+
+	@Column(nullable = false)
+	private String name;
+
 	@Column(nullable = false)
 	private Integer capacity;
 
 	@Embedded
 	private Address address;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@JoinColumn(name = "parking_fk")
 	private Set<Record> records;
 
 	@Version
 	private Integer version;
-
-	@Column(nullable = false, unique = true, updatable = false)
-	private String uuid;
 
 	public Long getId() {
 		return id;
@@ -45,6 +54,22 @@ public class Parking implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Integer getCapacity() {
@@ -77,14 +102,6 @@ public class Parking implements Serializable {
 
 	public void setVersion(Integer version) {
 		this.version = version;
-	}
-
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
 	}
 
 }
