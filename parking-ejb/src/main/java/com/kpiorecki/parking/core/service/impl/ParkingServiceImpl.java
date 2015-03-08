@@ -1,5 +1,10 @@
 package com.kpiorecki.parking.core.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -8,8 +13,13 @@ import org.dozer.Mapper;
 import org.slf4j.Logger;
 
 import com.kpiorecki.parking.core.dto.ParkingDto;
+import com.kpiorecki.parking.core.dto.RecordDto;
 import com.kpiorecki.parking.core.entity.Parking;
 import com.kpiorecki.parking.core.entity.Parking_;
+import com.kpiorecki.parking.core.entity.Record;
+import com.kpiorecki.parking.core.entity.User;
+import com.kpiorecki.parking.core.entity.User_;
+import com.kpiorecki.parking.core.exception.DomainException;
 import com.kpiorecki.parking.core.service.ParkingService;
 
 @Stateless
@@ -68,6 +78,52 @@ public class ParkingServiceImpl implements ParkingService {
 	}
 
 	@Override
+	public void assignUser(String parkingUuid, String login, boolean vip) {
+		logger.info("assigning user={}, vip={} to parking with uuid={}", login, vip, parkingUuid);
+
+		User user = genericDao.findExistingEntity(User_.login, login);
+		Parking parking = genericDao.findExistingEntity(Parking_.uuid, parkingUuid);
+
+		Record record = new Record();
+		record.setUser(user);
+		record.setVip(vip);
+		record.setPoints(0);
+
+		parking.getRecords().add(record);
+
+		entityManager.persist(parking);
+	}
+
+	@Override
+	public void revokeUser(String parkingUuid, String login) {
+		logger.info("revoking user={} from parking with uuid={}", login, parkingUuid);
+
+		Parking parking = genericDao.findExistingEntity(Parking_.uuid, parkingUuid);
+		Set<Record> records = parking.getRecords();
+		for (Record record : records) {
+			if (record.getUser().getLogin().equals(login)) {
+				records.remove(record);
+				entityManager.remove(record);
+				return;
+			}
+		}
+		String message = String.format(
+				"could not revoke user=%s from parking with uuid=%s - user record was not found", login, parkingUuid);
+		logger.warn(message);
+		throw new DomainException(message);
+	}
+
+	@Override
+	public void revokeAllUsers(String parkingUuid) {
+		logger.info("revoking all users from parking with uuid={}", parkingUuid);
+
+		Parking parking = genericDao.findExistingEntity(Parking_.uuid, parkingUuid);
+		parking.getRecords().clear();
+
+		entityManager.persist(parking);
+	}
+
+	@Override
 	public ParkingDto findParking(String parkingUuid) {
 		logger.info("finding parking with uuid={}", parkingUuid);
 
@@ -80,8 +136,19 @@ public class ParkingServiceImpl implements ParkingService {
 	}
 
 	@Override
-	public void addUser(String parkingUuid, String login) {
-		// TODO Auto-generated method stub
+	public Collection<RecordDto> findRecords(String parkingUuid) {
+		logger.info("finding records for parking with uuid={}", parkingUuid);
 
+		Parking parking = genericDao.findEntity(Parking_.uuid, parkingUuid);
+		if (parking == null) {
+			return null;
+		} else {
+			Set<Record> records = parking.getRecords();
+			List<RecordDto> recordsDto = new ArrayList<RecordDto>(records.size());
+			for (Record record : records) {
+				recordsDto.add(mapper.map(record, RecordDto.class));
+			}
+			return recordsDto;
+		}
 	}
 }

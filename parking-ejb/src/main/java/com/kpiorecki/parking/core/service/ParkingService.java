@@ -1,8 +1,11 @@
 package com.kpiorecki.parking.core.service;
 
+import java.util.Collection;
+
 import javax.ejb.Local;
 
 import com.kpiorecki.parking.core.dto.ParkingDto;
+import com.kpiorecki.parking.core.dto.RecordDto;
 
 @Local
 public interface ParkingService {
@@ -13,8 +16,13 @@ public interface ParkingService {
 
 	void deleteParking(String parkingUuid);
 
-	ParkingDto findParking(String parkingUuid);
-	
-	void addUser(String parkingUuid, String login);
+	void assignUser(String parkingUuid, String login, boolean vip);
 
+	void revokeUser(String parkingUuid, String login);
+
+	void revokeAllUsers(String parkingUuid);
+
+	ParkingDto findParking(String parkingUuid);
+
+	Collection<RecordDto> findRecords(String parkingUuid);
 }

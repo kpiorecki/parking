@@ -7,9 +7,11 @@ import static org.junit.Assert.assertNull;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.kpiorecki.parking.core.dto.UserDto;
+import com.kpiorecki.parking.core.entity.User;
 import com.kpiorecki.parking.core.service.UserService;
 
 public class UserServiceTest extends IntegrationTest {
@@ -20,33 +22,42 @@ public class UserServiceTest extends IntegrationTest {
 	@Inject
 	private EntityManager entityManager;
 
-	private final String defaultLogin = "login";
+	private String login = "login";
+
+	@Before
+	public void prepareData() {
+		persistUser(login);
+		entityManager.flush();
+	}
 
 	@Test
 	public void shouldAddUser() {
 		// given
-		UserDto user = createDefaultUser();
+		UserDto user = new UserDto();
+		user.setFirstName("firstname");
+		user.setLastName("lastname");
+		user.setLogin("new login");
+		user.setEmail("user@mail.com");
 
 		// when
 		userService.addUser(user);
 
 		// then
-		UserDto foundUser = userService.findUser(defaultLogin);
+		UserDto foundUser = userService.findUser("new login");
 		assertNotNull(foundUser);
 	}
 
 	@Test
 	public void shouldModifyUser() {
 		// given
-		userService.addUser(createDefaultUser());
-		UserDto user = userService.findUser(defaultLogin);
+		UserDto user = userService.findUser(login);
 
 		// when
 		user.setFirstName("new firstname");
 		userService.modifyUser(user);
 
 		// then
-		UserDto foundUser = userService.findUser(defaultLogin);
+		UserDto foundUser = userService.findUser(login);
 		assertNotNull(foundUser);
 		assertEquals("new firstname", foundUser.getFirstName());
 	}
@@ -54,7 +65,7 @@ public class UserServiceTest extends IntegrationTest {
 	@Test
 	public void shouldNotFindUser() {
 		// when
-		UserDto user = userService.findUser(defaultLogin);
+		UserDto user = userService.findUser("new login");
 
 		// then
 		assertNull(user);
@@ -62,11 +73,12 @@ public class UserServiceTest extends IntegrationTest {
 
 	@Test(expected = Exception.class)
 	public void shouldDuplicateLogin() {
-		// given
-		userService.addUser(createDefaultUser());
-
 		// when
-		userService.addUser(createDefaultUser());
+		UserDto userDto = new UserDto();
+		userDto.setLogin(login);
+		userDto.setEmail("user@mail.com");
+
+		userService.addUser(userDto);
 		entityManager.flush();
 
 		// then exception should be thrown
@@ -74,35 +86,29 @@ public class UserServiceTest extends IntegrationTest {
 
 	@Test
 	public void shouldDeleteUser() {
-		// given
-		userService.addUser(createDefaultUser());
-		entityManager.flush();
-
 		// when
-		userService.deleteUser(defaultLogin);
+		userService.deleteUser(login);
 
 		// then
-		UserDto user = userService.findUser(defaultLogin);
+		UserDto user = userService.findUser(login);
 		assertNull(user);
 	}
 
 	@Test(expected = Exception.class)
 	public void shouldNotDeleteUser() {
-		// given empty database
-
 		// when
-		userService.deleteUser(defaultLogin);
+		userService.deleteUser("new login");
 
 		// then DomainException should be thrown
 	}
 
-	private UserDto createDefaultUser() {
-		UserDto user = new UserDto();
+	private void persistUser(String login) {
+		User user = new User();
+		user.setLogin(login);
 		user.setFirstName("firstname");
 		user.setLastName("lastname");
-		user.setLogin(defaultLogin);
-		user.setEmail("user@mail.com");
+		user.setEmail(login + "@mail.com");
 
-		return user;
+		entityManager.persist(user);
 	}
 }

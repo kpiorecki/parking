@@ -17,7 +17,7 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 @Entity
-@Table(name = "records", uniqueConstraints = { @UniqueConstraint(columnNames = { "id", "user_fk", "parking_fk" }) })
+@Table(name = "records", uniqueConstraints = { @UniqueConstraint(columnNames = { "user_fk", "parking_fk" }) })
 public class Record implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -27,7 +27,7 @@ public class Record implements Serializable {
 	@TableGenerator(name = "seq_records", pkColumnValue = "seq_records")
 	private Long id;
 
-	@ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "user_fk")
 	private User user;
 
