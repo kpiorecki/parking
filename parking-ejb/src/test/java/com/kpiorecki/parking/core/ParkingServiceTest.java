@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -23,12 +24,16 @@ import com.kpiorecki.parking.core.entity.Parking;
 import com.kpiorecki.parking.core.entity.Record;
 import com.kpiorecki.parking.core.entity.User;
 import com.kpiorecki.parking.core.service.ParkingService;
+import com.kpiorecki.parking.core.service.UserService;
 import com.kpiorecki.parking.core.service.impl.UuidGenerator;
 
 public class ParkingServiceTest extends IntegrationTest {
 
 	@Inject
 	private ParkingService parkingService;
+
+	@Inject
+	private UserService userService;
 
 	@Inject
 	private EntityManager entityManager;
@@ -101,6 +106,9 @@ public class ParkingServiceTest extends IntegrationTest {
 		// then
 		ParkingDto parking = parkingService.findParking(parkingUuid);
 		assertNull(parking);
+
+		List<Record> recordsList = entityManager.createQuery("select r from Record r", Record.class).getResultList();
+		assertTrue(recordsList.isEmpty());
 	}
 
 	@Test
@@ -171,6 +179,17 @@ public class ParkingServiceTest extends IntegrationTest {
 		Collection<RecordDto> records = parkingService.findRecords(parkingUuid);
 		assertNotNull(records);
 		assertTrue(records.isEmpty());
+	}
+
+	@Test
+	public void shouldDeleteRecordOnCascade() {
+		// when
+		userService.deleteUser(addedUserLogin1);
+
+		// then
+		Collection<RecordDto> records = parkingService.findRecords(parkingUuid);
+		assertNotNull(records);
+		assertEquals(1, records.size());
 	}
 
 	private User persistUser(String login) {

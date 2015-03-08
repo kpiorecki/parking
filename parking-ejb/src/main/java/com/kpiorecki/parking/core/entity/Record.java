@@ -2,7 +2,6 @@ package com.kpiorecki.parking.core.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.UniqueConstraint;
@@ -18,6 +18,7 @@ import javax.persistence.Version;
 
 @Entity
 @Table(name = "records", uniqueConstraints = { @UniqueConstraint(columnNames = { "user_fk", "parking_fk" }) })
+@NamedQuery(name = "Record.deleteUserRecords", query = "delete from Record r where r.user.id = :userId")
 public class Record implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -27,7 +28,7 @@ public class Record implements Serializable {
 	@TableGenerator(name = "seq_records", pkColumnValue = "seq_records")
 	private Long id;
 
-	@ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_fk")
 	private User user;
 

@@ -3,6 +3,7 @@ package com.kpiorecki.parking.core.service.impl;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.dozer.Mapper;
 import org.slf4j.Logger;
@@ -29,8 +30,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void modifyUser(UserDto userDto) {
-		String message = String.format("modifying user %s", userDto);
-		logger.info(message);
+		logger.info("modifying user {}", userDto);
 
 		User user = genericDao.findExistingEntity(User_.login, userDto.getLogin());
 		mapper.map(userDto, user);
@@ -49,12 +49,20 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void deleteUser(String login) {
-		String message = String.format("deleting user with login=%s", login);
-		logger.info(message);
+		logger.info("deleting user with login={}", login);
 
 		User user = genericDao.findExistingEntity(User_.login, login);
 
+		Query deleteRecordsQuery = entityManager.createNamedQuery("Record.deleteUserRecords");
+		deleteRecordsQuery.setParameter("userId", user.getId());
+		int deletedRecords = deleteRecordsQuery.executeUpdate();
+		logger.info("deleted {} record(s) from user with login={}", deletedRecords, login);
+
 		entityManager.remove(user);
+
+		// need to flush and clear entity manager because of delete query above
+		entityManager.flush();
+		entityManager.clear();
 	}
 
 	@Override
