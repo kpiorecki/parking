@@ -25,7 +25,7 @@ import com.kpiorecki.parking.core.entity.Record;
 import com.kpiorecki.parking.core.entity.User;
 import com.kpiorecki.parking.core.service.ParkingService;
 import com.kpiorecki.parking.core.service.UserService;
-import com.kpiorecki.parking.core.service.impl.UuidGenerator;
+import com.kpiorecki.parking.core.util.UuidGenerator;
 
 public class ParkingServiceTest extends IntegrationTest {
 
@@ -119,6 +119,16 @@ public class ParkingServiceTest extends IntegrationTest {
 		// then
 		assertNotNull(parking);
 		assertEquals(parkingUuid, parking.getUuid());
+	}
+	
+	@Test
+	public void shouldFindAllParkings() {
+		// when
+		List<ParkingDto> allParkings = parkingService.findAllParkings();
+
+		// then
+		assertNotNull(allParkings);
+		assertEquals(1, allParkings.size());
 	}
 
 	@Test

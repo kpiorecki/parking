@@ -1,5 +1,7 @@
 package com.kpiorecki.parking.core.service;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import com.kpiorecki.parking.core.dto.UserDto;
@@ -14,5 +16,7 @@ public interface UserService {
 	void deleteUser(String login);
 
 	UserDto findUser(String login);
+
+	List<UserDto> findAllUsers();
 
 }

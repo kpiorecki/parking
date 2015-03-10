@@ -1,7 +1,5 @@
 package com.kpiorecki.parking.core.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +19,9 @@ import com.kpiorecki.parking.core.entity.User;
 import com.kpiorecki.parking.core.entity.User_;
 import com.kpiorecki.parking.core.exception.DomainException;
 import com.kpiorecki.parking.core.service.ParkingService;
+import com.kpiorecki.parking.core.util.CollectionMapper;
+import com.kpiorecki.parking.core.util.GenericDao;
+import com.kpiorecki.parking.core.util.UuidGenerator;
 
 @Stateless
 public class ParkingServiceImpl implements ParkingService {
@@ -30,6 +31,9 @@ public class ParkingServiceImpl implements ParkingService {
 
 	@Inject
 	private Mapper mapper;
+
+	@Inject
+	private CollectionMapper collectionMapper;
 
 	@Inject
 	private EntityManager entityManager;
@@ -136,7 +140,16 @@ public class ParkingServiceImpl implements ParkingService {
 	}
 
 	@Override
-	public Collection<RecordDto> findRecords(String parkingUuid) {
+	public List<ParkingDto> findAllParkings() {
+		logger.info("finding all parkings");
+
+		List<Parking> parkings = genericDao.findAllEntities(Parking.class);
+
+		return collectionMapper.mapToArrayList(parkings, ParkingDto.class);
+	}
+
+	@Override
+	public List<RecordDto> findRecords(String parkingUuid) {
 		logger.info("finding records for parking with uuid={}", parkingUuid);
 
 		Parking parking = genericDao.findEntity(Parking_.uuid, parkingUuid);
@@ -144,11 +157,8 @@ public class ParkingServiceImpl implements ParkingService {
 			return null;
 		} else {
 			Set<Record> records = parking.getRecords();
-			List<RecordDto> recordsDto = new ArrayList<RecordDto>(records.size());
-			for (Record record : records) {
-				recordsDto.add(mapper.map(record, RecordDto.class));
-			}
-			return recordsDto;
+			return collectionMapper.mapToArrayList(records, RecordDto.class);
 		}
 	}
+
 }

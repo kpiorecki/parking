@@ -1,5 +1,7 @@
 package com.kpiorecki.parking.core.service.impl;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -12,6 +14,8 @@ import com.kpiorecki.parking.core.dto.UserDto;
 import com.kpiorecki.parking.core.entity.User;
 import com.kpiorecki.parking.core.entity.User_;
 import com.kpiorecki.parking.core.service.UserService;
+import com.kpiorecki.parking.core.util.CollectionMapper;
+import com.kpiorecki.parking.core.util.GenericDao;
 
 @Stateless
 public class UserServiceImpl implements UserService {
@@ -21,6 +25,9 @@ public class UserServiceImpl implements UserService {
 
 	@Inject
 	private Mapper mapper;
+
+	@Inject
+	private CollectionMapper collectionMapper;
 
 	@Inject
 	private EntityManager entityManager;
@@ -75,5 +82,14 @@ public class UserServiceImpl implements UserService {
 		} else {
 			return mapper.map(user, UserDto.class);
 		}
+	}
+
+	@Override
+	public List<UserDto> findAllUsers() {
+		logger.info("finding all users");
+
+		List<User> users = genericDao.findAllEntities(User.class);
+
+		return collectionMapper.mapToArrayList(users, UserDto.class);
 	}
 }

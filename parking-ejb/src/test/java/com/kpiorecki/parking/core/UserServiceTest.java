@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
@@ -23,10 +25,12 @@ public class UserServiceTest extends IntegrationTest {
 	private EntityManager entityManager;
 
 	private String login = "login";
+	private String login2 = "login2";
 
 	@Before
 	public void prepareData() {
 		persistUser(login);
+		persistUser(login2);
 		entityManager.flush();
 	}
 
@@ -63,12 +67,31 @@ public class UserServiceTest extends IntegrationTest {
 	}
 
 	@Test
+	public void shouldFindUser() {
+		// when
+		UserDto user = userService.findUser(login);
+
+		// then
+		assertNotNull(user);
+	}
+
+	@Test
 	public void shouldNotFindUser() {
 		// when
 		UserDto user = userService.findUser("new login");
 
 		// then
 		assertNull(user);
+	}
+
+	@Test
+	public void shouldFindAllUsers() {
+		// when
+		List<UserDto> allUsers = userService.findAllUsers();
+
+		// then
+		assertNotNull(allUsers);
+		assertEquals(2, allUsers.size());
 	}
 
 	@Test(expected = Exception.class)

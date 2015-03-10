@@ -1,6 +1,6 @@
 package com.kpiorecki.parking.core.service;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.Local;
 
@@ -23,6 +23,8 @@ public interface ParkingService {
 	void revokeAllUsers(String parkingUuid);
 
 	ParkingDto findParking(String parkingUuid);
+	
+	List<ParkingDto> findAllParkings();
 
-	Collection<RecordDto> findRecords(String parkingUuid);
+	List<RecordDto> findRecords(String parkingUuid);
 }

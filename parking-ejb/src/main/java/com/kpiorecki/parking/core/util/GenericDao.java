@@ -1,10 +1,11 @@
-package com.kpiorecki.parking.core.service.impl;
+package com.kpiorecki.parking.core.util;
 
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -55,5 +56,18 @@ public class GenericDao {
 			throw new DomainException(message);
 		}
 		return entity;
+	}
+
+	public <E> List<E> findAllEntities(Class<E> clazz) {
+		String message = String.format("finding all %s.class entities", clazz.getSimpleName());
+		logger.info(message);
+
+		CriteriaQuery<E> query = entityManager.getCriteriaBuilder().createQuery(clazz);
+		TypedQuery<E> selectAllQuery = entityManager.createQuery(query.select(query.from(clazz)));
+		List<E> entities = selectAllQuery.getResultList();
+
+		logger.info("{} - {} found", message, entities.size());
+
+		return entities;
 	}
 }

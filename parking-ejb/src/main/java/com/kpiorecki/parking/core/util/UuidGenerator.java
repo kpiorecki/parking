@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.core.service.impl;
+package com.kpiorecki.parking.core.util;
 
 import java.util.UUID;
 
