@@ -1,0 +1,111 @@
+package com.kpiorecki.parking.ejb.entity;
+
+import java.io.Serializable;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
+import javax.persistence.TableGenerator;
+import javax.persistence.Version;
+
+import org.joda.time.DateTime;
+
+import com.kpiorecki.parking.ejb.jpa.DateOnlyConverter;
+
+@Entity
+@Table(name = "bookings", indexes = { @Index(columnList = "parking_fk, date", unique = true) })
+@NamedQuery(name = "Booking.findByParkingAndDate", query = "select b from Booking b where b.parking.id = :parkingId and b.date = :date")
+public class Booking implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "seq_bookings")
+	@TableGenerator(name = "seq_bookings", pkColumnValue = "seq_bookings")
+	private Long id;
+
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "parking_fk")
+	private Parking parking;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@JoinColumn(name = "booking_fk")
+	private Set<BookingEntry> entries;
+
+	@Column(nullable = false)
+	@Convert(converter = DateOnlyConverter.class)
+	private DateTime date;
+
+	@Column(nullable = false)
+	private Boolean locked;
+
+	@Version
+	private Integer version;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Parking getParking() {
+		return parking;
+	}
+
+	public void setParking(Parking parking) {
+		this.parking = parking;
+	}
+
+	public Set<BookingEntry> getEntries() {
+		return entries;
+	}
+
+	public void setEntries(Set<BookingEntry> entries) {
+		this.entries = entries;
+	}
+
+	public DateTime getDate() {
+		return date;
+	}
+
+	public void setDate(DateTime date) {
+		this.date = date;
+	}
+
+	public Boolean getLocked() {
+		return locked;
+	}
+
+	public void setLocked(Boolean locked) {
+		this.locked = locked;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
+	@PrePersist
+	protected void prePersist() {
+		this.locked = false;
+	}
+
+}

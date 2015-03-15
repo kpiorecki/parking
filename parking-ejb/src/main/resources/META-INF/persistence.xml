@@ -3,7 +3,19 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
 	version="2.1">
 	<persistence-unit name="" transaction-type="JTA">
+		<class>com.kpiorecki.parking.ejb.entity.Address</class>
+		<class>com.kpiorecki.parking.ejb.entity.Booking</class>
+		<class>com.kpiorecki.parking.ejb.entity.BookingEntry</class>
+		<class>com.kpiorecki.parking.ejb.entity.Parking</class>
+		<class>com.kpiorecki.parking.ejb.entity.Record</class>
+		<class>com.kpiorecki.parking.ejb.entity.Schedule</class>
+		<class>com.kpiorecki.parking.ejb.entity.User</class>
+
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+
 		<!-- TODO -->
+
 	</persistence-unit>
 </persistence>
     

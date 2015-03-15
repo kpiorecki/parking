@@ -4,6 +4,7 @@
 	version="2.1">
 	<persistence-unit name="" transaction-type="JTA">
 		<jta-data-source>jdbc/arquillian</jta-data-source>
+		<shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
 		<properties>
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
 			<property name="eclipselink.ddl-generation.output-mode" value="both" />
