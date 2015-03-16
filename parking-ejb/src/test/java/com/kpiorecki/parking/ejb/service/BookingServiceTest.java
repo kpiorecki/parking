@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ public class BookingServiceTest extends IntegrationTest {
 	@Inject
 	private EntityManager entityManager;
 
-	private DateTime date;
+	private LocalDate date;
 	private Parking parking1;
 	private Parking parking2;
 
@@ -49,10 +50,12 @@ public class BookingServiceTest extends IntegrationTest {
 		User p2User1 = testUtilities.persistUser(p2Login1);
 		User p2User2 = testUtilities.persistUser(p2Login2);
 
-		date = new DateTime();
+		date = new DateTime().toLocalDate();
 		parking1 = testUtilities.persistParking(p1User1, p1User2);
 		parking2 = testUtilities.persistParking(p2User1, p2User2);
 		testUtilities.persistBooking(parking1, date, p1User1, p1User2);
+		
+		entityManager.flush();
 	}
 
 	@Test
@@ -101,7 +104,7 @@ public class BookingServiceTest extends IntegrationTest {
 		// then exception should be thrown - booking does not exist
 	}
 
-	private List<Booking> findBooking(Parking parking, DateTime date) {
+	private List<Booking> findBooking(Parking parking, LocalDate date) {
 		TypedQuery<Booking> findQuery = entityManager.createNamedQuery("Booking.findByParkingAndDate", Booking.class);
 		findQuery.setParameter("parkingId", parking.getId());
 		findQuery.setParameter("date", date);

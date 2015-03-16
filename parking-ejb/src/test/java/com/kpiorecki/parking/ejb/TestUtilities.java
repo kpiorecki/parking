@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import com.kpiorecki.parking.ejb.entity.Address;
 import com.kpiorecki.parking.ejb.entity.Booking;
@@ -34,7 +34,6 @@ public class TestUtilities {
 		user.setEmail(login + "@mail.com");
 
 		entityManager.persist(user);
-		entityManager.flush();
 
 		return user;
 	}
@@ -64,7 +63,6 @@ public class TestUtilities {
 		parking.setRecords(records);
 
 		entityManager.persist(parking);
-		entityManager.flush();
 
 		return parking;
 	}
@@ -77,7 +75,7 @@ public class TestUtilities {
 		return persistParking(users);
 	}
 
-	public Booking persistBooking(Parking parking, DateTime date, User... users) {
+	public Booking persistBooking(Parking parking, LocalDate date, User... users) {
 		Set<BookingEntry> entries = new HashSet<>();
 		for (User user : users) {
 			BookingEntry entry = new BookingEntry();
@@ -91,7 +89,6 @@ public class TestUtilities {
 		booking.setEntries(entries);
 
 		entityManager.persist(booking);
-		entityManager.flush();
 
 		return booking;
 	}

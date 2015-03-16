@@ -41,6 +41,8 @@ public class UserServiceTest extends IntegrationTest {
 	public void prepareData() {
 		user1 = testUtilities.persistUser(login1);
 		testUtilities.persistUser(login2);
+
+		entityManager.flush();
 	}
 
 	@Test

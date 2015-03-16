@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
 
-import org.eclipse.persistence.annotations.CacheIndex;
 import org.hibernate.validator.constraints.Email;
 
 @Entity
@@ -29,7 +28,6 @@ public class User implements Serializable {
 	private Long id;
 
 	@Column(nullable = false, unique = true, updatable = false)
-	@CacheIndex
 	private String login;
 
 	@Column

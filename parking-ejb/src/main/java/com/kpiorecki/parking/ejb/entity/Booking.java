@@ -5,7 +5,6 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -21,9 +20,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
 
-import org.joda.time.DateTime;
-
-import com.kpiorecki.parking.ejb.jpa.DateOnlyConverter;
+import org.joda.time.LocalDate;
 
 @Entity
 @Table(name = "bookings", indexes = { @Index(columnList = "parking_fk, date", unique = true) })
@@ -46,8 +43,7 @@ public class Booking implements Serializable {
 	private Set<BookingEntry> entries;
 
 	@Column(nullable = false)
-	@Convert(converter = DateOnlyConverter.class)
-	private DateTime date;
+	private LocalDate date;
 
 	@Column(nullable = false)
 	private Boolean locked;
@@ -79,11 +75,11 @@ public class Booking implements Serializable {
 		this.entries = entries;
 	}
 
-	public DateTime getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(DateTime date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 

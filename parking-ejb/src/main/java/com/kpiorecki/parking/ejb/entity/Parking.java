@@ -19,8 +19,6 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
 
-import org.eclipse.persistence.annotations.CacheIndex;
-
 @Entity
 @Cacheable
 @Table(name = "parkings", indexes = { @Index(columnList = "uuid", unique = true) })
@@ -34,7 +32,6 @@ public class Parking implements Serializable {
 	private Long id;
 
 	@Column(nullable = false, unique = true, updatable = false)
-	@CacheIndex
 	private String uuid;
 
 	@Column(nullable = false)

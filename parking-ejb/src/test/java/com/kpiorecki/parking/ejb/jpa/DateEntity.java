@@ -2,14 +2,13 @@ package com.kpiorecki.parking.ejb.jpa;
 
 import java.io.Serializable;
 
-import javax.persistence.Convert;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import org.joda.time.DateTime;
-
-import com.kpiorecki.parking.ejb.jpa.DateOnlyConverter;
+import org.joda.time.LocalDate;
 
 @Entity
 public class DateEntity implements Serializable {
@@ -20,7 +19,34 @@ public class DateEntity implements Serializable {
 	@GeneratedValue
 	private Long id;
 
-	@Convert(converter = DateOnlyConverter.class)
-	private DateTime date;
+	@Column
+	private LocalDate date;
+
+	@Column
+	private DateTime dateTime;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public LocalDate getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
+
+	public DateTime getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(DateTime dateTime) {
+		this.dateTime = dateTime;
+	}
 
 }

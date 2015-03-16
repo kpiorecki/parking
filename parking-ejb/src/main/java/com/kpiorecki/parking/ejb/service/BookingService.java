@@ -1,10 +1,10 @@
 package com.kpiorecki.parking.ejb.service;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 public interface BookingService {
 
-	void book(String parkingUuid, String login, DateTime date);
+	void book(String parkingUuid, String login, LocalDate date);
 
-	void cancel(String parkingUuid, String login, DateTime date);
+	void cancel(String parkingUuid, String login, LocalDate date);
 }

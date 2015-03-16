@@ -53,6 +53,8 @@ public class ParkingServiceTest extends IntegrationTest {
 		testUtilities.persistUser(freeLogin3);
 		parking = testUtilities.persistParkingWithUsers(addedLogin1, addedLogin2);
 		parkingUuid = parking.getUuid();
+
+		entityManager.flush();
 	}
 
 	@Test
@@ -110,11 +112,11 @@ public class ParkingServiceTest extends IntegrationTest {
 	@Test
 	public void shouldFindParking() {
 		// when
-		ParkingDto parking = parkingService.findParking(parkingUuid);
+		ParkingDto parkingDto = parkingService.findParking(parkingUuid);
 
 		// then
-		assertNotNull(parking);
-		assertEquals(parkingUuid, parking.getUuid());
+		assertNotNull(parkingDto);
+		assertEquals(parkingUuid, parkingDto.getUuid());
 	}
 
 	@Test

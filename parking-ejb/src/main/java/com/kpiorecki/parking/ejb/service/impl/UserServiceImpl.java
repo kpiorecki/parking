@@ -69,9 +69,10 @@ public class UserServiceImpl implements UserService {
 
 		entityManager.remove(user);
 
-		// need to flush and clear entity manager because of delete query above
+		// need to flush and clear entity manager and cache because of delete batch query above
 		entityManager.flush();
 		entityManager.clear();
+		entityManager.getEntityManagerFactory().getCache().evictAll();
 	}
 
 	@Override

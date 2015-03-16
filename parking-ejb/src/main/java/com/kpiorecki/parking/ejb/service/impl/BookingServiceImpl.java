@@ -10,7 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
@@ -47,7 +47,7 @@ public class BookingServiceImpl implements BookingService {
 	private DateTimeFormatter dateFormatter;
 
 	@Override
-	public void book(String parkingUuid, String login, DateTime date) {
+	public void book(String parkingUuid, String login, LocalDate date) {
 		String message = String.format("adding booking entry to parking with uuid=%s for user=%s and date=%s",
 				parkingUuid, login, dateFormatter.print(date));
 		logger.info(message);
@@ -82,7 +82,7 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public void cancel(String parkingUuid, String login, DateTime date) {
+	public void cancel(String parkingUuid, String login, LocalDate date) {
 		String message = String.format("removing booking entry from parking with uuid=%s for user=%s and date=%s",
 				parkingUuid, login, dateFormatter.print(date));
 		logger.info(message);
@@ -109,7 +109,7 @@ public class BookingServiceImpl implements BookingService {
 		throw new DomainException(warnMessage);
 	}
 
-	private Booking findBooking(String parkingUuid, DateTime date) {
+	private Booking findBooking(String parkingUuid, LocalDate date) {
 		String message = String.format("finding booking by parking with uuid=%s and date=%s", parkingUuid,
 				dateFormatter.print(date));
 		logger.info(message);
