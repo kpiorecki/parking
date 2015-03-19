@@ -24,7 +24,7 @@ import org.joda.time.LocalDate;
 
 @Entity
 @Table(name = "bookings", indexes = { @Index(columnList = "parking_fk, date", unique = true) })
-@NamedQuery(name = "Booking.findByParkingAndDate", query = "select b from Booking b where b.parking.id = :parkingId and b.date = :date")
+@NamedQuery(name = "Booking.findByParkingAndDate", query = "select b from Booking b where b.parking.uuid = :parkingUuid and b.date = :date")
 public class Booking implements Serializable {
 
 	private static final long serialVersionUID = 1L;

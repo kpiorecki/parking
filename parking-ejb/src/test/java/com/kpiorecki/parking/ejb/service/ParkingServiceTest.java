@@ -3,7 +3,6 @@ package com.kpiorecki.parking.ejb.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
@@ -22,7 +21,6 @@ import com.kpiorecki.parking.ejb.dto.AddressDto;
 import com.kpiorecki.parking.ejb.dto.ParkingDto;
 import com.kpiorecki.parking.ejb.dto.RecordDto;
 import com.kpiorecki.parking.ejb.entity.Parking;
-import com.kpiorecki.parking.ejb.entity.Record;
 
 public class ParkingServiceTest extends IntegrationTest {
 
@@ -96,17 +94,13 @@ public class ParkingServiceTest extends IntegrationTest {
 		assertEquals("new city", foundParkingDto.getAddress().getCity());
 	}
 
-	@Test
+	@Test(expected = Exception.class)
 	public void shouldDeleteParking() {
 		// when
 		parkingService.deleteParking(parkingUuid);
+		parkingService.findParking(parkingUuid);
 
-		// then
-		ParkingDto parking = parkingService.findParking(parkingUuid);
-		assertNull(parking);
-
-		List<Record> recordsList = entityManager.createQuery("select r from Record r", Record.class).getResultList();
-		assertTrue(recordsList.isEmpty());
+		// then exception should be thrown
 	}
 
 	@Test

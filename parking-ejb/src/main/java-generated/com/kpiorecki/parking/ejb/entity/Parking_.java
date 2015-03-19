@@ -5,10 +5,9 @@ import javax.persistence.metamodel.SetAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-@Generated(value="Dali", date="2015-03-16T23:23:51.034+0100")
+@Generated(value="Dali", date="2015-03-18T22:25:12.277+0100")
 @StaticMetamodel(Parking.class)
 public class Parking_ {
-	public static volatile SingularAttribute<Parking, Long> id;
 	public static volatile SingularAttribute<Parking, String> uuid;
 	public static volatile SingularAttribute<Parking, String> name;
 	public static volatile SingularAttribute<Parking, Integer> capacity;

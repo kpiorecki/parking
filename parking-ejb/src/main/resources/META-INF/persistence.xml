@@ -4,6 +4,7 @@
 	version="2.1">
 	<persistence-unit name="" transaction-type="JTA">
 		<class>com.kpiorecki.parking.ejb.entity.Address</class>
+		<class>com.kpiorecki.parking.ejb.entity.ArchivableEntity</class>
 		<class>com.kpiorecki.parking.ejb.entity.Booking</class>
 		<class>com.kpiorecki.parking.ejb.entity.BookingEntry</class>
 		<class>com.kpiorecki.parking.ejb.entity.Parking</class>

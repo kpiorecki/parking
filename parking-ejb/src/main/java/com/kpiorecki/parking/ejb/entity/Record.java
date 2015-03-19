@@ -18,7 +18,7 @@ import javax.persistence.Version;
 
 @Entity
 @Table(name = "records", uniqueConstraints = { @UniqueConstraint(columnNames = { "user_fk", "parking_fk" }) })
-@NamedQuery(name = "Record.deleteUserRecords", query = "delete from Record r where r.user.id = :userId")
+@NamedQuery(name = "Record.deleteUserRecords", query = "delete from Record r where r.user.login = :login")
 public class Record implements Serializable {
 
 	private static final long serialVersionUID = 1L;

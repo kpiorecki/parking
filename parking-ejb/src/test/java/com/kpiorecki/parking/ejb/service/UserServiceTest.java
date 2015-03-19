@@ -2,7 +2,7 @@ package com.kpiorecki.parking.ejb.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -15,8 +15,10 @@ import org.junit.Test;
 
 import com.kpiorecki.parking.ejb.IntegrationTest;
 import com.kpiorecki.parking.ejb.TestUtilities;
+import com.kpiorecki.parking.ejb.dao.UserDao;
 import com.kpiorecki.parking.ejb.dto.UserDto;
 import com.kpiorecki.parking.ejb.entity.User;
+import com.kpiorecki.parking.ejb.entity.User_;
 
 public class UserServiceTest extends IntegrationTest {
 
@@ -25,6 +27,9 @@ public class UserServiceTest extends IntegrationTest {
 
 	@Inject
 	private EntityManager entityManager;
+
+	@Inject
+	private UserDao userDao;
 
 	@Inject
 	private TestUtilities testUtilities;
@@ -86,13 +91,12 @@ public class UserServiceTest extends IntegrationTest {
 		assertNotNull(user);
 	}
 
-	@Test
+	@Test(expected = Exception.class)
 	public void shouldNotFindUser() {
 		// when
-		UserDto user = userService.findUser("new login");
+		userService.findUser("new login");
 
-		// then
-		assertNull(user);
+		// then exception should be thrown
 	}
 
 	@Test
@@ -124,8 +128,8 @@ public class UserServiceTest extends IntegrationTest {
 		userService.deleteUser(login1);
 
 		// then
-		UserDto user = userService.findUser(login1);
-		assertNull(user);
+		List<User> foundUsers = userDao.find(User_.login, login1);
+		assertTrue(foundUsers.isEmpty());
 	}
 
 	@Test(expected = Exception.class)
