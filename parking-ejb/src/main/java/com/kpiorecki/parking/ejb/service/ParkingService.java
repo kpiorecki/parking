@@ -22,8 +22,6 @@ public interface ParkingService {
 
 	void revokeAllUsers(String parkingUuid);
 	
-	boolean isUserAssigned(String parkingUuid, String login);
-
 	ParkingDto findParking(String parkingUuid);
 	
 	List<ParkingDto> findAllParkings();

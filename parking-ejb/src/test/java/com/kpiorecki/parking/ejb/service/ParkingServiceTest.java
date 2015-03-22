@@ -1,7 +1,6 @@
 package com.kpiorecki.parking.ejb.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -26,9 +25,6 @@ public class ParkingServiceTest extends IntegrationTest {
 
 	@Inject
 	private ParkingService parkingService;
-
-	@Inject
-	private UserService userService;
 
 	@Inject
 	private EntityManager entityManager;
@@ -181,35 +177,6 @@ public class ParkingServiceTest extends IntegrationTest {
 		Collection<RecordDto> records = parkingService.findRecords(parkingUuid);
 		assertNotNull(records);
 		assertTrue(records.isEmpty());
-	}
-
-	@Test
-	public void shouldHaveAssignedUser() {
-		// when
-		boolean assigned = parkingService.isUserAssigned(parkingUuid, addedLogin1);
-
-		// then
-		assertTrue(assigned);
-	}
-
-	@Test
-	public void shouldNotHaveAssignedUser() {
-		// when
-		boolean assigned = parkingService.isUserAssigned(parkingUuid, freeLogin3);
-
-		// then
-		assertFalse(assigned);
-	}
-
-	@Test
-	public void shouldDeleteRecordsOnCascade() {
-		// when
-		userService.deleteUser(addedLogin1);
-
-		// then
-		Collection<RecordDto> records = parkingService.findRecords(parkingUuid);
-		assertNotNull(records);
-		assertEquals(1, records.size());
 	}
 
 }

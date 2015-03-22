@@ -1,8 +1,5 @@
 package com.kpiorecki.parking.ejb;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -45,22 +42,20 @@ public class TestUtilities {
 		address.setStreet("street");
 		address.setNumber("number");
 
-		Set<Record> records = new HashSet<>();
+		Parking parking = new Parking();
+		parking.setUuid(uuidGenerator.generateUuid());
+		parking.setAddress(address);
+		parking.setCapacity(50);
+		parking.setName("name");
+
 		for (User user : users) {
 			Record record = new Record();
 			record.setUser(user);
 			record.setVip(false);
 			record.setPoints(0);
 
-			records.add(record);
+			parking.addRecord(record);
 		}
-
-		Parking parking = new Parking();
-		parking.setUuid(uuidGenerator.generateUuid());
-		parking.setAddress(address);
-		parking.setCapacity(50);
-		parking.setName("name");
-		parking.setRecords(records);
 
 		entityManager.persist(parking);
 
@@ -76,17 +71,15 @@ public class TestUtilities {
 	}
 
 	public Booking persistBooking(Parking parking, LocalDate date, User... users) {
-		Set<BookingEntry> entries = new HashSet<>();
-		for (User user : users) {
-			BookingEntry entry = new BookingEntry();
-			entry.setUser(user);
-			entries.add(entry);
-		}
-
 		Booking booking = new Booking();
 		booking.setParking(parking);
 		booking.setDate(date);
-		booking.setEntries(entries);
+		for (User user : users) {
+			BookingEntry entry = new BookingEntry();
+			entry.setUser(user);
+		
+			booking.addEntry(entry);
+		}
 
 		entityManager.persist(booking);
 

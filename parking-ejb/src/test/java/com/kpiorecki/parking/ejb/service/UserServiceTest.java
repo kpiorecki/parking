@@ -1,6 +1,7 @@
 package com.kpiorecki.parking.ejb.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -15,6 +16,7 @@ import org.junit.Test;
 
 import com.kpiorecki.parking.ejb.IntegrationTest;
 import com.kpiorecki.parking.ejb.TestUtilities;
+import com.kpiorecki.parking.ejb.dao.ParkingDao;
 import com.kpiorecki.parking.ejb.dao.UserDao;
 import com.kpiorecki.parking.ejb.dto.UserDto;
 import com.kpiorecki.parking.ejb.entity.User;
@@ -32,6 +34,9 @@ public class UserServiceTest extends IntegrationTest {
 	private UserDao userDao;
 
 	@Inject
+	private ParkingDao parkingDao;
+
+	@Inject
 	private TestUtilities testUtilities;
 
 	@Inject
@@ -40,12 +45,15 @@ public class UserServiceTest extends IntegrationTest {
 	private String login1 = "login1";
 	private String login2 = "login2";
 
+	private String parkingUuid;
+
 	private User user1;
 
 	@Before
 	public void prepareData() {
 		user1 = testUtilities.persistUser(login1);
-		testUtilities.persistUser(login2);
+		User user2 = testUtilities.persistUser(login2);
+		parkingUuid = testUtilities.persistParking(user1, user2).getUuid();
 
 		entityManager.flush();
 	}
@@ -130,6 +138,12 @@ public class UserServiceTest extends IntegrationTest {
 		// then
 		List<User> foundUsers = userDao.find(User_.login, login1);
 		assertTrue(foundUsers.isEmpty());
+
+		boolean user1Assigned = parkingDao.isUserAssigned(parkingUuid, login1);
+		assertFalse(user1Assigned);
+
+		boolean user2Assigned = parkingDao.isUserAssigned(parkingUuid, login2);
+		assertTrue(user2Assigned);
 	}
 
 	@Test(expected = Exception.class)

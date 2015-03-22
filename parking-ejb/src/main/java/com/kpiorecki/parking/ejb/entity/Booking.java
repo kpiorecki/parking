@@ -1,6 +1,8 @@
 package com.kpiorecki.parking.ejb.entity;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -15,7 +17,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
@@ -40,13 +41,13 @@ public class Booking implements Serializable {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumn(name = "booking_fk")
-	private Set<BookingEntry> entries;
+	private Set<BookingEntry> entries = new HashSet<>();
 
 	@Column(nullable = false)
 	private LocalDate date;
 
 	@Column(nullable = false)
-	private Boolean locked;
+	private Boolean locked = false;
 
 	@Version
 	private Integer version;
@@ -68,11 +69,15 @@ public class Booking implements Serializable {
 	}
 
 	public Set<BookingEntry> getEntries() {
-		return entries;
+		return Collections.unmodifiableSet(entries);
 	}
 
-	public void setEntries(Set<BookingEntry> entries) {
-		this.entries = entries;
+	public void addEntry(BookingEntry entry) {
+		entries.add(entry);
+	}
+
+	public void removeEntry(BookingEntry entry) {
+		entries.remove(entry);
 	}
 
 	public LocalDate getDate() {
@@ -97,11 +102,6 @@ public class Booking implements Serializable {
 
 	public void setVersion(Integer version) {
 		this.version = version;
-	}
-
-	@PrePersist
-	protected void prePersist() {
-		this.locked = false;
 	}
 
 }

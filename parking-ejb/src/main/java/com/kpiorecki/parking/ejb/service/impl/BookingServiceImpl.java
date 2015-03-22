@@ -1,8 +1,5 @@
 package com.kpiorecki.parking.ejb.service.impl;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -20,7 +17,6 @@ import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.User;
 import com.kpiorecki.parking.ejb.exception.DomainException;
 import com.kpiorecki.parking.ejb.service.BookingService;
-import com.kpiorecki.parking.ejb.service.ParkingService;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
 
 @Stateless
@@ -40,9 +36,6 @@ public class BookingServiceImpl implements BookingService {
 	private UserDao userDao;
 
 	@Inject
-	private ParkingService parkingService;
-
-	@Inject
 	@DateFormatter
 	private DateTimeFormatter dateFormatter;
 
@@ -52,7 +45,7 @@ public class BookingServiceImpl implements BookingService {
 				login, dateFormatter.print(date));
 		logger.info(message);
 
-		boolean userAssigned = parkingService.isUserAssigned(parkingUuid, login);
+		boolean userAssigned = parkingDao.isUserAssigned(parkingUuid, login);
 		if (!userAssigned) {
 			String warnMessage = String.format("%s - user is not assigned to parking", message);
 			logger.warn(warnMessage);
@@ -67,13 +60,12 @@ public class BookingServiceImpl implements BookingService {
 			booking = new Booking();
 			booking.setDate(date);
 			booking.setParking(parking);
-			booking.setEntries(new HashSet<BookingEntry>());
 		}
 
 		User user = userDao.load(login);
 		BookingEntry entry = new BookingEntry();
 		entry.setUser(user);
-		booking.getEntries().add(entry);
+		booking.addEntry(entry);
 
 		bookingDao.save(booking);
 	}
@@ -90,10 +82,9 @@ public class BookingServiceImpl implements BookingService {
 			logger.warn(warnMessage);
 			throw new DomainException(warnMessage);
 		}
-		Set<BookingEntry> entries = booking.getEntries();
-		for (BookingEntry entry : entries) {
+		for (BookingEntry entry : booking.getEntries()) {
 			if (entry.getUser().getLogin().equals(login)) {
-				entries.remove(entry);
+				booking.removeEntry(entry);
 				bookingDao.save(booking);
 				return;
 			}

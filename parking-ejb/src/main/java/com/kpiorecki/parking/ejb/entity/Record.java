@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
@@ -18,7 +19,9 @@ import javax.persistence.Version;
 
 @Entity
 @Table(name = "records", uniqueConstraints = { @UniqueConstraint(columnNames = { "user_fk", "parking_fk" }) })
-@NamedQuery(name = "Record.deleteUserRecords", query = "delete from Record r where r.user.login = :login")
+@NamedQueries({
+		@NamedQuery(name = "Record.findRecordByUserAndParking", query = "select r from Record r where r.user.login = :login and r.parking.uuid = :parkingUuid"),
+		@NamedQuery(name = "Record.findRecordsByUser", query = "select r from Record r where r.user.login = :login") })
 public class Record implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -31,6 +34,10 @@ public class Record implements Serializable {
 	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_fk")
 	private User user;
+
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "parking_fk")
+	private Parking parking;
 
 	@Column(nullable = false)
 	private Integer points;
@@ -55,6 +62,14 @@ public class Record implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public Parking getParking() {
+		return parking;
+	}
+
+	public void setParking(Parking parking) {
+		this.parking = parking;
 	}
 
 	public Integer getPoints() {

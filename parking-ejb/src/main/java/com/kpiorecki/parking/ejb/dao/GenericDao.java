@@ -23,7 +23,7 @@ public abstract class GenericDao<K, E> {
 	protected EntityManager entityManager;
 
 	protected Class<E> clazz;
-	
+
 	@Inject
 	private Logger logger;
 
@@ -76,6 +76,7 @@ public abstract class GenericDao<K, E> {
 		adjustFindQuery(builder, query, root);
 
 		TypedQuery<E> findAllQuery = entityManager.createQuery(query);
+		findAllQuery.setLockMode(LockModeType.OPTIMISTIC);
 		List<E> entities = findAllQuery.getResultList();
 
 		logger.info("{} - {} found", message, entities.size());

@@ -1,6 +1,8 @@
 package com.kpiorecki.parking.ejb.entity;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Cacheable;
@@ -10,7 +12,6 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -34,9 +35,8 @@ public class Parking implements Serializable {
 	@Embedded
 	private Address address;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	@JoinColumn(name = "parking_fk")
-	private Set<Record> records;
+	@OneToMany(mappedBy = "parking", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private Set<Record> records = new HashSet<>();
 
 	@Version
 	private Integer version;
@@ -74,11 +74,23 @@ public class Parking implements Serializable {
 	}
 
 	public Set<Record> getRecords() {
-		return records;
+		return Collections.unmodifiableSet(records);
 	}
 
-	public void setRecords(Set<Record> records) {
-		this.records = records;
+	public void addRecord(Record record) {
+		record.setParking(this);
+		records.add(record);
+	}
+
+	public void removeRecord(Record record) {
+		boolean removed = records.remove(record);
+		if (removed) {
+			record.setParking(null);
+		}
+	}
+
+	public void removeAllRecords() {
+		records.clear();
 	}
 
 	public Integer getVersion() {

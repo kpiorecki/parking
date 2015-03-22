@@ -87,7 +87,8 @@ public class ParkingServiceImpl implements ParkingService {
 		record.setVip(vip);
 		record.setPoints(0);
 
-		parking.getRecords().add(record);
+		parking.addRecord(record);
+
 		parkingDao.save(parking);
 	}
 
@@ -96,11 +97,13 @@ public class ParkingServiceImpl implements ParkingService {
 		logger.info("revoking user={} from parking={}", login, parkingUuid);
 
 		Parking parking = parkingDao.load(parkingUuid);
-		Record record = getUserRecord(parking, login);
-		if (record != null) {
-			parking.getRecords().remove(record);
-			parkingDao.save(parking);
-			return;
+		Set<Record> records = parking.getRecords();
+		for (Record record : records) {
+			if (record.getUser().getLogin().equals(login)) {
+				parking.removeRecord(record);
+				parkingDao.save(parking);
+				return;
+			}
 		}
 		String message = String.format("could not revoke user=%s from parking=%s - user record was not found", login,
 				parkingUuid);
@@ -113,18 +116,8 @@ public class ParkingServiceImpl implements ParkingService {
 		logger.info("revoking all users from parking={}", parkingUuid);
 
 		Parking parking = parkingDao.load(parkingUuid);
-		parking.getRecords().clear();
+		parking.removeAllRecords();
 		parkingDao.save(parking);
-	}
-
-	@Override
-	public boolean isUserAssigned(String parkingUuid, String login) {
-		logger.info("checking if user={} is assigned to parking={}", login, parkingUuid);
-
-		Parking parking = parkingDao.load(parkingUuid);
-		Record record = getUserRecord(parking, login);
-
-		return record != null;
 	}
 
 	@Override
@@ -150,16 +143,6 @@ public class ParkingServiceImpl implements ParkingService {
 		Parking parking = parkingDao.load(parkingUuid);
 		Set<Record> records = parking.getRecords();
 		return collectionMapper.mapToArrayList(records, RecordDto.class);
-	}
-
-	private Record getUserRecord(Parking parking, String login) {
-		Set<Record> records = parking.getRecords();
-		for (Record record : records) {
-			if (record.getUser().getLogin().equals(login)) {
-				return record;
-			}
-		}
-		return null;
 	}
 
 }
