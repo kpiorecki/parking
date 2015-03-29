@@ -4,14 +4,17 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 @Entity
 @Table(name = "schedules")
@@ -25,10 +28,11 @@ public class Schedule implements Serializable {
 	private Long id;
 
 	@Column(nullable = false)
-	private DateTime date;
+	private LocalDate date;
 
-	// @Column(nullable = false)
-	// private Parking parking;
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "parking_fk")
+	private Parking parking;
 
 	// private Set<User> users;
 
@@ -43,21 +47,21 @@ public class Schedule implements Serializable {
 		this.id = id;
 	}
 
-	public DateTime getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(DateTime date) {
+	public void LocalDate(LocalDate date) {
 		this.date = date;
 	}
 
-	// public Parking getParking() {
-	// return parking;
-	// }
+	public Parking getParking() {
+		return parking;
+	}
 
-	// public void setParking(Parking parking) {
-	// this.parking = parking;
-	// }
+	public void setParking(Parking parking) {
+		this.parking = parking;
+	}
 
 	// public Set<User> getUsers() {
 	// return users;
