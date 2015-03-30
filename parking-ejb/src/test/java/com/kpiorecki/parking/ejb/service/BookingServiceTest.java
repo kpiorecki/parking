@@ -68,7 +68,7 @@ public class BookingServiceTest extends IntegrationTest {
 		bookingService.book(parking2Uuid, p2Login1, date);
 
 		// then
-		Booking booking = bookingDao.findBooking(parking2Uuid, date);
+		Booking booking = bookingDao.find(parking2Uuid, date);
 		assertNotNull(booking);
 		assertEquals(parking2Uuid, booking.getParking().getUuid());
 	}
@@ -88,7 +88,7 @@ public class BookingServiceTest extends IntegrationTest {
 		bookingService.cancel(parking1Uuid, p1Login1, date);
 
 		// then
-		Booking booking = bookingDao.findBooking(parking1Uuid, date);
+		Booking booking = bookingDao.find(parking1Uuid, date);
 		assertNotNull(booking);
 		assertEquals(parking1Uuid, booking.getParking().getUuid());
 

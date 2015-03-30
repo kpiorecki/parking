@@ -1,5 +1,8 @@
 package com.kpiorecki.parking.ejb.service.impl;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -46,14 +49,9 @@ public class BookingServiceImpl implements BookingService {
 				login, dateFormatter.print(date));
 		logger.info(message);
 
-		boolean userAssigned = parkingDao.isUserAssigned(parkingUuid, login);
-		if (!userAssigned) {
-			String warnMessage = String.format("%s - user is not assigned to parking", message);
-			logger.warn(warnMessage);
-			throw new DomainException(warnMessage);
-		}
+		validateUser(parkingUuid, login);
 
-		Booking booking = bookingDao.findBooking(parkingUuid, date);
+		Booking booking = bookingDao.find(parkingUuid, date);
 		if (booking == null) {
 			logger.info("{} - booking was not found - creating new one", message);
 
@@ -63,7 +61,7 @@ public class BookingServiceImpl implements BookingService {
 			booking.setParking(parking);
 		}
 
-		validateStatus(booking, message);
+		validateStatus(booking, EnumSet.of(Status.DRAFT, Status.RELEASED));
 
 		User user = userDao.load(login);
 		BookingEntry entry = new BookingEntry();
@@ -79,14 +77,8 @@ public class BookingServiceImpl implements BookingService {
 				login, dateFormatter.print(date));
 		logger.info(message);
 
-		Booking booking = bookingDao.findBooking(parkingUuid, date);
-		if (booking == null) {
-			String warnMessage = String.format("%s - booking was not found", message);
-			logger.warn(warnMessage);
-			throw new DomainException(warnMessage);
-		}
-
-		validateStatus(booking, message);
+		Booking booking = bookingDao.load(parkingUuid, date);
+		validateStatus(booking, EnumSet.of(Status.DRAFT, Status.RELEASED));
 
 		for (BookingEntry entry : booking.getEntries()) {
 			if (entry.getUser().getLogin().equals(login)) {
@@ -101,9 +93,53 @@ public class BookingServiceImpl implements BookingService {
 		throw new DomainException(warnMessage);
 	}
 
-	private void validateStatus(Booking booking, String message) {
-		if (booking.getStatus() == Status.LOCKED) {
-			String warnMessage = String.format("%s - booking is locked", message);
+	@Override
+	public void release(String parkingUuid, LocalDate date) {
+		String message = String.format("releasing booking entries from parking=%s and date=%s", parkingUuid,
+				dateFormatter.print(date));
+		logger.info(message);
+
+		Booking booking = bookingDao.find(parkingUuid, date);
+		if (booking == null) {
+			logger.info("{} - skipped (booking not found)", message);
+			return;
+		}
+
+		validateStatus(booking, EnumSet.of(Status.DRAFT));
+
+		// TODO
+	}
+
+	@Override
+	public void lock(String parkingUuid, LocalDate date) {
+		String message = String.format("locking booking entries from parking=%s and date=%s", parkingUuid,
+				dateFormatter.print(date));
+		logger.info(message);
+
+		Booking booking = bookingDao.find(parkingUuid, date);
+		if (booking == null) {
+			logger.info("{} - skipped (booking not found)", message);
+			return;
+		}
+
+		validateStatus(booking, EnumSet.of(Status.DRAFT, Status.RELEASED));
+
+		// TODO
+	}
+
+	private void validateStatus(Booking booking, Set<Status> allowedStatuses) {
+		Status bookingStatus = booking.getStatus();
+		if (!allowedStatuses.contains(bookingStatus)) {
+			String warnMessage = String.format("invalid booking status %s", bookingStatus);
+			logger.warn(warnMessage);
+			throw new DomainException(warnMessage);
+		}
+	}
+
+	private void validateUser(String parkingUuid, String login) {
+		boolean userAssigned = parkingDao.isUserAssigned(parkingUuid, login);
+		if (!userAssigned) {
+			String warnMessage = String.format("user=%s is not assigned to parking=%s", login, parkingUuid);
 			logger.warn(warnMessage);
 			throw new DomainException(warnMessage);
 		}
