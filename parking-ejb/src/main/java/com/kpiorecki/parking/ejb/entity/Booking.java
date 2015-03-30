@@ -8,6 +8,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,6 +32,12 @@ public class Booking implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	public enum Status {
+		DRAFT,
+		RELEASED,
+		LOCKED;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "seq_bookings")
 	@TableGenerator(name = "seq_bookings", pkColumnValue = "seq_bookings")
@@ -47,7 +55,8 @@ public class Booking implements Serializable {
 	private LocalDate date;
 
 	@Column(nullable = false)
-	private Boolean locked = false;
+	@Enumerated(EnumType.STRING)
+	private Status status = Status.DRAFT;
 
 	@Version
 	private Integer version;
@@ -88,12 +97,12 @@ public class Booking implements Serializable {
 		this.date = date;
 	}
 
-	public Boolean getLocked() {
-		return locked;
+	public Status getStatus() {
+		return status;
 	}
 
-	public void setLocked(Boolean locked) {
-		this.locked = locked;
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 	public Integer getVersion() {

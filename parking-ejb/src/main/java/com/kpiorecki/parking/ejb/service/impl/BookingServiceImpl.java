@@ -12,6 +12,7 @@ import com.kpiorecki.parking.ejb.dao.BookingDao;
 import com.kpiorecki.parking.ejb.dao.ParkingDao;
 import com.kpiorecki.parking.ejb.dao.UserDao;
 import com.kpiorecki.parking.ejb.entity.Booking;
+import com.kpiorecki.parking.ejb.entity.Booking.Status;
 import com.kpiorecki.parking.ejb.entity.BookingEntry;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.User;
@@ -62,6 +63,8 @@ public class BookingServiceImpl implements BookingService {
 			booking.setParking(parking);
 		}
 
+		validateStatus(booking, message);
+
 		User user = userDao.load(login);
 		BookingEntry entry = new BookingEntry();
 		entry.setUser(user);
@@ -82,6 +85,9 @@ public class BookingServiceImpl implements BookingService {
 			logger.warn(warnMessage);
 			throw new DomainException(warnMessage);
 		}
+
+		validateStatus(booking, message);
+
 		for (BookingEntry entry : booking.getEntries()) {
 			if (entry.getUser().getLogin().equals(login)) {
 				booking.removeEntry(entry);
@@ -93,6 +99,14 @@ public class BookingServiceImpl implements BookingService {
 		String warnMessage = String.format("%s - did not find entry", message);
 		logger.warn(warnMessage);
 		throw new DomainException(warnMessage);
+	}
+
+	private void validateStatus(Booking booking, String message) {
+		if (booking.getStatus() == Status.LOCKED) {
+			String warnMessage = String.format("%s - booking is locked", message);
+			logger.warn(warnMessage);
+			throw new DomainException(warnMessage);
+		}
 	}
 
 }

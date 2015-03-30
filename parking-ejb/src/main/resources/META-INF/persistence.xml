@@ -9,7 +9,6 @@
 		<class>com.kpiorecki.parking.ejb.entity.BookingEntry</class>
 		<class>com.kpiorecki.parking.ejb.entity.Parking</class>
 		<class>com.kpiorecki.parking.ejb.entity.Record</class>
-		<class>com.kpiorecki.parking.ejb.entity.Schedule</class>
 		<class>com.kpiorecki.parking.ejb.entity.User</class>
 
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
