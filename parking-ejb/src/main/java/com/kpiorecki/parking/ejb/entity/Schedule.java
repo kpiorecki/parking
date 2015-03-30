@@ -1,6 +1,9 @@
 package com.kpiorecki.parking.ejb.entity;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +12,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
@@ -31,10 +36,12 @@ public class Schedule implements Serializable {
 	private LocalDate date;
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "parking_fk")
+	@JoinColumn(name = "parking_uuid")
 	private Parking parking;
 
-	// private Set<User> users;
+	@OneToMany
+	@JoinTable(name = "schedule_users", joinColumns = @JoinColumn(name = "schedule_id"), inverseJoinColumns = @JoinColumn(name = "login"))
+	private Set<User> users = new HashSet<>();
 
 	@Version
 	private Integer version;
@@ -63,13 +70,17 @@ public class Schedule implements Serializable {
 		this.parking = parking;
 	}
 
-	// public Set<User> getUsers() {
-	// return users;
-	// }
+	public Set<User> getUsers() {
+		return Collections.unmodifiableSet(users);
+	}
 
-	// public void setUsers(Set<User> users) {
-	// this.users = users;
-	// }
+	public void addUser(User user) {
+		users.add(user);
+	}
+
+	public void removeAllUsers() {
+		users.clear();
+	}
 
 	public Integer getVersion() {
 		return version;

@@ -18,7 +18,7 @@ import javax.persistence.UniqueConstraint;
 import org.joda.time.DateTime;
 
 @Entity
-@Table(name = "booking_entries", uniqueConstraints = { @UniqueConstraint(columnNames = { "user_fk", "booking_fk" }) })
+@Table(name = "booking_entries", uniqueConstraints = { @UniqueConstraint(columnNames = { "login", "booking_id" }) })
 public class BookingEntry implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -29,7 +29,7 @@ public class BookingEntry implements Serializable {
 	private Long id;
 
 	@ManyToOne(optional = false, fetch = FetchType.EAGER)
-	@JoinColumn(name = "user_fk")
+	@JoinColumn(name = "login")
 	private User user;
 
 	@Column(nullable = false, updatable = false)

@@ -24,7 +24,7 @@ import javax.persistence.Version;
 import org.joda.time.LocalDate;
 
 @Entity
-@Table(name = "bookings", indexes = { @Index(columnList = "parking_fk, date", unique = true) })
+@Table(name = "bookings", indexes = { @Index(columnList = "parking_uuid, date", unique = true) })
 @NamedQuery(name = "Booking.findByParkingAndDate", query = "select b from Booking b where b.parking.uuid = :parkingUuid and b.date = :date")
 public class Booking implements Serializable {
 
@@ -36,11 +36,11 @@ public class Booking implements Serializable {
 	private Long id;
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "parking_fk")
+	@JoinColumn(name = "parking_uuid")
 	private Parking parking;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	@JoinColumn(name = "booking_fk")
+	@JoinColumn(name = "booking_id")
 	private Set<BookingEntry> entries = new HashSet<>();
 
 	@Column(nullable = false)

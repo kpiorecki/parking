@@ -18,7 +18,7 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 @Entity
-@Table(name = "records", uniqueConstraints = { @UniqueConstraint(columnNames = { "user_fk", "parking_fk" }) })
+@Table(name = "records", uniqueConstraints = { @UniqueConstraint(columnNames = { "login", "parking_uuid" }) })
 @NamedQueries({
 		@NamedQuery(name = "Record.findRecordByUserAndParking", query = "select r from Record r where r.user.login = :login and r.parking.uuid = :parkingUuid"),
 		@NamedQuery(name = "Record.findRecordsByUser", query = "select r from Record r where r.user.login = :login") })
@@ -32,11 +32,11 @@ public class Record implements Serializable {
 	private Long id;
 
 	@ManyToOne(optional = false, fetch = FetchType.EAGER)
-	@JoinColumn(name = "user_fk")
+	@JoinColumn(name = "login")
 	private User user;
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "parking_fk")
+	@JoinColumn(name = "parking_uuid")
 	private Parking parking;
 
 	@Column(nullable = false)
