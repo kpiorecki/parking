@@ -85,6 +85,7 @@ public class ParkingServiceImpl implements ParkingService {
 		Record record = new Record();
 		record.setUser(user);
 		record.setVip(vip);
+		// TODO set points to average value form existing records
 		record.setPoints(0);
 
 		parking.addRecord(record);

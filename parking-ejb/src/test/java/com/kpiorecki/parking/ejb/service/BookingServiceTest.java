@@ -74,11 +74,23 @@ public class BookingServiceTest extends IntegrationTest {
 	}
 
 	@Test(expected = Exception.class)
-	public void shouldNotBookParking() {
+	public void shouldNotBookParkingForUnassignedUser() {
 		// when
 		bookingService.book(parking2.getUuid(), p1Login1, date);
 
 		// then exception should be thrown - user is not assigned to parking
+	}
+
+	@Test(expected = Exception.class)
+	public void shouldNotBookParkingTwice() {
+		// when
+		String parking2Uuid = parking2.getUuid();
+		bookingService.book(parking2Uuid, p2Login1, date);
+		bookingService.book(parking2Uuid, p2Login1, date);
+
+		entityManager.flush();
+
+		// then exception should be thrown - the user is already booked
 	}
 
 	@Test
@@ -100,7 +112,7 @@ public class BookingServiceTest extends IntegrationTest {
 	}
 
 	@Test(expected = Exception.class)
-	public void shouldNotCancelBooking() {
+	public void shouldNotCancelNonExistingBooking() {
 		// when
 		bookingService.cancel(parking2.getUuid(), p1Login1, date);
 

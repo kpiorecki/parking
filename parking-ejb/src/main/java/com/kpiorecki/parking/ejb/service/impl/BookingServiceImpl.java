@@ -107,7 +107,8 @@ public class BookingServiceImpl implements BookingService {
 
 		validateStatus(booking, EnumSet.of(Status.DRAFT));
 
-		// TODO
+		booking.setStatus(Status.RELEASED);
+		bookingDao.save(booking);
 	}
 
 	@Override
@@ -124,7 +125,8 @@ public class BookingServiceImpl implements BookingService {
 
 		validateStatus(booking, EnumSet.of(Status.DRAFT, Status.RELEASED));
 
-		// TODO
+		booking.setStatus(Status.LOCKED);
+		bookingDao.save(booking);
 	}
 
 	private void validateStatus(Booking booking, Set<Status> allowedStatuses) {

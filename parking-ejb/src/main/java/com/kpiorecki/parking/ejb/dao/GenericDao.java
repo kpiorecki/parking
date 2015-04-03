@@ -95,8 +95,9 @@ public abstract class GenericDao<K, E> {
 
 	public void delete(K id) {
 		logger.info("deleting {} entity with id={}", clazz.getSimpleName(), id);
-		E entity = load(id);
-		entityManager.remove(entity);
+
+		E entityReference = entityManager.getReference(clazz, id);
+		entityManager.remove(entityReference);
 	}
 
 	protected <V> TypedQuery<E> createFindQuery(SingularAttribute<E, V> attribute, V value) {

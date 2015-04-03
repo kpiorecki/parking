@@ -100,7 +100,7 @@ public class UserServiceTest extends IntegrationTest {
 	}
 
 	@Test(expected = Exception.class)
-	public void shouldNotFindUser() {
+	public void shouldNotFindNonExistingUser() {
 		// when
 		userService.findUser("new login");
 
@@ -118,7 +118,7 @@ public class UserServiceTest extends IntegrationTest {
 	}
 
 	@Test(expected = Exception.class)
-	public void shouldDuplicateLogin() {
+	public void shouldNotAddDuplicatedUserLogin() {
 		// when
 		UserDto userDto = new UserDto();
 		userDto.setLogin(login1);
@@ -147,7 +147,7 @@ public class UserServiceTest extends IntegrationTest {
 	}
 
 	@Test(expected = Exception.class)
-	public void shouldNotDeleteUser() {
+	public void shouldNotDeleteNonExistingUser() {
 		// when
 		userService.deleteUser("new login");
 

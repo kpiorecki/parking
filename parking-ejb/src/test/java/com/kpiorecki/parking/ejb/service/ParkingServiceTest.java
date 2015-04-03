@@ -91,7 +91,7 @@ public class ParkingServiceTest extends IntegrationTest {
 	}
 
 	@Test(expected = Exception.class)
-	public void shouldDeleteParking() {
+	public void shouldNotFindDeletedParking() {
 		// when
 		parkingService.deleteParking(parkingUuid);
 		parkingService.findParking(parkingUuid);
@@ -141,7 +141,7 @@ public class ParkingServiceTest extends IntegrationTest {
 	}
 
 	@Test(expected = Exception.class)
-	public void shouldNotAssignUser() {
+	public void shouldNotAssignUserTwice() {
 		// when
 		parkingService.assignUser(parkingUuid, addedLogin1, true);
 		entityManager.flush();
@@ -161,7 +161,7 @@ public class ParkingServiceTest extends IntegrationTest {
 	}
 
 	@Test(expected = Exception.class)
-	public void shouldNotRevokeUser() {
+	public void shouldNotRevokeUnassignedUser() {
 		// when
 		parkingService.revokeUser(parkingUuid, freeLogin3);
 
