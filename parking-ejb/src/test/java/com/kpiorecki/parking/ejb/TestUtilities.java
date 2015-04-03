@@ -62,14 +62,6 @@ public class TestUtilities {
 		return parking;
 	}
 
-	public Parking persistParkingWithUsers(String... logins) {
-		User[] users = new User[logins.length];
-		for (int i = 0; i < logins.length; ++i) {
-			users[i] = persistUser(logins[i]);
-		}
-		return persistParking(users);
-	}
-
 	public Booking persistBooking(Parking parking, LocalDate date, User... users) {
 		Booking booking = new Booking();
 		booking.setParking(parking);
@@ -77,7 +69,7 @@ public class TestUtilities {
 		for (User user : users) {
 			BookingEntry entry = new BookingEntry();
 			entry.setUser(user);
-		
+
 			booking.addEntry(entry);
 		}
 

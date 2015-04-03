@@ -18,6 +18,9 @@ public class ParkingDao extends GenericDao<String, Parking> {
 	@Inject
 	private Logger logger;
 
+	@Inject
+	private BookingDao bookingDao;
+
 	public ParkingDao() {
 		super(Parking.class);
 	}
@@ -32,6 +35,20 @@ public class ParkingDao extends GenericDao<String, Parking> {
 
 		List<Record> records = query.getResultList();
 		return !records.isEmpty();
+	}
+
+	@Override
+	public void delete(String id) {
+		logger.info("deleting parking={} bookings", id);
+
+		TypedQuery<Long> query = entityManager.createNamedQuery("Booking.findIdsByParking", Long.class);
+		query.setParameter("parkingUuid", id);
+		List<Long> bookingsIds = query.getResultList();
+		for (Long bookingId : bookingsIds) {
+			bookingDao.delete(bookingId);
+		}
+
+		super.delete(id);
 	}
 
 }

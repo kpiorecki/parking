@@ -2,6 +2,7 @@ package com.kpiorecki.parking.ejb.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
@@ -11,15 +12,19 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import org.dozer.Mapper;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.kpiorecki.parking.ejb.IntegrationTest;
 import com.kpiorecki.parking.ejb.TestUtilities;
+import com.kpiorecki.parking.ejb.dao.BookingDao;
 import com.kpiorecki.parking.ejb.dto.AddressDto;
 import com.kpiorecki.parking.ejb.dto.ParkingDto;
 import com.kpiorecki.parking.ejb.dto.RecordDto;
+import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.Parking;
+import com.kpiorecki.parking.ejb.entity.User;
 
 public class ParkingServiceTest extends IntegrationTest {
 
@@ -30,6 +35,9 @@ public class ParkingServiceTest extends IntegrationTest {
 	private EntityManager entityManager;
 
 	@Inject
+	private BookingDao bookingDao;
+
+	@Inject
 	private Mapper mapper;
 
 	@Inject
@@ -37,6 +45,7 @@ public class ParkingServiceTest extends IntegrationTest {
 
 	private Parking parking;
 	private String parkingUuid;
+	private LocalDate bookingDate;
 
 	private String addedLogin1 = "user1";
 	private String addedLogin2 = "user2";
@@ -44,9 +53,15 @@ public class ParkingServiceTest extends IntegrationTest {
 
 	@Before
 	public void prepareData() {
-		testUtilities.persistUser(freeLogin3);
-		parking = testUtilities.persistParkingWithUsers(addedLogin1, addedLogin2);
+		User addedUser1 = testUtilities.persistUser(addedLogin1);
+		User addedUser2 = testUtilities.persistUser(addedLogin2);
+
+		parking = testUtilities.persistParking(addedUser1, addedUser2);
 		parkingUuid = parking.getUuid();
+		bookingDate = new LocalDate(2015, 04, 01);
+
+		testUtilities.persistUser(freeLogin3);
+		testUtilities.persistBooking(parking, bookingDate, addedUser1, addedUser2);
 
 		entityManager.flush();
 	}
@@ -88,6 +103,19 @@ public class ParkingServiceTest extends IntegrationTest {
 		assertNotNull(foundParkingDto);
 		assertEquals((Integer) 100, foundParkingDto.getCapacity());
 		assertEquals("new city", foundParkingDto.getAddress().getCity());
+	}
+
+	@Test
+	public void shouldDeleteParking() {
+		// when
+		parkingService.deleteParking(parkingUuid);
+
+		// then
+		List<ParkingDto> allParkings = parkingService.findAllParkings();
+		assertTrue(allParkings.isEmpty());
+
+		Booking booking = bookingDao.find(parkingUuid, bookingDate);
+		assertNull(booking);
 	}
 
 	@Test(expected = Exception.class)

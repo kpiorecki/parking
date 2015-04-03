@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -27,15 +28,15 @@ import org.joda.time.LocalDate;
 
 @Entity
 @Table(name = "bookings", indexes = { @Index(columnList = "parking_uuid, date", unique = true) })
-@NamedQuery(name = "Booking.findByParkingAndDate", query = "select b from Booking b where b.parking.uuid = :parkingUuid and b.date = :date")
+@NamedQueries({
+		@NamedQuery(name = "Booking.findByParkingAndDate", query = "select b from Booking b where b.parking.uuid = :parkingUuid and b.date = :date"),
+		@NamedQuery(name = "Booking.findIdsByParking", query = "select b.id from Booking b where b.parking.uuid = :parkingUuid") })
 public class Booking implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public enum Status {
-		DRAFT,
-		RELEASED,
-		LOCKED;
+		DRAFT, RELEASED, LOCKED;
 	}
 
 	@Id
