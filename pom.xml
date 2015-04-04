@@ -39,6 +39,7 @@
 		<logback-version>1.1.2</logback-version>
 		<joda-time-version>2.7</joda-time-version>
 		<dozer-version>5.5.1</dozer-version>
+		<commons-math3-version>3.4.1</commons-math3-version>
 		<hibernate-validator-version>5.0.0.Final</hibernate-validator-version>
 		<glassfish-version>4.0</glassfish-version>
 		<arquillian-version>1.1.7.Final</arquillian-version>
@@ -90,6 +91,11 @@
 				<groupId>net.sf.dozer</groupId>
 				<artifactId>dozer</artifactId>
 				<version>${dozer-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-math3</artifactId>
+				<version>${commons-math3-version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>

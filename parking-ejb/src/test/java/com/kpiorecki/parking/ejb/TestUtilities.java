@@ -52,7 +52,6 @@ public class TestUtilities {
 			Record record = new Record();
 			record.setUser(user);
 			record.setVip(false);
-			record.setPoints(0);
 
 			parking.addRecord(record);
 		}

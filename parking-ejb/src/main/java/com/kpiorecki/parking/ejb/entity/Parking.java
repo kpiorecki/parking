@@ -16,6 +16,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.apache.commons.math3.analysis.function.Ceil;
+import org.apache.commons.math3.stat.descriptive.moment.Mean;
+
 @Entity
 @Cacheable
 @Table(name = "parkings")
@@ -78,7 +81,22 @@ public class Parking implements Serializable {
 	}
 
 	public void addRecord(Record record) {
+		int recordPoints = 0;
+		if (!records.isEmpty()) {
+			/**
+			 * set new record's points to the mean value of existing records points (rounded upwards)
+			 */
+			Mean mean = new Mean();
+			for (Record existingRecord : records) {
+				mean.increment(existingRecord.getPoints());
+			}
+			double pointsMean = mean.getResult();
+			recordPoints = (int) new Ceil().value(pointsMean);
+		}
+
+		record.setPoints(recordPoints);
 		record.setParking(this);
+
 		records.add(record);
 	}
 
