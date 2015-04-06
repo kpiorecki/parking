@@ -2,6 +2,7 @@ package com.kpiorecki.parking.ejb.service.impl;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -14,14 +15,17 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 
 import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.BookingEntry;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.Record;
 import com.kpiorecki.parking.ejb.entity.User;
+import com.kpiorecki.parking.ejb.util.DateFormatter;
 import com.kpiorecki.parking.ejb.util.ResourceProducer;
 
 @RunWith(Arquillian.class)
@@ -36,77 +40,108 @@ public class ScheduleAlgorithmTest {
 	@Inject
 	private ScheduleAlgorithm algorithm;
 
+	@Inject
+	private Logger logger;
+
+	@Inject
+	@DateFormatter
+	private DateTimeFormatter dateFormatter;
+
 	@Test
 	public void shouldFindProperRecords1() {
 		// given
-		Record[] records = new Record[] { createRecord("u1", true, 10), createRecord("u2", false, 12),
-				createRecord("u3", false, 14) };
-		BookingEntry[] entries = new BookingEntry[] { createEntry("u1", 10, 4) };
+		List<Record> records = new ArrayList<>();
+		records.add(createRecord("u1", true, 10));
+		records.add(createRecord("u2", false, 12));
+		records.add(createRecord("u3", false, 14));
+
+		List<BookingEntry> entries = new ArrayList<>();
+		entries.add(createEntry("u1", 10, 4));
+
 		Booking booking = createTestCase(records, entries, 20);
 
 		// when
 		List<Record> schedule = algorithm.createSchedule(booking);
 
 		// then
-		validate(schedule, "u1");
+		validate(booking, schedule, "u1");
 	}
 
 	@Test
 	public void shouldFindProperRecords2() {
 		// given
-		Record[] records = new Record[] { createRecord("u1", false, 10), createRecord("u2", false, 12),
-				createRecord("u3", false, 14) };
-		BookingEntry[] entries = new BookingEntry[] { createEntry("u1", 10, 4), createEntry("u2", 10, 4),
-				createEntry("u3", 10, 4) };
+		List<Record> records = new ArrayList<>();
+		records.add(createRecord("u1", false, 10));
+		records.add(createRecord("u2", false, 12));
+		records.add(createRecord("u3", false, 14));
+
+		List<BookingEntry> entries = new ArrayList<>();
+		entries.add(createEntry("u1", 10, 4));
+		entries.add(createEntry("u2", 10, 4));
+		entries.add(createEntry("u3", 10, 4));
+
 		Booking booking = createTestCase(records, entries, 20);
 
 		// when
 		List<Record> schedule = algorithm.createSchedule(booking);
 
 		// then
-		validate(schedule, "u1", "u2", "u3");
+		validate(booking, schedule, "u1", "u2", "u3");
 	}
 
 	@Test
 	public void shouldFindProperRecords3() {
 		// given
-		Record[] records = new Record[] { createRecord("u1", false, 10), createRecord("u2", false, 10),
-				createRecord("u3", true, 14) };
-		BookingEntry[] entries = new BookingEntry[] { createEntry("u1", 10, 4), createEntry("u2", 9, 4),
-				createEntry("u3", 10, 4) };
+		List<Record> records = new ArrayList<>();
+		records.add(createRecord("u1", false, 10));
+		records.add(createRecord("u2", false, 10));
+		records.add(createRecord("u3", true, 14));
+
+		List<BookingEntry> entries = new ArrayList<>();
+		entries.add(createEntry("u1", 10, 4));
+		entries.add(createEntry("u2", 9, 4));
+		entries.add(createEntry("u3", 10, 4));
+
 		Booking booking = createTestCase(records, entries, 20);
 
 		// when
 		List<Record> schedule = algorithm.createSchedule(booking);
 
 		// then
-		validate(schedule, "u3", "u2", "u1");
+		validate(booking, schedule, "u3", "u2", "u1");
 	}
 
 	@Test
 	public void shouldFindProperRecords4() {
 		// given
-		Record[] records = new Record[] { createRecord("u1", false, 10), createRecord("u2", false, 10),
-				createRecord("u3", true, 14) };
-		BookingEntry[] entries = new BookingEntry[] { createEntry("u1", 10, 4), createEntry("u2", 9, 4),
-				createEntry("u3", 10, 4) };
+		List<Record> records = new ArrayList<>();
+		records.add(createRecord("u1", false, 10));
+		records.add(createRecord("u2", false, 10));
+		records.add(createRecord("u3", true, 14));
+
+		List<BookingEntry> entries = new ArrayList<>();
+		entries.add(createEntry("u1", 10, 4));
+		entries.add(createEntry("u2", 9, 4));
+		entries.add(createEntry("u3", 10, 4));
+
 		Booking booking = createTestCase(records, entries, 2);
 
 		// when
 		List<Record> schedule = algorithm.createSchedule(booking);
 
 		// then
-		validate(schedule, "u3", "u2");
+		validate(booking, schedule, "u3", "u2");
 	}
 
-	private void validate(List<Record> schedule, String... logins) {
+	private void validate(Booking booking, List<Record> schedule, String... logins) {
 		assertEquals(logins.length, schedule.size());
 		for (int i = 0; i < schedule.size(); ++i) {
 			assertEquals(logins[i], schedule.get(i).getUser().getLogin());
 		}
+		logger.info(createLoggerMessage(booking, schedule));
 	}
 
-	private Booking createTestCase(Record[] records, BookingEntry[] entries, int capacity) {
+	private Booking createTestCase(List<Record> records, List<BookingEntry> entries, int capacity) {
 		Parking parking = new Parking();
 		parking.setUuid("uuid");
 		parking.setCapacity(capacity);
@@ -146,5 +181,36 @@ public class ScheduleAlgorithmTest {
 		user.setLogin(login);
 
 		return user;
+	}
+
+	private String createLoggerMessage(Booking booking, List<Record> schedule) {
+		StringBuilder sb = new StringBuilder();
+		Parking parking = booking.getParking();
+
+		sb.append("booking for ").append(parking.getCapacity()).append(" places\nrecords:");
+		int i = 1;
+		for (Record record : parking.getRecords()) {
+			sb.append(createRecordMessage(record, i++));
+		}
+		sb.append("\nbooking entries:");
+		i = 1;
+		for (BookingEntry entry : booking.getEntries()) {
+			sb.append("\n").append(i++).append(". user=").append(entry.getUser().getLogin()).append(", date=")
+					.append(dateFormatter.print(entry.getCreationTime()));
+		}
+		sb.append("\nschedule:");
+		i = 1;
+		for (Record record : schedule) {
+			sb.append(createRecordMessage(record, i++));
+		}
+
+		return sb.toString();
+	}
+
+	private String createRecordMessage(Record record, int number) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n").append(number).append(". user=").append(record.getUser().getLogin()).append(", vip=")
+				.append(record.getVip()).append(", points=").append(record.getPoints());
+		return sb.toString();
 	}
 }
