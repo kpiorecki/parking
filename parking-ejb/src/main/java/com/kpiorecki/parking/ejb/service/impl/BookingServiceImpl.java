@@ -5,7 +5,6 @@ import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
@@ -24,7 +23,6 @@ import com.kpiorecki.parking.ejb.service.BookingService;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
 
 @Stateless
-@Transactional
 public class BookingServiceImpl implements BookingService {
 
 	@Inject
@@ -38,6 +36,9 @@ public class BookingServiceImpl implements BookingService {
 
 	@Inject
 	private UserDao userDao;
+
+	@Inject
+	private ScheduleAlgorithm scheduleAlgorithm;
 
 	@Inject
 	@DateFormatter

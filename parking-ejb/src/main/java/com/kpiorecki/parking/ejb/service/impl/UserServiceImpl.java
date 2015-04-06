@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import org.dozer.Mapper;
 import org.slf4j.Logger;
@@ -16,7 +15,6 @@ import com.kpiorecki.parking.ejb.service.UserService;
 import com.kpiorecki.parking.ejb.util.CollectionMapper;
 
 @Stateless
-@Transactional
 public class UserServiceImpl implements UserService {
 
 	@Inject

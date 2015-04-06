@@ -1,15 +1,19 @@
 package com.kpiorecki.parking.ejb.service.impl;
 
+import java.math.RoundingMode;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import org.dozer.Mapper;
 import org.slf4j.Logger;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterators;
+import com.google.common.math.DoubleMath;
 import com.kpiorecki.parking.ejb.dao.ParkingDao;
 import com.kpiorecki.parking.ejb.dao.UserDao;
 import com.kpiorecki.parking.ejb.dto.ParkingDto;
@@ -23,7 +27,6 @@ import com.kpiorecki.parking.ejb.util.CollectionMapper;
 import com.kpiorecki.parking.ejb.util.UuidGenerator;
 
 @Stateless
-@Transactional
 public class ParkingServiceImpl implements ParkingService {
 
 	@Inject
@@ -85,6 +88,7 @@ public class ParkingServiceImpl implements ParkingService {
 		Record record = new Record();
 		record.setUser(user);
 		record.setVip(vip);
+		record.setPoints(calculateRecordPoints(parking));
 
 		parking.addRecord(record);
 
@@ -142,6 +146,26 @@ public class ParkingServiceImpl implements ParkingService {
 		Parking parking = parkingDao.load(parkingUuid);
 		Set<Record> records = parking.getRecords();
 		return collectionMapper.mapToArrayList(records, RecordDto.class);
+	}
+
+	private int calculateRecordPoints(Parking parking) {
+		int recordPoints = 0;
+		Set<Record> records = parking.getRecords();
+		if (!records.isEmpty()) {
+			/**
+			 * calculate new record's points as mean value of existing records points (rounded upwards)
+			 */
+			Function<Record, Integer> getPointsFunction = new Function<Record, Integer>() {
+				@Override
+				public Integer apply(Record record) {
+					return record.getPoints();
+				}
+			};
+			Iterator<Integer> pointsIterator = Iterators.transform(records.iterator(), getPointsFunction);
+			double pointsMean = DoubleMath.mean(pointsIterator);
+			recordPoints = DoubleMath.roundToInt(pointsMean, RoundingMode.CEILING);
+		}
+		return recordPoints;
 	}
 
 }

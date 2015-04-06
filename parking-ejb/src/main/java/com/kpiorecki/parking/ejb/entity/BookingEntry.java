@@ -55,6 +55,10 @@ public class BookingEntry implements Serializable {
 		return creationTime;
 	}
 
+	public void setCreationTime(DateTime creationTime) {
+		this.creationTime = creationTime;
+	}
+
 	@PrePersist
 	protected void prePersist() {
 		this.creationTime = new DateTime();
