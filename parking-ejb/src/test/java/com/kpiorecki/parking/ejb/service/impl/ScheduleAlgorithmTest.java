@@ -48,7 +48,7 @@ public class ScheduleAlgorithmTest {
 	private DateTimeFormatter dateFormatter;
 
 	@Test
-	public void shouldFindProperRecords1() {
+	public void shouldCreateSchedule1() {
 		// given
 		List<Record> records = new ArrayList<>();
 		records.add(createRecord("u1", true, 10));
@@ -68,7 +68,7 @@ public class ScheduleAlgorithmTest {
 	}
 
 	@Test
-	public void shouldFindProperRecords2() {
+	public void shouldCreateSchedule2() {
 		// given
 		List<Record> records = new ArrayList<>();
 		records.add(createRecord("u1", false, 10));
@@ -90,7 +90,7 @@ public class ScheduleAlgorithmTest {
 	}
 
 	@Test
-	public void shouldFindProperRecords3() {
+	public void shouldCreateSchedule3() {
 		// given
 		List<Record> records = new ArrayList<>();
 		records.add(createRecord("u1", false, 10));
@@ -112,7 +112,7 @@ public class ScheduleAlgorithmTest {
 	}
 
 	@Test
-	public void shouldFindProperRecords4() {
+	public void shouldCreateSchedule4() {
 		// given
 		List<Record> records = new ArrayList<>();
 		records.add(createRecord("u1", false, 10));
