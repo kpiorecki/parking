@@ -38,7 +38,7 @@ public class BookingServiceImpl implements BookingService {
 	private UserDao userDao;
 
 	@Inject
-	private ScheduleAlgorithm scheduleAlgorithm;
+	private BookingScheduler scheduler;
 
 	@Inject
 	@DateFormatter
@@ -69,6 +69,7 @@ public class BookingServiceImpl implements BookingService {
 		entry.setUser(user);
 		booking.addEntry(entry);
 
+		scheduler.updateSchedule(booking);
 		bookingDao.save(booking);
 	}
 
@@ -84,6 +85,8 @@ public class BookingServiceImpl implements BookingService {
 		for (BookingEntry entry : booking.getEntries()) {
 			if (entry.getUser().getLogin().equals(login)) {
 				booking.removeEntry(entry);
+
+				scheduler.updateSchedule(booking);
 				bookingDao.save(booking);
 				return;
 			}
@@ -107,8 +110,9 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		validateStatus(booking, EnumSet.of(Status.DRAFT));
-
 		booking.setStatus(Status.RELEASED);
+
+		scheduler.updateSchedule(booking);
 		bookingDao.save(booking);
 	}
 
@@ -125,9 +129,11 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		validateStatus(booking, EnumSet.of(Status.DRAFT, Status.RELEASED));
-
 		booking.setStatus(Status.LOCKED);
+
+		scheduler.lockSchedule(booking);
 		bookingDao.save(booking);
+		parkingDao.save(booking.getParking());
 	}
 
 	private void validateStatus(Booking booking, Set<Status> allowedStatuses) {

@@ -1,9 +1,12 @@
 package com.kpiorecki.parking.ejb.service.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -29,16 +32,16 @@ import com.kpiorecki.parking.ejb.util.DateFormatter;
 import com.kpiorecki.parking.ejb.util.ResourceProducer;
 
 @RunWith(Arquillian.class)
-public class ScheduleAlgorithmTest {
+public class BookingSchedulerTest {
 
 	@Deployment
 	public static Archive<?> createDeployment() {
 		return ShrinkWrap.create(JavaArchive.class).addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-				.addClasses(ScheduleAlgorithm.class, ResourceProducer.class);
+				.addClasses(BookingScheduler.class, ResourceProducer.class);
 	}
 
 	@Inject
-	private ScheduleAlgorithm algorithm;
+	private BookingScheduler scheduler;
 
 	@Inject
 	private Logger logger;
@@ -48,7 +51,7 @@ public class ScheduleAlgorithmTest {
 	private DateTimeFormatter dateFormatter;
 
 	@Test
-	public void shouldCreateSchedule1() {
+	public void shouldLockSchedule1() {
 		// given
 		List<Record> records = new ArrayList<>();
 		records.add(createRecord("u1", true, 10));
@@ -61,14 +64,14 @@ public class ScheduleAlgorithmTest {
 		Booking booking = createTestCase(records, entries, 20);
 
 		// when
-		List<Record> schedule = algorithm.createSchedule(booking);
+		scheduler.lockSchedule(booking);
 
 		// then
-		validate(booking, schedule, "u1");
+		validate(booking, "u1");
 	}
 
 	@Test
-	public void shouldCreateSchedule2() {
+	public void shouldLockSchedule2() {
 		// given
 		List<Record> records = new ArrayList<>();
 		records.add(createRecord("u1", false, 10));
@@ -83,36 +86,14 @@ public class ScheduleAlgorithmTest {
 		Booking booking = createTestCase(records, entries, 20);
 
 		// when
-		List<Record> schedule = algorithm.createSchedule(booking);
+		scheduler.lockSchedule(booking);
 
 		// then
-		validate(booking, schedule, "u1", "u2", "u3");
+		validate(booking, "u1", "u2", "u3");
 	}
 
 	@Test
-	public void shouldCreateSchedule3() {
-		// given
-		List<Record> records = new ArrayList<>();
-		records.add(createRecord("u1", false, 10));
-		records.add(createRecord("u2", false, 10));
-		records.add(createRecord("u3", true, 14));
-
-		List<BookingEntry> entries = new ArrayList<>();
-		entries.add(createEntry("u1", 10, 4));
-		entries.add(createEntry("u2", 9, 4));
-		entries.add(createEntry("u3", 10, 4));
-
-		Booking booking = createTestCase(records, entries, 20);
-
-		// when
-		List<Record> schedule = algorithm.createSchedule(booking);
-
-		// then
-		validate(booking, schedule, "u3", "u2", "u1");
-	}
-
-	@Test
-	public void shouldCreateSchedule4() {
+	public void shouldLockSchedule3() {
 		// given
 		List<Record> records = new ArrayList<>();
 		records.add(createRecord("u1", false, 10));
@@ -127,14 +108,14 @@ public class ScheduleAlgorithmTest {
 		Booking booking = createTestCase(records, entries, 2);
 
 		// when
-		List<Record> schedule = algorithm.createSchedule(booking);
+		scheduler.lockSchedule(booking);
 
 		// then
-		validate(booking, schedule, "u3", "u2");
+		validate(booking, "u3", "u2");
 	}
 
 	@Test
-	public void shouldCreateSchedule5() {
+	public void shouldLockSchedule4() {
 		// given
 		List<Record> records = new ArrayList<>();
 		records.add(createRecord("u1", false, 10));
@@ -151,18 +132,25 @@ public class ScheduleAlgorithmTest {
 		Booking booking = createTestCase(records, entries, 10);
 
 		// when
-		List<Record> schedule = algorithm.createSchedule(booking);
+		scheduler.lockSchedule(booking);
 
 		// then
-		validate(booking, schedule, "u2", "u1");
+		validate(booking, "u2", "u1");
 	}
 
-	private void validate(Booking booking, List<Record> schedule, String... logins) {
-		assertEquals(logins.length, schedule.size());
-		for (int i = 0; i < schedule.size(); ++i) {
-			assertEquals(logins[i], schedule.get(i).getUser().getLogin());
+	private void validate(Booking booking, String... logins) {
+		Set<BookingEntry> acceptedEntries = booking.getAcceptedEntries();
+		assertEquals(logins.length, acceptedEntries.size());
+
+		Set<String> acceptedLogins = new HashSet<>(acceptedEntries.size());
+		for (BookingEntry entry : acceptedEntries) {
+			acceptedLogins.add(entry.getUser().getLogin());
 		}
-		logger.info(createLoggerMessage(booking, schedule));
+		for (int i = 0; i < logins.length; ++i) {
+			assertTrue(acceptedLogins.contains(logins[i]));
+		}
+
+		logger.info(createLoggerMessage(booking));
 	}
 
 	private Booking createTestCase(List<Record> records, List<BookingEntry> entries, int capacity) {
@@ -207,7 +195,7 @@ public class ScheduleAlgorithmTest {
 		return user;
 	}
 
-	private String createLoggerMessage(Booking booking, List<Record> schedule) {
+	private String createLoggerMessage(Booking booking) {
 		StringBuilder sb = new StringBuilder();
 		Parking parking = booking.getParking();
 
@@ -221,11 +209,9 @@ public class ScheduleAlgorithmTest {
 		for (BookingEntry entry : booking.getEntries()) {
 			sb.append("\n").append(i++).append(". user=").append(entry.getUser().getLogin()).append(", date=")
 					.append(dateFormatter.print(entry.getCreationTime()));
-		}
-		sb.append("\nschedule:");
-		i = 1;
-		for (Record record : schedule) {
-			sb.append(createRecordMessage(record, i++));
+			if (entry.getAccepted()) {
+				sb.append(" - accepted");
+			}
 		}
 
 		return sb.toString();

@@ -80,6 +80,10 @@ public class Record implements Serializable {
 		this.points = points;
 	}
 
+	public void addPoint() {
+		this.points++;
+	}
+
 	public Boolean getVip() {
 		return vip;
 	}

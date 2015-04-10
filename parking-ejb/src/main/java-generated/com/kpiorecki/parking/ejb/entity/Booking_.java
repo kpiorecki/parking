@@ -7,7 +7,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import org.joda.time.LocalDate;
 
-@Generated(value="Dali", date="2015-03-30T21:51:06.756+0200")
+@Generated(value="Dali", date="2015-04-10T21:51:36.731+0200")
 @StaticMetamodel(Booking.class)
 public class Booking_ {
 	public static volatile SingularAttribute<Booking, Long> id;

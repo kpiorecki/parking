@@ -35,6 +35,9 @@ public class BookingEntry implements Serializable {
 	@Column(nullable = false, updatable = false)
 	private DateTime creationTime;
 
+	@Column(nullable = false)
+	private Boolean accepted = false;
+
 	public Long getId() {
 		return id;
 	}
@@ -57,6 +60,14 @@ public class BookingEntry implements Serializable {
 
 	public void setCreationTime(DateTime creationTime) {
 		this.creationTime = creationTime;
+	}
+
+	public Boolean getAccepted() {
+		return accepted;
+	}
+
+	public void setAccepted(Boolean accepted) {
+		this.accepted = accepted;
 	}
 
 	@PrePersist
