@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -36,7 +37,9 @@ public class Booking implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public enum Status {
-		DRAFT, RELEASED, LOCKED;
+		DRAFT,
+		RELEASED,
+		LOCKED;
 	}
 
 	@Id
@@ -51,6 +54,10 @@ public class Booking implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumn(name = "booking_id")
 	private Set<BookingEntry> entries = new HashSet<>();
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@JoinTable(name = "booking_users", joinColumns = @JoinColumn(name = "booking_id"), inverseJoinColumns = @JoinColumn(name = "login"), indexes = { @Index(columnList = "booking_id, login", unique = true) })
+	private Set<User> users = new HashSet<>();
 
 	@Column(nullable = false)
 	private LocalDate date;
@@ -88,6 +95,15 @@ public class Booking implements Serializable {
 
 	public void removeEntry(BookingEntry entry) {
 		entries.remove(entry);
+	}
+
+	public Set<User> getUsers() {
+		return Collections.unmodifiableSet(users);
+	}
+
+	public void setUsers(Set<User> users) {
+		this.users.clear();
+		this.users.addAll(users);
 	}
 
 	public LocalDate getDate() {
