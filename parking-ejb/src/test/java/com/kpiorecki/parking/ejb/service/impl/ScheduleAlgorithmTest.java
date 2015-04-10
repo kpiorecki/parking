@@ -133,6 +133,30 @@ public class ScheduleAlgorithmTest {
 		validate(booking, schedule, "u3", "u2");
 	}
 
+	@Test
+	public void shouldCreateSchedule5() {
+		// given
+		List<Record> records = new ArrayList<>();
+		records.add(createRecord("u1", false, 10));
+		records.add(createRecord("u2", true, 14));
+
+		// situation where users u3, u4 and u5 were removed after making parking bookings
+		List<BookingEntry> entries = new ArrayList<>();
+		entries.add(createEntry("u1", 10, 4));
+		entries.add(createEntry("u2", 9, 4));
+		entries.add(createEntry("u3", 10, 4));
+		entries.add(createEntry("u4", 8, 4));
+		entries.add(createEntry("u5", 7, 4));
+
+		Booking booking = createTestCase(records, entries, 10);
+
+		// when
+		List<Record> schedule = algorithm.createSchedule(booking);
+
+		// then
+		validate(booking, schedule, "u2", "u1");
+	}
+
 	private void validate(Booking booking, List<Record> schedule, String... logins) {
 		assertEquals(logins.length, schedule.size());
 		for (int i = 0; i < schedule.size(); ++i) {

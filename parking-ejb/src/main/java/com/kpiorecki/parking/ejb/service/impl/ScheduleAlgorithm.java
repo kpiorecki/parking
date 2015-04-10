@@ -18,7 +18,6 @@ import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.BookingEntry;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.Record;
-import com.kpiorecki.parking.ejb.exception.DomainException;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
 
 @Stateless
@@ -57,13 +56,13 @@ public class ScheduleAlgorithm {
 		for (BookingEntry entry : entries) {
 			String login = entry.getUser().getLogin();
 			Record record = loginRecords.get(login);
-			if (record == null) {
-				String message = String.format("did not find login=%s record in parking=%s", login, booking
-						.getParking().getUuid());
-				logger.error(message);
-				throw new DomainException(message);
+			/**
+			 * user might be removed after parking booking - in such case his login will not be found in loginRecords
+			 * map, so will not be included by scheduling algorithm
+			 */
+			if (record != null) {
+				recordTimestamps.put(record, entry.getCreationTime());
 			}
-			recordTimestamps.put(record, entry.getCreationTime());
 		}
 
 		return recordTimestamps;
