@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -17,10 +18,15 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
 import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
 import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.BookingEntry;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.Record;
+import com.kpiorecki.parking.ejb.event.Assigned;
+import com.kpiorecki.parking.ejb.event.BookingEvent;
+import com.kpiorecki.parking.ejb.event.Revoked;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
 
 @Stateless
@@ -30,6 +36,14 @@ public class BookingScheduler {
 	private Logger logger;
 
 	@Inject
+	@Assigned
+	private Event<BookingEvent> assignedEvent;
+
+	@Inject
+	@Revoked
+	private Event<BookingEvent> revokedEvent;
+
+	@Inject
 	@DateFormatter
 	private DateTimeFormatter dateFormatter;
 
@@ -37,7 +51,7 @@ public class BookingScheduler {
 		logger.info("updating schedule for parking={} and date={}", booking.getParking().getUuid(),
 				dateFormatter.print(booking.getDate()));
 
-		assignSchedule(booking);
+		generateSchedule(booking);
 	}
 
 	public void lockSchedule(Booking booking) {
@@ -45,21 +59,24 @@ public class BookingScheduler {
 		logger.info("locking schedule for parking={} and date={}", parking.getUuid(),
 				dateFormatter.print(booking.getDate()));
 
-		List<Element> schedule = assignSchedule(booking);
+		List<Element> schedule = generateSchedule(booking);
 		addRecordPoints(parking, schedule);
 	}
 
-	private List<Element> assignSchedule(Booking booking) {
+	private List<Element> generateSchedule(Booking booking) {
 		Parking parking = booking.getParking();
 		List<Element> elements = merge(booking.getEntries(), parking.getRecords());
 		Ordering<Element> ordering = Ordering.from(new ElementComparator());
 		List<Element> schedule = ordering.leastOf(elements, parking.getCapacity());
 
-		Set<BookingEntry> acceptedEntries = new HashSet<>(schedule.size());
+		Set<BookingEntry> oldAcceptedEntries = booking.getAcceptedEntries();
+		Set<BookingEntry> newAcceptedEntries = new HashSet<>(schedule.size());
 		for (Element element : schedule) {
-			acceptedEntries.add(element.getBookingEntry());
+			newAcceptedEntries.add(element.getBookingEntry());
 		}
-		booking.acceptEntries(acceptedEntries);
+		booking.acceptEntries(newAcceptedEntries);
+
+		fireEvents(booking, oldAcceptedEntries, newAcceptedEntries);
 
 		return schedule;
 	}
@@ -90,6 +107,30 @@ public class BookingScheduler {
 		}
 
 		return elements;
+	}
+
+	private void fireEvents(Booking booking, Set<BookingEntry> oldAcceptedEntries, Set<BookingEntry> newAcceptedEntries) {
+		SetView<BookingEntry> revokedEntries = Sets.difference(oldAcceptedEntries, newAcceptedEntries);
+		for (BookingEntry revokedEntry : revokedEntries) {
+			BookingEvent event = createEvent(booking, revokedEntry);
+			revokedEvent.fire(event);
+		}
+
+		SetView<BookingEntry> assignedEntries = Sets.difference(newAcceptedEntries, oldAcceptedEntries);
+		for (BookingEntry assignedEntry : assignedEntries) {
+			BookingEvent event = createEvent(booking, assignedEntry);
+			assignedEvent.fire(event);
+		}
+	}
+
+	private BookingEvent createEvent(Booking booking, BookingEntry entry) {
+		BookingEvent event = new BookingEvent();
+		event.setDate(booking.getDate());
+		event.setParking(booking.getParking());
+		event.setUser(entry.getUser());
+		event.setBookingStatus(booking.getStatus());
+
+		return event;
 	}
 
 	private static class Element {
