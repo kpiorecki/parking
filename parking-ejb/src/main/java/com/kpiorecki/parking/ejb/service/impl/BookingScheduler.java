@@ -11,6 +11,8 @@ import java.util.Set;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeComparator;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
@@ -143,9 +145,13 @@ public class BookingScheduler {
 
 		private int compareCreationTimes(BookingEntry e1, BookingEntry e2) {
 			/**
-			 * first earlier, then later creation times
+			 * first earlier, then later creation times (<code>null</code> creation times mean that BookingEntry has not
+			 * been saved yet and are treated as <code>now()</code> values by DateTimeComparator).
 			 */
-			return e1.getCreationTime().compareTo(e2.getCreationTime());
+			DateTime t1 = e1.getCreationTime();
+			DateTime t2 = e2.getCreationTime();
+
+			return DateTimeComparator.getInstance().compare(t1, t2);
 		}
 	}
 

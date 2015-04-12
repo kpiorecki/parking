@@ -2,6 +2,7 @@ package com.kpiorecki.parking.ejb.service.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -68,6 +69,7 @@ public class BookingSchedulerTest {
 
 		// then
 		validate(booking, "u1");
+		validatePoints(booking, "u1", 11);
 	}
 
 	@Test
@@ -90,6 +92,9 @@ public class BookingSchedulerTest {
 
 		// then
 		validate(booking, "u1", "u2", "u3");
+		validatePoints(booking, "u1", 11);
+		validatePoints(booking, "u2", 13);
+		validatePoints(booking, "u3", 15);
 	}
 
 	@Test
@@ -101,7 +106,7 @@ public class BookingSchedulerTest {
 		records.add(createRecord("u3", true, 14));
 
 		List<BookingEntry> entries = new ArrayList<>();
-		entries.add(createEntry("u1", 10, 4));
+		entries.add(createEntry("u1"));
 		entries.add(createEntry("u2", 9, 4));
 		entries.add(createEntry("u3", 10, 4));
 
@@ -112,6 +117,8 @@ public class BookingSchedulerTest {
 
 		// then
 		validate(booking, "u3", "u2");
+		validatePoints(booking, "u3", 15);
+		validatePoints(booking, "u2", 11);
 	}
 
 	@Test
@@ -136,6 +143,19 @@ public class BookingSchedulerTest {
 
 		// then
 		validate(booking, "u2", "u1");
+		validatePoints(booking, "u2", 15);
+		validatePoints(booking, "u1", 11);
+	}
+
+	private void validatePoints(Booking booking, String login, Integer expectedPoints) {
+		Set<Record> records = booking.getParking().getRecords();
+		for (Record record : records) {
+			if (record.getUser().getLogin().equals(login)) {
+				assertEquals(expectedPoints, record.getPoints());
+				return;
+			}
+		}
+		fail(String.format("did not find user=%s record", login));
 	}
 
 	private void validate(Booking booking, String... logins) {
@@ -180,9 +200,15 @@ public class BookingSchedulerTest {
 		return record;
 	}
 
-	private BookingEntry createEntry(String login, int day, int month) {
+	private BookingEntry createEntry(String login) {
 		BookingEntry entry = new BookingEntry();
 		entry.setUser(createUser(login));
+
+		return entry;
+	}
+
+	private BookingEntry createEntry(String login, int day, int month) {
+		BookingEntry entry = createEntry(login);
 		entry.setCreationTime(new DateTime(2015, month, day, 14, 0));
 
 		return entry;
@@ -207,8 +233,13 @@ public class BookingSchedulerTest {
 		sb.append("\nbooking entries:");
 		i = 1;
 		for (BookingEntry entry : booking.getEntries()) {
-			sb.append("\n").append(i++).append(". user=").append(entry.getUser().getLogin()).append(", date=")
-					.append(dateFormatter.print(entry.getCreationTime()));
+			sb.append("\n").append(i++).append(". user=").append(entry.getUser().getLogin()).append(", date=");
+			DateTime creationTime = entry.getCreationTime();
+			if (creationTime != null) {
+				sb.append(dateFormatter.print(creationTime));
+			} else {
+				sb.append("empty");
+			}
 			if (entry.getAccepted()) {
 				sb.append(" - accepted");
 			}

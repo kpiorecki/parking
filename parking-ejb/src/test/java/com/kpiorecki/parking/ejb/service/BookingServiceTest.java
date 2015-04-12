@@ -1,7 +1,6 @@
 package com.kpiorecki.parking.ejb.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.Set;
 
@@ -17,8 +16,10 @@ import com.kpiorecki.parking.ejb.IntegrationTest;
 import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.dao.BookingDao;
 import com.kpiorecki.parking.ejb.entity.Booking;
+import com.kpiorecki.parking.ejb.entity.Booking.Status;
 import com.kpiorecki.parking.ejb.entity.BookingEntry;
 import com.kpiorecki.parking.ejb.entity.Parking;
+import com.kpiorecki.parking.ejb.entity.Record;
 import com.kpiorecki.parking.ejb.entity.User;
 
 public class BookingServiceTest extends IntegrationTest {
@@ -69,8 +70,10 @@ public class BookingServiceTest extends IntegrationTest {
 
 		// then
 		Booking booking = bookingDao.find(parking2Uuid, date);
-		assertNotNull(booking);
 		assertEquals(parking2Uuid, booking.getParking().getUuid());
+
+		Set<BookingEntry> acceptedEntries = booking.getAcceptedEntries();
+		assertEquals(1, acceptedEntries.size());
 	}
 
 	@Test(expected = Exception.class)
@@ -101,7 +104,6 @@ public class BookingServiceTest extends IntegrationTest {
 
 		// then
 		Booking booking = bookingDao.find(parking1Uuid, date);
-		assertNotNull(booking);
 		assertEquals(parking1Uuid, booking.getParking().getUuid());
 
 		Set<BookingEntry> entries = booking.getEntries();
@@ -109,6 +111,9 @@ public class BookingServiceTest extends IntegrationTest {
 
 		BookingEntry entry = entries.iterator().next();
 		assertEquals(p1Login2, entry.getUser().getLogin());
+
+		Set<BookingEntry> acceptedEntries = booking.getAcceptedEntries();
+		assertEquals(1, acceptedEntries.size());
 	}
 
 	@Test(expected = Exception.class)
@@ -117,6 +122,43 @@ public class BookingServiceTest extends IntegrationTest {
 		bookingService.cancel(parking2.getUuid(), p1Login1, date);
 
 		// then exception should be thrown - booking does not exist
+	}
+
+	@Test
+	public void shouldReleaseBooking() {
+		// when
+		String parking1Uuid = parking1.getUuid();
+		bookingService.release(parking1Uuid, date);
+
+		// then
+		Booking booking = bookingDao.find(parking1Uuid, date);
+		assertEquals(Status.RELEASED, booking.getStatus());
+	}
+
+	@Test(expected = Exception.class)
+	public void shouldNotReleaseBookingTwice() {
+		// when
+		String parking1Uuid = parking1.getUuid();
+		bookingService.release(parking1Uuid, date);
+		bookingService.release(parking1Uuid, date);
+
+		// then exception should be thrown - booking already released
+	}
+
+	@Test
+	public void shouldLockBooking() {
+		// when
+		String parking1Uuid = parking1.getUuid();
+		bookingService.lock(parking1Uuid, date);
+
+		// then
+		Booking booking = bookingDao.find(parking1Uuid, date);
+		assertEquals(Status.LOCKED, booking.getStatus());
+
+		Set<Record> records = parking1.getRecords();
+		for (Record record : records) {
+			assertEquals(Integer.valueOf(1), record.getPoints());
+		}
 	}
 
 }
