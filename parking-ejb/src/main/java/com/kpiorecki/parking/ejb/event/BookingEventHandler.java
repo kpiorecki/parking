@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
+import com.kpiorecki.parking.ejb.mail.MailSender;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
 
 @Stateless
@@ -14,6 +15,9 @@ public class BookingEventHandler {
 
 	@Inject
 	private Logger logger;
+
+	@Inject
+	private MailSender mailSender;
 
 	@Inject
 	@DateFormatter
