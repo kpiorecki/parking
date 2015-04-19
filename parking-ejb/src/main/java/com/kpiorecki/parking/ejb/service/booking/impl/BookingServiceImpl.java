@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.ejb.service.impl;
+package com.kpiorecki.parking.ejb.service.booking.impl;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -18,9 +18,9 @@ import com.kpiorecki.parking.ejb.entity.Booking.Status;
 import com.kpiorecki.parking.ejb.entity.BookingEntry;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.User;
-import com.kpiorecki.parking.ejb.exception.DomainException;
-import com.kpiorecki.parking.ejb.service.BookingService;
+import com.kpiorecki.parking.ejb.service.booking.BookingService;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
+import com.kpiorecki.parking.ejb.util.DomainException;
 
 @Stateless
 public class BookingServiceImpl implements BookingService {

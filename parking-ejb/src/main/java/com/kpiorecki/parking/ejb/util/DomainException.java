@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.ejb.exception;
+package com.kpiorecki.parking.ejb.util;
 
 public class DomainException extends RuntimeException {
 

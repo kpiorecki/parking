@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 
 import com.kpiorecki.parking.ejb.entity.ArchivableEntity;
 import com.kpiorecki.parking.ejb.entity.ArchivableEntity_;
-import com.kpiorecki.parking.ejb.exception.DomainException;
+import com.kpiorecki.parking.ejb.util.DomainException;
 
 public class ArchivableDao<K, E extends ArchivableEntity> extends GenericDao<K, E> {
 

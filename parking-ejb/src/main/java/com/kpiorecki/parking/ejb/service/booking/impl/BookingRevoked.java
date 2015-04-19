@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.ejb.event;
+package com.kpiorecki.parking.ejb.service.booking.impl;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,6 +10,6 @@ import javax.inject.Qualifier;
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
-public @interface Revoked {
+public @interface BookingRevoked {
 
 }

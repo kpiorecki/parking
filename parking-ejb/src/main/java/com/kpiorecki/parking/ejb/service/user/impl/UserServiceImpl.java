@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.ejb.service.impl;
+package com.kpiorecki.parking.ejb.service.user.impl;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import com.kpiorecki.parking.ejb.dao.UserDao;
 import com.kpiorecki.parking.ejb.dto.UserDto;
 import com.kpiorecki.parking.ejb.entity.User;
-import com.kpiorecki.parking.ejb.service.UserService;
+import com.kpiorecki.parking.ejb.service.user.UserService;
 import com.kpiorecki.parking.ejb.util.CollectionMapper;
 
 @Stateless

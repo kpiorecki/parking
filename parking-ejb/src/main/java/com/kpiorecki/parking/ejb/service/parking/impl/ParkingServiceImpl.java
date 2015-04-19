@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.ejb.service.impl;
+package com.kpiorecki.parking.ejb.service.parking.impl;
 
 import java.math.RoundingMode;
 import java.util.Iterator;
@@ -21,9 +21,9 @@ import com.kpiorecki.parking.ejb.dto.RecordDto;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.Record;
 import com.kpiorecki.parking.ejb.entity.User;
-import com.kpiorecki.parking.ejb.exception.DomainException;
-import com.kpiorecki.parking.ejb.service.ParkingService;
+import com.kpiorecki.parking.ejb.service.parking.ParkingService;
 import com.kpiorecki.parking.ejb.util.CollectionMapper;
+import com.kpiorecki.parking.ejb.util.DomainException;
 import com.kpiorecki.parking.ejb.util.UuidGenerator;
 
 @Stateless

@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.ejb.service;
+package com.kpiorecki.parking.ejb.service.booking;
 
 import javax.ejb.Local;
 

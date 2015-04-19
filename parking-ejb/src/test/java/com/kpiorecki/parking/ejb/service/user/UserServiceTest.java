@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.ejb.service;
+package com.kpiorecki.parking.ejb.service.user;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -21,6 +21,7 @@ import com.kpiorecki.parking.ejb.dao.UserDao;
 import com.kpiorecki.parking.ejb.dto.UserDto;
 import com.kpiorecki.parking.ejb.entity.User;
 import com.kpiorecki.parking.ejb.entity.User_;
+import com.kpiorecki.parking.ejb.service.user.UserService;
 
 public class UserServiceTest extends IntegrationTest {
 

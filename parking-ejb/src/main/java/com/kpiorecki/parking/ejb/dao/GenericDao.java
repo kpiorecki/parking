@@ -15,7 +15,7 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import org.slf4j.Logger;
 
-import com.kpiorecki.parking.ejb.exception.DomainException;
+import com.kpiorecki.parking.ejb.util.DomainException;
 
 public abstract class GenericDao<K, E> {
 

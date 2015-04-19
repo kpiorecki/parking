@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.ejb.service.impl;
+package com.kpiorecki.parking.ejb.service.booking.impl;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -24,9 +24,6 @@ import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.BookingEntry;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.Record;
-import com.kpiorecki.parking.ejb.event.Assigned;
-import com.kpiorecki.parking.ejb.event.BookingEvent;
-import com.kpiorecki.parking.ejb.event.Revoked;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
 
 @Stateless
@@ -36,11 +33,11 @@ public class BookingScheduler {
 	private Logger logger;
 
 	@Inject
-	@Assigned
+	@BookingAssigned
 	private Event<BookingEvent> assignedEvent;
 
 	@Inject
-	@Revoked
+	@BookingRevoked
 	private Event<BookingEvent> revokedEvent;
 
 	@Inject

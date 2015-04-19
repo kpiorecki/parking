@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.ejb.service;
+package com.kpiorecki.parking.ejb.service.booking;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,6 +21,7 @@ import com.kpiorecki.parking.ejb.entity.BookingEntry;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.Record;
 import com.kpiorecki.parking.ejb.entity.User;
+import com.kpiorecki.parking.ejb.service.booking.BookingService;
 
 public class BookingServiceTest extends IntegrationTest {
 

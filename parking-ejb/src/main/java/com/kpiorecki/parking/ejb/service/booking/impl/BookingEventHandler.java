@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.ejb.event;
+package com.kpiorecki.parking.ejb.service.booking.impl;
 
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
@@ -7,8 +7,8 @@ import javax.inject.Inject;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
-import com.kpiorecki.parking.ejb.mail.MailSender;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
+import com.kpiorecki.parking.ejb.util.MailSender;
 
 @Stateless
 public class BookingEventHandler {
@@ -23,12 +23,12 @@ public class BookingEventHandler {
 	@DateFormatter
 	private DateTimeFormatter dateFormatter;
 
-	public void onAssignedEvent(@Observes @Assigned BookingEvent event) {
+	public void onAssignedEvent(@Observes @BookingAssigned BookingEvent event) {
 		logger.info("received assigned {}", toString(event));
 		// TODO event handling
 	}
 
-	public void onRevokedEvent(@Observes @Revoked BookingEvent event) {
+	public void onRevokedEvent(@Observes @BookingRevoked BookingEvent event) {
 		logger.info("received revoked {}", toString(event));
 		// TODO event handling
 	}

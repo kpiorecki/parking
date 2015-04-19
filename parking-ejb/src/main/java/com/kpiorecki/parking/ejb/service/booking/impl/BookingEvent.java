@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.ejb.event;
+package com.kpiorecki.parking.ejb.service.booking.impl;
 
 import java.io.Serializable;
 

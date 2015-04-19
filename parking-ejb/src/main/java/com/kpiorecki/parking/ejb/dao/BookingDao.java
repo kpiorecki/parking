@@ -14,8 +14,8 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
 import com.kpiorecki.parking.ejb.entity.Booking;
-import com.kpiorecki.parking.ejb.exception.DomainException;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
+import com.kpiorecki.parking.ejb.util.DomainException;
 
 @Stateless
 public class BookingDao extends GenericDao<Long, Booking> {

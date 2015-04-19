@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.ejb.mail;
+package com.kpiorecki.parking.ejb.util;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
@@ -13,7 +13,6 @@ import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 
 import com.kpiorecki.parking.ejb.entity.User;
-import com.kpiorecki.parking.ejb.exception.DomainException;
 
 @Stateless
 public class MailSender {
