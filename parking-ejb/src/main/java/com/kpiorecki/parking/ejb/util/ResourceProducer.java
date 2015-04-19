@@ -16,6 +16,9 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import freemarker.template.Configuration;
+import freemarker.template.TemplateExceptionHandler;
+
 @Singleton
 public class ResourceProducer {
 
@@ -45,4 +48,16 @@ public class ResourceProducer {
 	DateTimeFormatter createDateFormatter() {
 		return ISODateTimeFormat.date();
 	}
+
+	@Produces
+	@Singleton
+	Configuration createTemplateConfiguration() {
+		Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
+		configuration.setClassForTemplateLoading(getClass(), "/templates");
+		configuration.setDefaultEncoding("UTF-8");
+		configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+
+		return configuration;
+	}
+
 }
