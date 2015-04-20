@@ -1,5 +1,8 @@
 package com.kpiorecki.parking.ejb.service.booking.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -25,12 +28,23 @@ public class BookingEventHandler {
 
 	public void onAssignedEvent(@Observes @BookingAssigned BookingEvent event) {
 		logger.info("received assigned {}", toString(event));
-		// TODO event handling
+		mailSender.send(event.getUser(), "Parking booking assigned", "booking/booking-assigned.ftl",
+				toParameters(event));
 	}
 
 	public void onRevokedEvent(@Observes @BookingRevoked BookingEvent event) {
 		logger.info("received revoked {}", toString(event));
-		// TODO event handling
+		// TODO send email
+	}
+
+	private Map<String, Object> toParameters(BookingEvent event) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("user", event.getUser());
+		map.put("date", event.getDate());
+		map.put("parking", event.getParking());
+		map.put("status", event.getBookingStatus());
+
+		return map;
 	}
 
 	private String toString(BookingEvent event) {
