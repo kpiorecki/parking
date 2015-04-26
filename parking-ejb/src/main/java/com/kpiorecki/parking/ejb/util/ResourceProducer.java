@@ -3,9 +3,11 @@ package com.kpiorecki.parking.ejb.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Singleton;
+import javax.mail.Session;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -25,6 +27,10 @@ public class ResourceProducer {
 	@PersistenceContext
 	@Produces
 	EntityManager entityManager;
+
+	@Produces
+	@Resource(name = "mail/session")
+	Session mailSession;
 
 	@Produces
 	@Singleton

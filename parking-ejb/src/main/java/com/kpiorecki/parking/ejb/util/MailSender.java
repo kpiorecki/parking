@@ -4,7 +4,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.Message.RecipientType;
@@ -29,8 +28,8 @@ public class MailSender {
 	@Inject
 	private Configuration templateConfiguration;
 
-	@Resource(name = "java:comp/env/mail/session")
-	private Session session;
+	@Inject
+	private Session mailSession;
 
 	public void send(User user, String subject, String templateFile, Map<String, Object> parameters) {
 		String logMessage = String.format("sending mail to user=%s", user.getLogin());
@@ -41,7 +40,7 @@ public class MailSender {
 			InternetAddress address = new InternetAddress(user.getEmail(), personal);
 			String content = createContent(templateFile, parameters);
 
-			MimeMessage message = new MimeMessage(session);
+			MimeMessage message = new MimeMessage(mailSession);
 			message.setContent(content, "text/html; charset=utf-8");
 			message.setSubject(subject);
 			message.setRecipient(RecipientType.TO, address);
@@ -59,7 +58,7 @@ public class MailSender {
 
 		Template template = templateConfiguration.getTemplate(templateFile);
 		Writer writer = new StringWriter();
-		template.process(templateFile, writer);
+		template.process(parameters, writer);
 
 		return writer.toString();
 	}

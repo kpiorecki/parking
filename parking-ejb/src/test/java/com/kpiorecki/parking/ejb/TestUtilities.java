@@ -24,18 +24,36 @@ public class TestUtilities {
 	private UuidGenerator uuidGenerator;
 
 	public User persistUser(String login) {
-		User user = new User();
-		user.setLogin(login);
-		user.setFirstName("firstname");
-		user.setLastName("lastname");
-		user.setEmail(login + "@mail.com");
-
+		User user = createUser(login);
 		entityManager.persist(user);
 
 		return user;
 	}
 
 	public Parking persistParking(User... users) {
+		Parking parking = createParking(users);
+		entityManager.persist(parking);
+
+		return parking;
+	}
+
+	public Booking persistBooking(Parking parking, LocalDate date, User... users) {
+		Booking booking = createBooking(parking, date, users);
+		entityManager.persist(booking);
+
+		return booking;
+	}
+
+	public User createUser(String login) {
+		User user = new User();
+		user.setLogin(login);
+		user.setFirstName("firstname");
+		user.setLastName("lastname");
+		user.setEmail(login + "@mail.com");
+		return user;
+	}
+
+	public Parking createParking(User... users) {
 		Address address = new Address();
 		address.setCity("city");
 		address.setPostalCode("code");
@@ -56,13 +74,10 @@ public class TestUtilities {
 
 			parking.addRecord(record);
 		}
-
-		entityManager.persist(parking);
-
 		return parking;
 	}
 
-	public Booking persistBooking(Parking parking, LocalDate date, User... users) {
+	public Booking createBooking(Parking parking, LocalDate date, User... users) {
 		Booking booking = new Booking();
 		booking.setParking(parking);
 		booking.setDate(date);
@@ -72,9 +87,6 @@ public class TestUtilities {
 
 			booking.addEntry(entry);
 		}
-
-		entityManager.persist(booking);
-
 		return booking;
 	}
 }

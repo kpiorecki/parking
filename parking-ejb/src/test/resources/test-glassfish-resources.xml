@@ -9,4 +9,6 @@
 		<property name="databaseName" value="target/derby" />
 		<property name="createDatabase" value="create" />
 	</jdbc-connection-pool>
+
+	<mail-resource jndi-name="mail/session" host="localhost" user="" from="" />
 </resources>
