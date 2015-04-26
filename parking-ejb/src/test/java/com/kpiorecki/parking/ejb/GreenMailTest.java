@@ -4,17 +4,15 @@ import org.junit.After;
 import org.junit.Before;
 
 import com.icegreen.greenmail.util.GreenMail;
-import com.icegreen.greenmail.util.ServerSetup;
+import com.icegreen.greenmail.util.ServerSetupTest;
 
 public abstract class GreenMailTest {
 
-	private static final int SMTP_TEST_PORT = 3025;
-
-	private GreenMail greenMail;
+	protected GreenMail greenMail;
 
 	@Before
 	public void startGreenMail() throws Exception {
-		greenMail = new GreenMail(new ServerSetup(SMTP_TEST_PORT, null, "smtp"));
+		greenMail = new GreenMail(ServerSetupTest.SMTP);
 		greenMail.start();
 	}
 

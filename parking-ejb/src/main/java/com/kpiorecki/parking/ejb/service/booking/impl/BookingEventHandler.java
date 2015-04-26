@@ -34,7 +34,8 @@ public class BookingEventHandler {
 
 	public void onRevokedEvent(@Observes @BookingRevoked BookingEvent event) {
 		logger.info("received revoked {}", toString(event));
-		// TODO send email
+		mailSender.send(event.getUser(), "Parking booking revoked", "booking/booking-revoked.ftl",
+				toParameters(event));
 	}
 
 	private Map<String, Object> toParameters(BookingEvent event) {

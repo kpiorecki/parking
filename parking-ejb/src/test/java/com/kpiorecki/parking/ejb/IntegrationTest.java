@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 @Transactional(TransactionMode.ROLLBACK)
-public abstract class IntegrationTest {
+public abstract class IntegrationTest extends GreenMailTest {
 
 	@Deployment
 	public static Archive<?> createDeployment() {

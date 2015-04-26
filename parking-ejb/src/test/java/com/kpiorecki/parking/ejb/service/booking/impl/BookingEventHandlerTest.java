@@ -1,6 +1,9 @@
 package com.kpiorecki.parking.ejb.service.booking.impl;
 
+import static org.junit.Assert.assertTrue;
+
 import javax.inject.Inject;
+import javax.mail.internet.MimeMessage;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -14,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.kpiorecki.parking.ejb.GreenMailTest;
 import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.Booking.Status;
@@ -23,7 +27,7 @@ import com.kpiorecki.parking.ejb.util.DateFormatter;
 import com.kpiorecki.parking.ejb.util.ResourceProducer;
 
 @RunWith(Arquillian.class)
-public class BookingEventHandlerTest {
+public class BookingEventHandlerTest extends GreenMailTest {
 
 	@Deployment
 	public static Archive<?> createDeployment() {
@@ -65,6 +69,7 @@ public class BookingEventHandlerTest {
 		eventHandler.onAssignedEvent(event);
 
 		// then
+		validateOneEmailSent();
 	}
 
 	@Test
@@ -76,6 +81,7 @@ public class BookingEventHandlerTest {
 		eventHandler.onRevokedEvent(event);
 
 		// then
+		validateOneEmailSent();
 	}
 
 	private BookingEvent createEvent() {
@@ -86,5 +92,10 @@ public class BookingEventHandlerTest {
 		event.setBookingStatus(booking.getStatus());
 
 		return event;
+	}
+
+	private void validateOneEmailSent() {
+		MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
+		assertTrue(receivedMessages.length == 1);
 	}
 }
