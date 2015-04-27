@@ -3,6 +3,7 @@ package com.kpiorecki.parking.ejb.service.booking.impl;
 import static org.junit.Assert.assertTrue;
 
 import javax.inject.Inject;
+import javax.mail.Message.RecipientType;
 import javax.mail.internet.MimeMessage;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -16,7 +17,9 @@ import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 
+import com.icegreen.greenmail.util.GreenMailUtil;
 import com.kpiorecki.parking.ejb.GreenMailTest;
 import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.entity.Booking;
@@ -43,6 +46,9 @@ public class BookingEventHandlerTest extends GreenMailTest {
 	private TestUtilities testUtilities;
 
 	@Inject
+	private Logger logger;
+
+	@Inject
 	@DateFormatter
 	private DateTimeFormatter dateFormatter;
 
@@ -61,7 +67,7 @@ public class BookingEventHandlerTest extends GreenMailTest {
 	}
 
 	@Test
-	public void shouldSendAssignedEmail() {
+	public void shouldSendAssignedEmail() throws Exception {
 		// given
 		BookingEvent event = createEvent();
 
@@ -73,7 +79,7 @@ public class BookingEventHandlerTest extends GreenMailTest {
 	}
 
 	@Test
-	public void shouldSendRevokedEmail() {
+	public void shouldSendRevokedEmail() throws Exception {
 		// given
 		BookingEvent event = createEvent();
 
@@ -94,8 +100,12 @@ public class BookingEventHandlerTest extends GreenMailTest {
 		return event;
 	}
 
-	private void validateOneEmailSent() {
+	private void validateOneEmailSent() throws Exception {
 		MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
 		assertTrue(receivedMessages.length == 1);
+
+		MimeMessage message = receivedMessages[0];
+		logger.info("sent one email from={}, to={}, subject={}, body:\n{}", message.getFrom(),
+				message.getRecipients(RecipientType.TO), message.getSubject(), GreenMailUtil.getBody(message));
 	}
 }

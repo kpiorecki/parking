@@ -44,6 +44,7 @@ public class MailSender {
 			message.setContent(content, "text/html; charset=utf-8");
 			message.setSubject(subject);
 			message.setRecipient(RecipientType.TO, address);
+			message.setFrom();
 
 			Transport.send(message);
 		} catch (Exception e) {
