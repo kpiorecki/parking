@@ -11,6 +11,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
 import com.kpiorecki.parking.ejb.util.DateFormatter;
+import com.kpiorecki.parking.ejb.util.Image;
 import com.kpiorecki.parking.ejb.util.MailSender;
 
 @Stateless
@@ -28,22 +29,20 @@ public class BookingEventHandler {
 
 	public void onAssignedEvent(@Observes @BookingAssigned BookingEvent event) {
 		logger.info("received assigned {}", toString(event));
-		mailSender.send(event.getUser(), "Parking booking assigned", "booking/booking-assigned.ftl",
-				toParameters(event));
+		mailSender.send(event.getUser(), "Parking booking assigned", "booking-assigned.ftl", toParameters(event),
+				Image.BOOKING_ASSIGNED);
 	}
 
 	public void onRevokedEvent(@Observes @BookingRevoked BookingEvent event) {
 		logger.info("received revoked {}", toString(event));
-		mailSender.send(event.getUser(), "Parking booking revoked", "booking/booking-revoked.ftl",
-				toParameters(event));
+		mailSender.send(event.getUser(), "Parking booking revoked", "booking-revoked.ftl", toParameters(event),
+				Image.BOOKING_REVOKED);
 	}
 
 	private Map<String, Object> toParameters(BookingEvent event) {
 		Map<String, Object> map = new HashMap<>();
-		map.put("user", event.getUser());
 		map.put("date", event.getDate());
 		map.put("parking", event.getParking());
-		map.put("status", event.getBookingStatus());
 
 		return map;
 	}

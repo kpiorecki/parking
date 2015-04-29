@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Hello, ${user.firstName}</title>
+  <title>Hello</title>
 </head>
 <body>
   <h1>Title</h1>
