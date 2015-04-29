@@ -1,10 +1,13 @@
 package com.kpiorecki.parking.ejb.util;
 
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.Message.RecipientType;
@@ -15,6 +18,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 
 import org.slf4j.Logger;
 
@@ -91,10 +95,13 @@ public class MailSender {
 	}
 
 	private MimeBodyPart createImagePart(String imageId, Image image) throws Exception {
+		InputStream imageStream = getClass().getResourceAsStream(image.getFilePath());
+		DataSource dataSource = new ByteArrayDataSource(imageStream, image.getMimeType());
+
 		MimeBodyPart imagePart = new MimeBodyPart();
-		imagePart.attachFile(image.getFilePath());
 		imagePart.setContentID("<" + imageId + ">");
 		imagePart.setDisposition(MimeBodyPart.INLINE);
+		imagePart.setDataHandler(new DataHandler(dataSource));
 
 		return imagePart;
 	}
