@@ -13,7 +13,7 @@
 						<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #cccccc; border-collapse: collapse;">
 							<tr>
 								<td align="center" style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
-									<img src="cid:header-image" alt="" width="362" height="139" style="display: block;" />
+									<img src="cid:headerImage" alt="" width="${headerImageW}" height="${headerImageH}" style="display: block;" />
 								</td>
 							</tr>
 							<tr>
@@ -28,11 +28,14 @@
 											<td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
 												<table border="0" cellpadding="0" cellspacing="0" width="100%">
 													<tr>
-														<td width="420" valign="top" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
+														<td width="${600 - 30 - 30 - 20 - contentImageW}" valign="top" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
 															<#nested>
-														</td>											
-														<td width="100" valign="top">
-															<img src="cid:content-image" alt="" width="100" height="100" style="display: block;" />
+														</td>
+														<td style="font-size: 0; line-height: 0;" width="20">
+   															&nbsp;
+  														</td>
+														<td width="${contentImageW}" valign="top">
+															<img src="cid:contentImage" alt="" width="${contentImageW}" height="${contentImageH}" style="display: block;" />
 														</td>
 													</tr>
 												</table>

@@ -30,6 +30,10 @@ import freemarker.template.Template;
 @Stateless
 public class MailSender {
 
+	private static final String TPL_TITLE_USER = "titleUser";
+	private static final String TPL_CONTENT_IMAGE = "contentImage";
+	private static final String TPL_HEADER_IMAGE = "headerImage";
+
 	@Inject
 	private Logger logger;
 
@@ -67,9 +71,14 @@ public class MailSender {
 			Image contentImage) throws Exception {
 		logger.info("creating mail content using template={} and image={}", templateFile, contentImage);
 
-		MimeBodyPart bodyPart = createBodyPart(user, templateFile, templateParameters);
-		MimeBodyPart headerImagePart = createImagePart("header-image", Image.PARKING_HEADER);
-		MimeBodyPart contentImagePart = createImagePart("content-image", contentImage);
+		Map<String, Object> globalParameters = new HashMap<>(templateParameters);
+		globalParameters.put(TPL_TITLE_USER, user);
+		addImageSizeParameters(globalParameters, Image.PARKING_HEADER, TPL_HEADER_IMAGE);
+		addImageSizeParameters(globalParameters, contentImage, TPL_CONTENT_IMAGE);
+
+		MimeBodyPart bodyPart = createBodyPart(user, templateFile, globalParameters);
+		MimeBodyPart headerImagePart = createImagePart(TPL_HEADER_IMAGE, Image.PARKING_HEADER);
+		MimeBodyPart contentImagePart = createImagePart(TPL_CONTENT_IMAGE, contentImage);
 
 		Multipart multipart = new MimeMultipart("related");
 		multipart.addBodyPart(bodyPart);
@@ -79,11 +88,8 @@ public class MailSender {
 		return multipart;
 	}
 
-	private MimeBodyPart createBodyPart(User user, String templateFile, Map<String, Object> templateParameters)
+	private MimeBodyPart createBodyPart(User user, String templateFile, Map<String, Object> globalParameters)
 			throws Exception {
-		Map<String, Object> globalParameters = new HashMap<>(templateParameters);
-		globalParameters.put("titleUser", user);
-
 		Template template = templateConfiguration.getTemplate(templateFile);
 		Writer writer = new StringWriter();
 		template.process(globalParameters, writer);
@@ -104,6 +110,11 @@ public class MailSender {
 		imagePart.setDataHandler(new DataHandler(dataSource));
 
 		return imagePart;
+	}
+
+	private void addImageSizeParameters(Map<String, Object> parameters, Image image, String imageId) {
+		parameters.put(imageId + "W", image.getWidth());
+		parameters.put(imageId + "H", image.getHeight());
 	}
 
 }
