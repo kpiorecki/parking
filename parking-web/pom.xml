@@ -22,6 +22,22 @@
 			<artifactId>parking-ejb</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -38,15 +54,6 @@
 							<classpathPrefix>lib/</classpathPrefix>
 						</manifest>
 					</archive>
-					<webResources>
-						<resource>
-							<filtering>true</filtering>
-							<directory>src/main/webapp</directory>
-							<includes>
-								<include>**/web.xml</include>
-							</includes>
-						</resource>
-					</webResources>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -54,9 +61,13 @@
 				<artifactId>maven-embedded-glassfish-plugin</artifactId>
 				<configuration>
 					<app>target/${project.artifactId}-${project.version}</app>
-					<port>8080</port>
+					<name>parking</name>
 					<contextRoot>parking</contextRoot>
 					<autoDelete>true</autoDelete>
+					<ports>
+						<http-listener>8080</http-listener>
+						<https-listener>8181</https-listener>
+					</ports>
 					<glassfishProperties>
 						<property>glassfish.embedded.tmpdir=${project.build.directory}/glassfish-embedded</property>
 					</glassfishProperties>
