@@ -31,6 +31,7 @@
 		<surefire-plugin-version>2.18.1</surefire-plugin-version>
 		<dependency-plugin-version>2.10</dependency-plugin-version>
 		<build-helper-plugin-version>1.9.1</build-helper-plugin-version>
+		<maven-embedded-glassfish-plugin-version>3.1.2.2</maven-embedded-glassfish-plugin-version>
 
 		<!-- dependency versions -->
 		<javaee-api-version>7.0</javaee-api-version>
@@ -168,15 +169,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-ear-plugin</artifactId>
 					<version>${ear-plugin-version}</version>
-					<configuration>
-						<generateModuleId>true</generateModuleId>
-						<archive>
-							<manifest>
-								<addClasspath>true</addClasspath>
-								<classpathPrefix>lib/</classpathPrefix>
-							</manifest>
-						</archive>
-					</configuration>
 				</plugin>
 
 				<!-- maven ejb plugin -->
@@ -194,25 +186,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
 					<version>${war-plugin-version}</version>
-					<configuration>
-						<failOnMissingWebXml>false</failOnMissingWebXml>
-						<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
-						<archive>
-							<manifest>
-								<addClasspath>true</addClasspath>
-								<classpathPrefix>lib/</classpathPrefix>
-							</manifest>
-						</archive>
-						<webResources>
-							<resource>
-								<filtering>true</filtering>
-								<directory>src/main/webapp</directory>
-								<includes>
-									<include>**/web.xml</include>
-								</includes>
-							</resource>
-						</webResources>
-					</configuration>
 				</plugin>
 
 				<!-- maven dependency plugin -->
@@ -229,7 +202,26 @@
 					<version>${build-helper-plugin-version}</version>
 				</plugin>
 
+				<!-- maven embedded-glassfish plugin -->
+				<plugin>
+					<groupId>org.glassfish.embedded</groupId>
+					<artifactId>maven-embedded-glassfish-plugin</artifactId>
+					<version>${maven-embedded-glassfish-plugin-version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.glassfish.main.common</groupId>
+							<artifactId>simple-glassfish-api</artifactId>
+							<version>${glassfish-version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.glassfish.main.extras</groupId>
+							<artifactId>glassfish-embedded-all</artifactId>
+							<version>${glassfish-version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
+
 </project>

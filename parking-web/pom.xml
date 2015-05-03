@@ -23,21 +23,46 @@
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
 					<archive>
-						<manifestEntries>
-							<Class-Path>parking-ejb-${project.version}.jar</Class-Path>
-						</manifestEntries>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+						</manifest>
 					</archive>
+					<webResources>
+						<resource>
+							<filtering>true</filtering>
+							<directory>src/main/webapp</directory>
+							<includes>
+								<include>**/web.xml</include>
+							</includes>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.glassfish.embedded</groupId>
+				<artifactId>maven-embedded-glassfish-plugin</artifactId>
+				<configuration>
+					<app>target/${project.artifactId}-${project.version}</app>
+					<port>8080</port>
+					<contextRoot>parking</contextRoot>
+					<autoDelete>true</autoDelete>
+					<glassfishProperties>
+						<property>glassfish.embedded.tmpdir=${project.build.directory}/glassfish-embedded</property>
+					</glassfishProperties>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-	
+
 </project>

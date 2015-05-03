@@ -54,6 +54,38 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
 		</dependency>
+
+		<!-- test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.icegreen</groupId>
+			<artifactId>greenmail</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.main.extras</groupId>
+			<artifactId>glassfish-embedded-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.container</groupId>
+			<artifactId>arquillian-glassfish-embedded-3.1</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.extension</groupId>
+			<artifactId>arquillian-transaction-jta</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -76,75 +108,29 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<forkCount>1</forkCount>
+					<reuseForks>false</reuseForks>
+					<redirectTestOutputToFile>false</redirectTestOutputToFile>
+					<systemPropertyVariables>
+						<glassfish.embedded.tmpdir>
+							${project.build.directory}/glassfish-embedded
+						</glassfish.embedded.tmpdir>
+						<derby.stream.error.file>
+							${project.build.directory}/derby/log/derby.log
+						</derby.stream.error.file>
+						<java.util.logging.config.file>
+							${project.build.testOutputDirectory}/test-logging.properties
+						</java.util.logging.config.file>
+						<logback.configurationFile>
+							${project.build.testOutputDirectory}/test-logback.xml
+						</logback.configurationFile>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>arquillian-glassfish-embedded</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.icegreen</groupId>
-					<artifactId>greenmail</artifactId>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.jboss.arquillian.junit</groupId>
-					<artifactId>arquillian-junit-container</artifactId>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.glassfish.main.extras</groupId>
-					<artifactId>glassfish-embedded-all</artifactId>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.jboss.arquillian.container</groupId>
-					<artifactId>arquillian-glassfish-embedded-3.1</artifactId>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.jboss.arquillian.extension</groupId>
-					<artifactId>arquillian-transaction-jta</artifactId>
-					<scope>test</scope>
-				</dependency>
-			</dependencies>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<configuration>
-							<forkCount>1</forkCount>
-							<reuseForks>false</reuseForks>
-							<redirectTestOutputToFile>false</redirectTestOutputToFile>
-							<systemPropertyVariables>
-								<glassfish.embedded.tmpdir>
-									${project.build.directory}/glassfish-embedded
-								</glassfish.embedded.tmpdir>
-								<derby.stream.error.file>
-									${project.build.directory}/derby/log/derby.log
-								</derby.stream.error.file>
-								<java.util.logging.config.file>
-									${project.build.testOutputDirectory}/test-logging.properties
-								</java.util.logging.config.file>
-								<logback.configurationFile>
-									${project.build.testOutputDirectory}/test-logback.xml
-								</logback.configurationFile>
-							</systemPropertyVariables>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
 </project>
