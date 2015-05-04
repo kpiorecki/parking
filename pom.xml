@@ -32,6 +32,7 @@
 		<surefire-plugin-version>2.18.1</surefire-plugin-version>
 		<dependency-plugin-version>2.10</dependency-plugin-version>
 		<build-helper-plugin-version>1.9.1</build-helper-plugin-version>
+		<maven-shade-plugin-version>2.3</maven-shade-plugin-version>
 		<maven-embedded-glassfish-plugin-version>3.1.2.2</maven-embedded-glassfish-plugin-version>
 
 		<!-- dependency versions -->
@@ -198,13 +199,6 @@
 					<version>${war-plugin-version}</version>
 					<configuration>
 						<failOnMissingWebXml>false</failOnMissingWebXml>
-<!-- 						<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes> -->
-<!-- 						<archive> -->
-<!-- 							<manifest> -->
-<!-- 								<addClasspath>true</addClasspath> -->
-<!-- 								<classpathPrefix>lib/</classpathPrefix> -->
-<!-- 							</manifest> -->
-<!-- 						</archive> -->
 					</configuration>
 				</plugin>
 
@@ -220,6 +214,13 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>build-helper-maven-plugin</artifactId>
 					<version>${build-helper-plugin-version}</version>
+				</plugin>
+
+				<!-- maven shade plugin -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>${maven-shade-plugin-version}</version>
 				</plugin>
 
 				<!-- maven embedded-glassfish plugin -->
