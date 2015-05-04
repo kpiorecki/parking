@@ -11,6 +11,7 @@
 		<module>parking-ear</module>
 		<module>parking-web</module>
 		<module>parking-ejb</module>
+		<module>parking-it</module>
 	</modules>
 
 	<properties>
@@ -169,6 +170,15 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-ear-plugin</artifactId>
 					<version>${ear-plugin-version}</version>
+					<configuration>
+						<generateModuleId>true</generateModuleId>
+						<archive>
+							<manifest>
+								<addClasspath>true</addClasspath>
+								<classpathPrefix>lib/</classpathPrefix>
+							</manifest>
+						</archive>
+					</configuration>
 				</plugin>
 
 				<!-- maven ejb plugin -->
@@ -186,6 +196,16 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
 					<version>${war-plugin-version}</version>
+					<configuration>
+						<failOnMissingWebXml>false</failOnMissingWebXml>
+<!-- 						<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes> -->
+<!-- 						<archive> -->
+<!-- 							<manifest> -->
+<!-- 								<addClasspath>true</addClasspath> -->
+<!-- 								<classpathPrefix>lib/</classpathPrefix> -->
+<!-- 							</manifest> -->
+<!-- 						</archive> -->
+					</configuration>
 				</plugin>
 
 				<!-- maven dependency plugin -->

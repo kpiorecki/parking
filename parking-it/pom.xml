@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.kpiorecki.parking</groupId>
+		<artifactId>parking-parent</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>parking-it</artifactId>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>parking-ear</artifactId>
+			<version>${project.version}</version>
+			<type>ear</type>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-dependency-plugin</artifactId> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <id>unpack</id> -->
+			<!-- <phase>test</phase> -->
+			<!-- <goals> -->
+			<!-- <goal>unpack</goal> -->
+			<!-- </goals> -->
+			<!-- <configuration> -->
+			<!-- <artifactItems> -->
+			<!-- <artifactItem> -->
+			<!-- <groupId>${project.groupId}</groupId> -->
+			<!-- <artifactId>parking-ear</artifactId> -->
+			<!-- <version>${project.version}</version> -->
+			<!-- <type>ear</type> -->
+			<!-- <overWrite>true</overWrite> -->
+			<!-- <outputDirectory> -->
+			<!-- ${project.build.directory}/aaa -->
+			<!-- </outputDirectory> -->
+			<!-- <excludes>**/logback.xml</excludes> -->
+			<!-- </artifactItem> -->
+			<!-- </artifactItems> -->
+			<!-- <overWriteReleases>true</overWriteReleases> -->
+			<!-- <overWriteSnapshots>true</overWriteSnapshots> -->
+			<!-- </configuration> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<!-- <transformers> -->
+							<!-- <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer"> -->
+							<!-- <resource>META-INF/spring.handlers</resource> -->
+							<!-- </transformer> -->
+							<!-- <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer"> -->
+							<!-- <resource>META-INF/spring.schemas</resource> -->
+							<!-- </transformer> -->
+							<!-- <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"> -->
+							<!-- <mainClass>com.vattenfall.vet.sto3.asbidder.client.Main</mainClass> -->
+							<!-- </transformer> -->
+							<!-- </transformers> -->
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-surefire-plugin</artifactId> -->
+			<!-- <configuration> -->
+			<!-- <excludes> -->
+			<!-- <exclude>**</exclude> -->
+			<!-- </excludes> -->
+			<!-- </configuration> -->
+			<!-- </plugin> -->
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-failsafe-plugin</artifactId> -->
+			<!-- <version>2.6</version> -->
+			<!-- <configuration> -->
+			<!-- <includes> -->
+			<!-- <include>**/integration/**</include> -->
+			<!-- </includes> -->
+			<!-- </configuration> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <id>integration-test</id> -->
+			<!-- <phase>integration-test</phase> -->
+			<!-- <goals> -->
+			<!-- <goal>integration-test</goal> -->
+			<!-- <goal>verify</goal> -->
+			<!-- </goals> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
+			<plugin>
+				<groupId>org.glassfish.embedded</groupId>
+				<artifactId>maven-embedded-glassfish-plugin</artifactId>
+				<configuration>
+					<!-- <app>target/${project.artifactId}-${project.version}</app> -->
+					<app>target/${project.artifactId}-${project.version}.jar</app>
+					<name>parking</name>
+					<contextRoot>parking</contextRoot>
+					<autoDelete>true</autoDelete>
+					<ports>
+						<http-listener>8080</http-listener>
+						<https-listener>8181</https-listener>
+					</ports>
+				</configuration>
+				<!-- <executions> -->
+				<!-- <execution> -->
+				<!-- <id>start-glassfish</id> -->
+				<!-- <phase>pre-integration-test</phase> -->
+				<!-- <goals> -->
+				<!-- <goal>start</goal> -->
+				<!-- </goals> -->
+				<!-- </execution> -->
+				<!-- <execution> -->
+				<!-- <id>glassfish-deploy</id> -->
+				<!-- <phase>pre-integration-test</phase> -->
+				<!-- <goals> -->
+				<!-- <goal>deploy</goal> -->
+				<!-- </goals> -->
+				<!-- </execution> -->
+				<!-- <execution> -->
+				<!-- <id>glassfish-undeploy</id> -->
+				<!-- <phase>post-integration-test</phase> -->
+				<!-- <goals> -->
+				<!-- <goal>undeploy</goal> -->
+				<!-- </goals> -->
+				<!-- </execution> -->
+				<!-- <execution> -->
+				<!-- <id>stop-glassfish</id> -->
+				<!-- <phase>post-integration-test</phase> -->
+				<!-- <goals> -->
+				<!-- <goal>stop</goal> -->
+				<!-- </goals> -->
+				<!-- </execution> -->
+				<!-- </executions> -->
+			</plugin>
+
+			<!-- <plugin> -->
+			<!-- <groupId>org.codehaus.cargo</groupId> -->
+			<!-- <artifactId>cargo-maven2-plugin</artifactId> -->
+			<!-- <version>1.0.5</version> -->
+			<!-- <configuration> -->
+			<!-- <container> -->
+			<!-- <append>false</append> -->
+			<!-- <containerId>jboss51x</containerId> -->
+			<!-- <log>${project.build.directory}/logs/jboss51x.log</log> -->
+			<!-- <output>${project.build.directory}/logs/jboss51x.out</output> -->
+			<!-- <timeout>60000</timeout> -->
+			<!-- <zipUrlInstaller> -->
+			<!-- <installDir>${project.build.directory}/JBoss</installDir> -->
+			<!-- <url>http://downloads.sourceforge.net/project/jboss/JBoss/JBoss-5.1.0.GA/jboss-5.1.0.GA-jdk6.zip</url> -->
+			<!-- </zipUrlInstaller> -->
+			<!-- </container> -->
+			<!-- <configuration> -->
+			<!-- <type>standalone</type> -->
+			<!-- <home>${project.build.directory}/integration-test</home> -->
+			<!-- <properties> -->
+			<!-- <cargo.servlet.port>8080</cargo.servlet.port> -->
+			<!-- <cargo.jboss.configuration>default</cargo.jboss.configuration> -->
+			<!-- <cargo.rmi.port>1099</cargo.rmi.port> -->
+			<!-- <cargo.logging>high</cargo.logging> -->
+			<!-- </properties> -->
+			<!-- <deployables> -->
+			<!-- <deployable> -->
+			<!-- <groupId>se.sigma.educational.maven.integration.test</groupId> -->
+			<!-- <artifactId>ear</artifactId> -->
+			<!-- <type>ear</type> -->
+			<!-- </deployable> -->
+			<!-- </deployables> -->
+			<!-- </configuration> -->
+			<!-- <wait>false</wait> -->
+			<!-- </configuration> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <id>start-container</id> -->
+			<!-- <phase>pre-integration-test</phase> -->
+			<!-- <goals> -->
+			<!-- <goal>start</goal> -->
+			<!-- </goals> -->
+			<!-- </execution> -->
+			<!-- <execution> -->
+			<!-- <id>stop-container</id> -->
+			<!-- <phase>post-integration-test</phase> -->
+			<!-- <goals> -->
+			<!-- <goal>stop</goal> -->
+			<!-- </goals> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
+		</plugins>
+	</build>
+
+	<!-- <build> -->
+	<!-- <plugins> -->
+	<!-- <plugin> -->
+	<!-- <groupId>org.glassfish.embedded</groupId> -->
+	<!-- <artifactId>maven-embedded-glassfish-plugin</artifactId> -->
+	<!-- <configuration> -->
+	<!-- <app>target/${project.artifactId}-${project.version}</app> -->
+	<!-- <name>parking</name> -->
+	<!-- <contextRoot>parking</contextRoot> -->
+	<!-- <autoDelete>true</autoDelete> -->
+	<!-- <ports> -->
+	<!-- <http-listener>8080</http-listener> -->
+	<!-- <https-listener>8181</https-listener> -->
+	<!-- </ports> -->
+	<!-- </configuration> -->
+	<!-- </plugin> -->
+	<!-- </plugins> -->
+	<!-- </build> -->
+
+</project>

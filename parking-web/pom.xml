@@ -46,31 +46,21 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.glassfish.embedded</groupId>
-				<artifactId>maven-embedded-glassfish-plugin</artifactId>
-				<configuration>
-					<app>target/${project.artifactId}-${project.version}</app>
-					<name>parking</name>
-					<contextRoot>parking</contextRoot>
-					<autoDelete>true</autoDelete>
-					<ports>
-						<http-listener>8080</http-listener>
-						<https-listener>8181</https-listener>
-					</ports>
-					<glassfishProperties>
-						<property>glassfish.embedded.tmpdir=${project.build.directory}/glassfish-embedded</property>
-					</glassfishProperties>
+					<configuration>
+						<archive>
+<!-- 							<manifest> -->
+<!-- 								<addClasspath>true</addClasspath> -->
+<!-- 								<classpathPrefix>lib/</classpathPrefix> -->
+<!-- 							</manifest> -->
+							<manifestEntries>
+								<Class-Path>parking-ejb-${project.version}.jar</Class-Path>
+								<Class-Path>slf4j-api-${slf4j-version}.jar</Class-Path>
+								<Class-Path>jul-to-slf4j-${slf4j-version}.jar</Class-Path>
+								<Class-Path>logback-classic-${logback-version}.jar</Class-Path>
+								<Class-Path>logback-core-${logback-version}.jar</Class-Path>
+							</manifestEntries>
+						</archive>
+					</configuration>
 				</configuration>
 			</plugin>
 		</plugins>
