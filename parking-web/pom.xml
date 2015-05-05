@@ -21,6 +21,7 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>parking-ejb</artifactId>
 			<version>${project.version}</version>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -46,22 +47,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<!-- <packagingExcludes>%regex[WEB-INF/lib/(?!primefaces).*.jar]</packagingExcludes> -->
-					<!-- <packagingExcludes>%regex[WEB-INF/lib/parking-ejb-1.0-SNAPSHOT.jar]</packagingExcludes> -->
-<!-- 					<packagingExcludes>WEB-INF/lib/parking-ejb-${project.version}.jar</packagingExcludes> -->
-					<packagingExcludes>%regex[WEB-INF/lib/.*.jar]</packagingExcludes>
-
 					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-						</manifest>
 						<manifestEntries>
 							<Class-Path>parking-ejb-${project.version}.jar</Class-Path>
-							<!-- <Class-Path>slf4j-api-${slf4j-version}.jar</Class-Path> -->
-							<!-- <Class-Path>jul-to-slf4j-${slf4j-version}.jar</Class-Path> -->
-							<!-- <Class-Path>logback-classic-${logback-version}.jar</Class-Path> -->
-							<!-- <Class-Path>logback-core-${logback-version}.jar</Class-Path> -->
 						</manifestEntries>
 					</archive>
 				</configuration>

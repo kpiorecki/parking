@@ -43,7 +43,6 @@
 				<configuration>
 					<app>target/${project.artifactId}-${project.version}.${project.packaging}</app>
 					<name>parking</name>
-					<contextRoot>parking</contextRoot>
 					<autoDelete>true</autoDelete>
 					<ports>
 						<http-listener>8080</http-listener>

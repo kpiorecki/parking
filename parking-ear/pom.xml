@@ -15,16 +15,16 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>parking-web</artifactId>
+			<artifactId>parking-ejb</artifactId>
 			<version>${project.version}</version>
-			<type>war</type>
+			<type>ejb</type>
 		</dependency>
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>parking-ejb</artifactId>
+			<artifactId>parking-web</artifactId>
 			<version>${project.version}</version>
-			<type>ejb</type>
+			<type>war</type>
 		</dependency>
 	</dependencies>
 
@@ -40,6 +40,7 @@
 						<webModule>
 							<groupId>${project.groupId}</groupId>
 							<artifactId>parking-web</artifactId>
+							<contextRoot>/parking</contextRoot>
 						</webModule>
 						<ejbModule>
 							<groupId>${project.groupId}</groupId>
