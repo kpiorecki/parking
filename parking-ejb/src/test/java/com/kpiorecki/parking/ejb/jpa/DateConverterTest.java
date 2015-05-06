@@ -13,7 +13,6 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -32,8 +31,8 @@ public class DateConverterTest {
 	public static Archive<?> createDeployment() {
 		return ShrinkWrap
 				.create(JavaArchive.class)
-				.addAsResource("test-persistence.xml", "META-INF/persistence.xml")
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+				.addAsManifestResource("test-persistence.xml", "persistence.xml")
+				.addAsManifestResource("META-INF/beans.xml", "beans.xml")
 				.addClasses(DateEntity.class, JodaDateTimeConverter.class, JodaLocalDateConverter.class,
 						ResourceProducer.class);
 	}

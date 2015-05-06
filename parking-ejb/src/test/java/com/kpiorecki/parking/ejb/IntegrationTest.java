@@ -6,7 +6,6 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.runner.RunWith;
 
@@ -16,8 +15,8 @@ public abstract class IntegrationTest extends GreenMailTest {
 
 	@Deployment
 	public static Archive<?> createDeployment() {
-		return ShrinkWrap.create(JavaArchive.class).addAsResource("test-persistence.xml", "META-INF/persistence.xml")
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+		return ShrinkWrap.create(JavaArchive.class).addAsManifestResource("test-persistence.xml", "persistence.xml")
+				.addAsManifestResource("META-INF/beans.xml", "beans.xml")
 				.addPackages(true, Package.getPackage("com.kpiorecki.parking.ejb"));
 	}
 }
