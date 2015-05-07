@@ -12,8 +12,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -21,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.kpiorecki.parking.ejb.ArquillianFactory;
 import com.kpiorecki.parking.ejb.util.ResourceProducer;
 
 @RunWith(Arquillian.class)
@@ -29,12 +28,8 @@ public class DateConverterTest {
 
 	@Deployment
 	public static Archive<?> createDeployment() {
-		return ShrinkWrap
-				.create(JavaArchive.class)
-				.addAsManifestResource("test-persistence.xml", "persistence.xml")
-				.addAsManifestResource("META-INF/beans.xml", "beans.xml")
-				.addClasses(DateEntity.class, JodaDateTimeConverter.class, JodaLocalDateConverter.class,
-						ResourceProducer.class);
+		return ArquillianFactory.createBasePersistenceDeployment().addClasses(DateEntity.class,
+				JodaDateTimeConverter.class, JodaLocalDateConverter.class, ResourceProducer.class);
 	}
 
 	@Inject

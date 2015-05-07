@@ -3,7 +3,6 @@ package com.kpiorecki.parking.web.servlet;
 import java.io.IOException;
 
 import javax.inject.Inject;
-import javax.mail.Session;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,13 +27,10 @@ public class SampleServlet extends HttpServlet {
 	@DateFormatter
 	private DateTimeFormatter dateFormatter;
 
-	@Inject
-	private Session mailSession;
-
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String dateString = new DateTime().toString(dateFormatter);
-		String logMessage = "Sample invocation at " + dateString + " mailSession=" + mailSession.toString();
+		String logMessage = "Sample invocation at " + dateString;
 
 		logger.info(logMessage);
 

@@ -9,8 +9,6 @@ import javax.mail.internet.MimeMessage;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
@@ -19,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 
 import com.icegreen.greenmail.util.GreenMailUtil;
+import com.kpiorecki.parking.ejb.ArquillianFactory;
 import com.kpiorecki.parking.ejb.GreenMailTest;
 import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.entity.Booking;
@@ -33,8 +32,7 @@ public class BookingEventHandlerTest extends GreenMailTest {
 
 	@Deployment
 	public static Archive<?> createDeployment() {
-		return ShrinkWrap.create(JavaArchive.class).addAsManifestResource("META-INF/beans.xml", "beans.xml")
-				.addClasses(BookingEventHandler.class, TestUtilities.class)
+		return ArquillianFactory.createBaseDeployment().addClasses(BookingEventHandler.class, TestUtilities.class)
 				.addPackage(ResourceProducer.class.getPackage());
 	}
 

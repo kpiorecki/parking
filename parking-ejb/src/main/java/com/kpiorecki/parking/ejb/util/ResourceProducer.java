@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+//import javax.annotation.Resource;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Singleton;
@@ -21,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
 
-@Singleton
 public class ResourceProducer {
 
 	@PersistenceContext
@@ -29,7 +29,7 @@ public class ResourceProducer {
 	EntityManager entityManager;
 
 	@Produces
-	@Resource(name = "mail/session")
+	@Resource(lookup = "java:app/mail/session")
 	Session mailSession;
 
 	@Produces
