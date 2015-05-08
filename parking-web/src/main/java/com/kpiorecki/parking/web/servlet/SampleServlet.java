@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 
 import com.kpiorecki.parking.ejb.util.DateFormatter;
 
-@WebServlet(value = "/sample", name = "hello-sample")
+@WebServlet(value = "/sample")
 public class SampleServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
