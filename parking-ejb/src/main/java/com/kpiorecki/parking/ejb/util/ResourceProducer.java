@@ -24,7 +24,7 @@ import freemarker.template.TemplateExceptionHandler;
 
 public class ResourceProducer {
 
-	@PersistenceContext
+	@PersistenceContext(unitName = "parkingPU")
 	@Produces
 	EntityManager entityManager;
 

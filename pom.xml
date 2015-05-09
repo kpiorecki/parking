@@ -31,8 +31,9 @@
 		<compiler-plugin-version>3.2</compiler-plugin-version>
 		<surefire-plugin-version>2.18.1</surefire-plugin-version>
 		<dependency-plugin-version>2.10</dependency-plugin-version>
+		<truezip-plugin-version>1.2</truezip-plugin-version>
+		<assembly-plugin-version>2.5.4</assembly-plugin-version>
 		<build-helper-plugin-version>1.9.1</build-helper-plugin-version>
-		<shade-plugin-version>2.3</shade-plugin-version>
 		<embedded-glassfish-plugin-version>3.1.2.2</embedded-glassfish-plugin-version>
 
 		<!-- dependency versions -->
@@ -209,18 +210,25 @@
 					<version>${dependency-plugin-version}</version>
 				</plugin>
 
+				<!-- maven truezip plugin -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>truezip-maven-plugin</artifactId>
+					<version>${truezip-plugin-version}</version>
+				</plugin>
+
+				<!-- maven assembly plugin -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>${assembly-plugin-version}</version>
+				</plugin>
+
 				<!-- maven build-helper plugin -->
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>build-helper-maven-plugin</artifactId>
 					<version>${build-helper-plugin-version}</version>
-				</plugin>
-
-				<!-- maven shade plugin -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-shade-plugin</artifactId>
-					<version>${shade-plugin-version}</version>
 				</plugin>
 
 				<!-- maven embedded-glassfish plugin -->
