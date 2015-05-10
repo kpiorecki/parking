@@ -11,19 +11,32 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import org.dozer.Mapper;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
+import org.jboss.arquillian.transaction.api.annotation.Transactional;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.kpiorecki.parking.ejb.IntegrationTest;
+import com.kpiorecki.parking.ejb.ArquillianFactory;
 import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.dao.ParkingDao;
 import com.kpiorecki.parking.ejb.dao.UserDao;
 import com.kpiorecki.parking.ejb.dto.UserDto;
 import com.kpiorecki.parking.ejb.entity.User;
 import com.kpiorecki.parking.ejb.entity.User_;
-import com.kpiorecki.parking.ejb.service.user.UserService;
 
-public class UserServiceTest extends IntegrationTest {
+@RunWith(Arquillian.class)
+@Transactional(TransactionMode.ROLLBACK)
+public class UserServiceTest {
+
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return ArquillianFactory.createBasePersistenceDeployment().addPackages(true,
+				Package.getPackage("com.kpiorecki.parking.ejb"));
+	}
 
 	@Inject
 	private UserService userService;

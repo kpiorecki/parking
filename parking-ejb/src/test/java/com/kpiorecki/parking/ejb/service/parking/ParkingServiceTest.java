@@ -12,11 +12,17 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import org.dozer.Mapper;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
+import org.jboss.arquillian.transaction.api.annotation.Transactional;
+import org.jboss.shrinkwrap.api.Archive;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.kpiorecki.parking.ejb.IntegrationTest;
+import com.kpiorecki.parking.ejb.ArquillianFactory;
 import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.dao.BookingDao;
 import com.kpiorecki.parking.ejb.dto.AddressDto;
@@ -25,9 +31,16 @@ import com.kpiorecki.parking.ejb.dto.RecordDto;
 import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.User;
-import com.kpiorecki.parking.ejb.service.parking.ParkingService;
 
-public class ParkingServiceTest extends IntegrationTest {
+@RunWith(Arquillian.class)
+@Transactional(TransactionMode.ROLLBACK)
+public class ParkingServiceTest {
+
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return ArquillianFactory.createBasePersistenceDeployment().addPackages(true,
+				Package.getPackage("com.kpiorecki.parking.ejb"));
+	}
 
 	@Inject
 	private ParkingService parkingService;

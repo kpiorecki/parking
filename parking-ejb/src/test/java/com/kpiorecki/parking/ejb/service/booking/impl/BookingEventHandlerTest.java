@@ -25,15 +25,17 @@ import com.kpiorecki.parking.ejb.entity.Booking.Status;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.User;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
+import com.kpiorecki.parking.ejb.util.MailSender;
 import com.kpiorecki.parking.ejb.util.ResourceProducer;
+import com.kpiorecki.parking.ejb.util.UuidGenerator;
 
 @RunWith(Arquillian.class)
 public class BookingEventHandlerTest extends GreenMailTest {
 
 	@Deployment
 	public static Archive<?> createDeployment() {
-		return ArquillianFactory.createBaseDeployment().addClasses(BookingEventHandler.class, TestUtilities.class)
-				.addPackage(ResourceProducer.class.getPackage());
+		return ArquillianFactory.createBaseDeployment().addClasses(BookingEventHandler.class, TestUtilities.class,
+				ResourceProducer.class, UuidGenerator.class, MailSender.class);
 	}
 
 	@Inject

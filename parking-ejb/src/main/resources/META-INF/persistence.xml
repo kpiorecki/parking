@@ -13,6 +13,9 @@
 		<class>com.kpiorecki.parking.ejb.entity.Record</class>
 		<class>com.kpiorecki.parking.ejb.entity.User</class>
 
+		<class>com.kpiorecki.parking.ejb.jpa.JodaDateTimeConverter</class>
+		<class>com.kpiorecki.parking.ejb.jpa.JodaLocalDateConverter</class>
+
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
 
