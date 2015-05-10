@@ -14,6 +14,7 @@
 
 	<properties>
 		<unpacked-ear-dir>${project.build.directory}/unpacked-ear</unpacked-ear-dir>
+		<greenmail-dir>${project.build.directory}/greenmail</greenmail-dir>
 		<embedded-resources-dir>${basedir}/src/main/resources</embedded-resources-dir>
 		<embedded-assembly-id>embedded</embedded-assembly-id>
 	</properties>
@@ -25,6 +26,11 @@
 			<version>${project.version}</version>
 			<type>ear</type>
 		</dependency>
+		<dependency>
+			<groupId>com.icegreen</groupId>
+			<artifactId>greenmail-webapp</artifactId>
+			<type>war</type>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -32,8 +38,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
+					<!-- unpack ear dependency content into target directory -->
 					<execution>
-						<!-- unpack ear dependency content into target directory -->
+						<id>unpack-ear</id>
 						<phase>generate-resources</phase>
 						<goals>
 							<goal>unpack</goal>
@@ -51,14 +58,37 @@
 							</artifactItems>
 						</configuration>
 					</execution>
+
+					<!-- copy greenmail dependency content into target directory -->
+					<execution>
+						<id>copy-greenmail</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.icegreen</groupId>
+									<artifactId>greenmail-webapp</artifactId>
+									<version>${greenmail-version}</version>
+									<type>war</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${greenmail-dir}</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>truezip-maven-plugin</artifactId>
 				<executions>
+					<!-- overwrite persistence.xml with its embedded version in ear's parking-ejb module jar -->
 					<execution>
-						<!-- overwrite persistence.xml with its embedded version in ear's parking-ejb module jar -->
+						<id>copy-persistence-xml</id>
 						<phase>generate-resources</phase>
 						<goals>
 							<goal>copy</goal>
@@ -75,12 +105,13 @@
 					</execution>
 				</executions>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
+					<!-- assemble embedded ear zip archive with overwritten persistence.xml and glassfish-resources.xml -->
 					<execution>
-						<!-- assemble embedded ear zip archive with overwritten persistence.xml and glassfish-resources.xml -->
 						<id>make-assembly</id>
 						<phase>package</phase>
 						<goals>
@@ -94,19 +125,77 @@
 					</descriptors>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.glassfish.embedded</groupId>
 				<artifactId>maven-embedded-glassfish-plugin</artifactId>
 				<configuration>
-					<!-- create embedded glassfish instance with assembled archive -->
-					<app>target/${project.artifactId}-${project.version}-${embedded-assembly-id}.zip</app>
-					<name>embedded-parking</name>
+					<app>${project.build.directory}/${project.artifactId}-${project.version}-${embedded-assembly-id}.zip</app>
+					<name>parking</name>
+					<serverID>embedded</serverID>
 					<autoDelete>true</autoDelete>
 					<ports>
 						<http-listener>8080</http-listener>
 						<https-listener>8181</https-listener>
 					</ports>
 				</configuration>
+				<executions>
+					<!-- start embedded glassfish server -->
+					<execution>
+						<id>start-server</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+
+					<!-- deploy greenmail (goal specific configuration) -->
+					<execution>
+						<id>deploy-greenmail</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+						<configuration>
+							<app>${greenmail-dir}/greenmail-webapp-${greenmail-version}.war</app>
+							<name>greenmail</name>
+							<contextRoot>greenmail</contextRoot>
+							<deploymentParams>
+								<param>--verify=true</param>
+							</deploymentParams>
+						</configuration>
+					</execution>
+
+					<!-- deploy parking (plugin level configuration), will be automatically undeployed when finished -->
+					<execution>
+						<id>run-parking</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+
+					<!-- undeploy greenmail webapp -->
+					<execution>
+						<id>undeploy-greenmail</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>undeploy</goal>
+						</goals>
+						<configuration>
+							<name>greenmail</name>
+						</configuration>
+					</execution>
+
+					<!-- stop embedded glassfish server -->
+					<execution>
+						<id>stop-server</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

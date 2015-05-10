@@ -101,15 +101,22 @@ public class MailSender {
 	}
 
 	private MimeBodyPart createImagePart(String imageId, Image image) throws Exception {
-		InputStream imageStream = getClass().getResourceAsStream(image.getFilePath());
-		DataSource dataSource = new ByteArrayDataSource(imageStream, image.getMimeType());
+		InputStream imageStream = null;
+		try {
+			imageStream = getClass().getResourceAsStream(image.getFilePath());
+			DataSource dataSource = new ByteArrayDataSource(imageStream, image.getMimeType());
 
-		MimeBodyPart imagePart = new MimeBodyPart();
-		imagePart.setContentID("<" + imageId + ">");
-		imagePart.setDisposition(MimeBodyPart.INLINE);
-		imagePart.setDataHandler(new DataHandler(dataSource));
+			MimeBodyPart imagePart = new MimeBodyPart();
+			imagePart.setContentID("<" + imageId + ">");
+			imagePart.setDisposition(MimeBodyPart.INLINE);
+			imagePart.setDataHandler(new DataHandler(dataSource));
 
-		return imagePart;
+			return imagePart;
+		} finally {
+			if (imageStream != null) {
+				imageStream.close();
+			}
+		}
 	}
 
 	private void addImageSizeParameters(Map<String, Object> parameters, Image image, String imageId) {

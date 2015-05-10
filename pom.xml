@@ -39,7 +39,7 @@
 		<!-- dependency versions -->
 		<javaee-api-version>7.0</javaee-api-version>
 		<junit-version>4.12</junit-version>
-		<greenmail-version>1.4.0</greenmail-version>
+		<greenmail-version>1.4.1</greenmail-version>
 		<guava-version>18.0</guava-version>
 		<freemarker-version>2.3.22</freemarker-version>
 		<slf4j-version>1.7.10</slf4j-version>
@@ -72,6 +72,12 @@
 				<groupId>com.icegreen</groupId>
 				<artifactId>greenmail</artifactId>
 				<version>${greenmail-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.icegreen</groupId>
+				<artifactId>greenmail-webapp</artifactId>
+				<version>${greenmail-version}</version>
+				<type>war</type>
 			</dependency>
 			<dependency>
 				<groupId>com.google.guava</groupId>

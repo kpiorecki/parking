@@ -97,8 +97,9 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<executions>
+					<!-- add folder with generated java code into project source -->
 					<execution>
-						<id>add-source</id>
+						<id>add-java-generated-source</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>add-source</goal>

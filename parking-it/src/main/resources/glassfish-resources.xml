@@ -13,6 +13,6 @@
 
 	<mail-resource jndi-name="java:app/mail/session" host="localhost" user="parking-embedded" from="parking@embedded.com"
 		transport-protocol="smtp">
-		<property name="mail-smtp-port" value="3025" />
+		<property name="mail-smtp-port" value="10025" />
 	</mail-resource>
 </resources>
