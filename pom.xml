@@ -31,6 +31,7 @@
 		<compiler-plugin-version>3.2</compiler-plugin-version>
 		<surefire-plugin-version>2.18.1</surefire-plugin-version>
 		<dependency-plugin-version>2.10</dependency-plugin-version>
+		<properties-plugin-version>1.0-alpha-2</properties-plugin-version>
 		<truezip-plugin-version>1.2</truezip-plugin-version>
 		<assembly-plugin-version>2.5.4</assembly-plugin-version>
 		<build-helper-plugin-version>1.9.1</build-helper-plugin-version>
@@ -207,6 +208,13 @@
 					<configuration>
 						<failOnMissingWebXml>false</failOnMissingWebXml>
 					</configuration>
+				</plugin>
+
+				<!-- maven properties plugin -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>properties-maven-plugin</artifactId>
+					<version>${properties-plugin-version}</version>
 				</plugin>
 
 				<!-- maven dependency plugin -->

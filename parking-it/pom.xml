@@ -37,6 +37,36 @@
 			<build>
 				<plugins>
 					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>properties-maven-plugin</artifactId>
+						<executions>
+							<!-- set system properties used by embedded glassfish plugin -->
+							<execution>
+								<id>set-glassfish-properties</id>
+								<goals>
+									<goal>set-system-properties</goal>
+								</goals>
+								<configuration>
+									<properties>
+										<property>
+											<name>glassfish.embedded.tmpdir</name>
+											<value>${project.build.directory}</value>
+										</property>
+										<property>
+											<name>derby.system.home</name>
+											<value>${project.build.directory}</value>
+										</property>
+										<property>
+											<name>derby.stream.error.file</name>
+											<value>${project.build.directory}/derby/log/derby-error.log</value>
+										</property>
+									</properties>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-dependency-plugin</artifactId>
 						<executions>
@@ -140,11 +170,6 @@
 								<http-listener>8080</http-listener>
 								<https-listener>8181</https-listener>
 							</ports>
-							<systemProperties>
-								<property>glassfish.embedded.tmpdir=${project.build.directory}</property>
-								<property>derby.system.home=${project.build.directory}</property>
-								<property>derby.stream.error.file=${project.build.directory}/derby/log/derby-error.log</property>
-							</systemProperties>
 						</configuration>
 						<executions>
 							<!-- start embedded glassfish server -->
