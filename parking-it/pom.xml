@@ -141,9 +141,9 @@
 								<https-listener>8181</https-listener>
 							</ports>
 							<systemProperties>
-								<property>glassfish.embedded.tmpdir=${project.build.directory}/glassfish-embedded</property>
+								<property>glassfish.embedded.tmpdir=${project.build.directory}</property>
 								<property>derby.system.home=${project.build.directory}</property>
-								<property>derby.stream.error.file=${project.build.directory}/derby/log/derby.log</property>
+								<property>derby.stream.error.file=${project.build.directory}/derby/log/derby-error.log</property>
 							</systemProperties>
 						</configuration>
 						<executions>

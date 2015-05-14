@@ -120,8 +120,8 @@
 					<reuseForks>false</reuseForks>
 					<redirectTestOutputToFile>false</redirectTestOutputToFile>
 					<systemPropertyVariables>
-						<glassfish.embedded.tmpdir>${project.build.directory}/glassfish-embedded</glassfish.embedded.tmpdir>
-						<derby.stream.error.file>${project.build.directory}/derby/log/derby.log</derby.stream.error.file>
+						<glassfish.embedded.tmpdir>${project.build.directory}</glassfish.embedded.tmpdir>
+						<derby.stream.error.file>${project.build.directory}/derby/log/derby-error.log</derby.stream.error.file>
 						<java.util.logging.config.file>${project.build.testOutputDirectory}/test-logging.properties</java.util.logging.config.file>
 						<logback.configurationFile>${project.build.testOutputDirectory}/test-logback.xml</logback.configurationFile>
 					</systemPropertyVariables>
