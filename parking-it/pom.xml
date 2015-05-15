@@ -162,69 +162,48 @@
 						<groupId>org.glassfish.embedded</groupId>
 						<artifactId>maven-embedded-glassfish-plugin</artifactId>
 						<configuration>
-							<app>${project.build.directory}/${project.artifactId}-${project.version}-${embedded-assembly-id}.zip</app>
-							<name>parking</name>
-							<serverID>embedded</serverID>
 							<autoDelete>true</autoDelete>
+							<serverID>embedded</serverID>
 							<ports>
 								<http-listener>8080</http-listener>
 								<https-listener>8181</https-listener>
 							</ports>
 						</configuration>
 						<executions>
-							<!-- start embedded glassfish server -->
-							<execution>
-								<id>start-server</id>
-								<phase>pre-integration-test</phase>
-								<goals>
-									<goal>start</goal>
-								</goals>
-							</execution>
+							<!-- 'deploy' goals have overwritten phase to none, since they are invoked by 'run' goal -->
+							<!-- (without that applications were deployed twice in 'pre-integration-test' phase) -->
 
-							<!-- deploy greenmail (goal specific configuration) -->
+							<!-- deploy greenmail application -->
 							<execution>
 								<id>deploy-greenmail</id>
-								<phase>pre-integration-test</phase>
+								<phase></phase>
 								<goals>
 									<goal>deploy</goal>
 								</goals>
 								<configuration>
-									<app>${greenmail-dir}/greenmail-webapp-${greenmail-version}.war</app>
 									<name>greenmail</name>
-									<contextRoot>greenmail</contextRoot>
-									<deploymentParams>
-										<param>--verify=true</param>
-									</deploymentParams>
+									<app>${greenmail-dir}/greenmail-webapp-${greenmail-version}.war</app>
 								</configuration>
 							</execution>
 
-							<!-- deploy parking (plugin level configuration), will be automatically undeployed when finished -->
+							<!-- deploy parking application -->
 							<execution>
-								<id>run-parking</id>
-								<phase>integration-test</phase>
+								<id>deploy-parking</id>
+								<phase></phase>
 								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-
-							<!-- undeploy greenmail webapp -->
-							<execution>
-								<id>undeploy-greenmail</id>
-								<phase>post-integration-test</phase>
-								<goals>
-									<goal>undeploy</goal>
+									<goal>deploy</goal>
 								</goals>
 								<configuration>
-									<name>greenmail</name>
+									<name>parking</name>
+									<app>${project.build.directory}/${project.artifactId}-${project.version}-${embedded-assembly-id}.zip</app>
 								</configuration>
 							</execution>
 
-							<!-- stop embedded glassfish server -->
+							<!-- run deployed applications -->
 							<execution>
-								<id>stop-server</id>
-								<phase>post-integration-test</phase>
+								<id>run-embedded</id>
 								<goals>
-									<goal>stop</goal>
+									<goal>run</goal>
 								</goals>
 							</execution>
 						</executions>

@@ -35,7 +35,7 @@
 		<truezip-plugin-version>1.2</truezip-plugin-version>
 		<assembly-plugin-version>2.5.4</assembly-plugin-version>
 		<build-helper-plugin-version>1.9.1</build-helper-plugin-version>
-		<embedded-glassfish-plugin-version>3.1.2.2</embedded-glassfish-plugin-version>
+		<embedded-glassfish-plugin-version>4.0</embedded-glassfish-plugin-version>
 
 		<!-- dependency versions -->
 		<javaee-api-version>7.0</javaee-api-version>
@@ -260,6 +260,11 @@
 							<groupId>org.glassfish.main.extras</groupId>
 							<artifactId>glassfish-embedded-all</artifactId>
 							<version>${glassfish-version}</version>
+						</dependency>
+						<dependency>
+							<groupId>junit</groupId>
+							<artifactId>junit</artifactId>
+							<version>${junit-version}</version>
 						</dependency>
 					</dependencies>
 				</plugin>
