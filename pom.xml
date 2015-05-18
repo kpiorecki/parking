@@ -40,6 +40,7 @@
 		<!-- dependency versions -->
 		<javaee-api-version>7.0</javaee-api-version>
 		<primefaces-version>5.2</primefaces-version>
+		<preetyfaces-version>2.0.12.Final</preetyfaces-version>
 		<junit-version>4.12</junit-version>
 		<greenmail-version>1.4.1</greenmail-version>
 		<guava-version>18.0</guava-version>
@@ -69,6 +70,16 @@
 				<groupId>org.primefaces</groupId>
 				<artifactId>primefaces</artifactId>
 				<version>${primefaces-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ocpsoft.rewrite</groupId>
+				<artifactId>rewrite-servlet</artifactId>
+				<version>${preetyfaces-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ocpsoft.rewrite</groupId>
+				<artifactId>rewrite-config-prettyfaces</artifactId>
+				<version>${preetyfaces-version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
