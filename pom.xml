@@ -39,6 +39,7 @@
 
 		<!-- dependency versions -->
 		<javaee-api-version>7.0</javaee-api-version>
+		<primefaces-version>5.2</primefaces-version>
 		<junit-version>4.12</junit-version>
 		<greenmail-version>1.4.1</greenmail-version>
 		<guava-version>18.0</guava-version>
@@ -63,6 +64,11 @@
 				<groupId>javax</groupId>
 				<artifactId>javaee-api</artifactId>
 				<version>${javaee-api-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.primefaces</groupId>
+				<artifactId>primefaces</artifactId>
+				<version>${primefaces-version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
