@@ -50,6 +50,7 @@ public class TestUtilities {
 		user.setFirstName("firstname");
 		user.setLastName("lastname");
 		user.setEmail(login + "@mail.com");
+		user.setPassword("password");
 		return user;
 	}
 

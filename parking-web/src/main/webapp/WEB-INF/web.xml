@@ -23,4 +23,45 @@
 		<param-value>true</param-value>
 	</context-param>
 
+	<session-config>
+		<session-timeout>15</session-timeout>
+	</session-config>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>jdbc-realm</realm-name>
+		<form-login-config>
+			<form-login-page>/faces/login.xhtml</form-login-page>
+			<form-error-page>/faces/login-error.xhtml</form-error-page>
+		</form-login-config>
+	</login-config>
+
+	<security-constraint>
+		<display-name>admin-pages</display-name>
+		<web-resource-collection>
+			<web-resource-name>admin-area</web-resource-name>
+			<url-pattern>/faces/admin/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+	<security-constraint>
+		<display-name>user-pages</display-name>
+		<web-resource-collection>
+			<web-resource-name>user-area</web-resource-name>
+			<url-pattern>/faces/user/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>user</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+
 </web-app>
+
