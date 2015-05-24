@@ -10,8 +10,7 @@ public class ArquillianFactory {
 	}
 
 	public static WebArchive createBaseDeployment() {
-		return ShrinkWrap.create(WebArchive.class).addAsWebInfResource("META-INF/beans.xml", "beans.xml")
-				.addAsWebInfResource("test-glassfish-resources.xml", "glassfish-resources.xml");
+		return ShrinkWrap.create(WebArchive.class).addAsWebInfResource("META-INF/beans.xml", "beans.xml");
 	}
 
 	public static WebArchive createBasePersistenceDeployment() {

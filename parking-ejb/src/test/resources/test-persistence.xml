@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
 	version="2.1">
 	<persistence-unit name="parkingPU" transaction-type="JTA">
-		<jta-data-source>java:app/jdbc/arquillian</jta-data-source>
+		<jta-data-source>jdbc/parking</jta-data-source>
 		<shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
 		<properties>
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />

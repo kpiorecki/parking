@@ -5,12 +5,12 @@
 
 	<security-role-mapping>
 		<role-name>admin</role-name>
-		<group-name>admin</group-name>
+		<group-name>ADMIN</group-name>
 	</security-role-mapping>
 
 	<security-role-mapping>
 		<role-name>user</role-name>
-		<group-name>user</group-name>
+		<group-name>USER</group-name>
 	</security-role-mapping>
 
 </glassfish-web-app>

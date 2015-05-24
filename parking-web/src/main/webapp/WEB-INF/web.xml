@@ -29,7 +29,7 @@
 
 	<login-config>
 		<auth-method>FORM</auth-method>
-		<realm-name>jdbc-realm</realm-name>
+		<realm-name>parking-realm</realm-name>
 		<form-login-config>
 			<form-login-page>/faces/login.xhtml</form-login-page>
 			<form-error-page>/faces/login-error.xhtml</form-error-page>

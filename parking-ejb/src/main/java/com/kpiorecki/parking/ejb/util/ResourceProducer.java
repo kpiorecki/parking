@@ -8,6 +8,7 @@ import javax.inject.Singleton;
 import javax.mail.Session;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.sql.DataSource;
 
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
@@ -26,7 +27,11 @@ public class ResourceProducer {
 	EntityManager entityManager;
 
 	@Produces
-	@Resource(lookup = "java:app/mail/session")
+	@Resource(lookup = "jdbc/parking")
+	DataSource dataSource;
+
+	@Produces
+	@Resource(lookup = "mail/session")
 	Session mailSession;
 
 	@Produces

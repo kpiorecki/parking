@@ -18,7 +18,7 @@
 			<properties>
 				<unpacked-ear-dir>${project.build.directory}/unpacked-ear</unpacked-ear-dir>
 				<greenmail-dir>${project.build.directory}/greenmail</greenmail-dir>
-				<embedded-resources-dir>${basedir}/src/main/resources</embedded-resources-dir>
+				<config-dir>${project.build.directory}/config</config-dir>
 				<embedded-assembly-id>embedded</embedded-assembly-id>
 			</properties>
 			<dependencies>
@@ -61,6 +61,32 @@
 											<value>${project.build.directory}/derby/log/derby-error.log</value>
 										</property>
 									</properties>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+							<!-- copy domain.xml into target directory -->
+							<execution>
+								<id>copy-domain</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${config-dir}</outputDirectory>
+									<resources>
+										<resource>
+											<directory>${basedir}/src/config</directory>
+											<includes>
+												<include>domain.xml</include>
+											</includes>
+										</resource>
+									</resources>
 								</configuration>
 							</execution>
 						</executions>
@@ -118,20 +144,20 @@
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>truezip-maven-plugin</artifactId>
 						<executions>
-							<!-- overwrite persistence.xml with its embedded version in ear's parking-ejb module jar -->
+							<!-- add sql scripts into parking-ejb module jar -->
 							<execution>
-								<id>copy-persistence-xml</id>
+								<id>copy-sql-scripts</id>
 								<phase>generate-resources</phase>
 								<goals>
 									<goal>copy</goal>
 								</goals>
 								<configuration>
 									<fileset>
-										<directory>${embedded-resources-dir}</directory>
+										<directory>${basedir}/src/scripts</directory>
 										<includes>
-											<include>persistence.xml</include>
+											<include>*</include>
 										</includes>
-										<outputDirectory>${unpacked-ear-dir}/parking-ejb-${project.version}.jar/META-INF</outputDirectory>
+										<outputDirectory>${unpacked-ear-dir}/parking-ejb-${project.version}.jar/db/migration</outputDirectory>
 									</fileset>
 								</configuration>
 							</execution>
@@ -163,7 +189,7 @@
 						<artifactId>maven-embedded-glassfish-plugin</artifactId>
 						<configuration>
 							<autoDelete>true</autoDelete>
-							<serverID>embedded</serverID>
+							<configFile>${config-dir}/domain.xml</configFile>
 							<ports>
 								<http-listener>8080</http-listener>
 								<https-listener>8181</https-listener>

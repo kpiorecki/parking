@@ -10,6 +10,7 @@
 
 	<logger name="com.kpiorecki.parking.ejb" level="debug" />
 	<logger name="org.eclipse.persistence" level="debug" />
+	<logger name="org.flywaydb" level="info" />
 
 	<root level="info">
 		<appender-ref ref="STDOUT" />

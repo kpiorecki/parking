@@ -49,7 +49,7 @@ public class User extends ArchivableEntity implements Serializable {
 
 	@ElementCollection
 	@CollectionTable(name = "user_groups", joinColumns = @JoinColumn(name = "login"))
-	@Column(name = "group", nullable = false)
+	@Column(name = "group_name", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Set<Group> groups = new HashSet<>();
 

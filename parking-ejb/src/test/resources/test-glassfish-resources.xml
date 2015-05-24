@@ -3,15 +3,15 @@
     "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN"
     "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
 <resources>
-	<jdbc-connection-pool name="ArquillianDerbyPool" res-type="javax.sql.DataSource"
-		datasource-classname="org.apache.derby.jdbc.EmbeddedDataSource" is-isolation-level-guaranteed="false">
+	<jdbc-connection-pool name="ParkingPool" res-type="javax.sql.DataSource" datasource-classname="org.apache.derby.jdbc.EmbeddedDataSource"
+		is-isolation-level-guaranteed="false">
 		<property name="databaseName" value="target/derby" />
 		<property name="createDatabase" value="create" />
 	</jdbc-connection-pool>
 
-	<jdbc-resource pool-name="ArquillianDerbyPool" jndi-name="java:app/jdbc/arquillian" />
+	<jdbc-resource pool-name="ParkingPool" jndi-name="jdbc/parking" />
 
-	<mail-resource jndi-name="java:app/mail/session" host="localhost" user="arquillian" from="arquillian@test.com"
+	<mail-resource jndi-name="mail/session" host="localhost" user="parking" from="parking@test.com"
 		transport-protocol="smtp">
 		<property name="mail-smtp-port" value="3025" />
 	</mail-resource>
