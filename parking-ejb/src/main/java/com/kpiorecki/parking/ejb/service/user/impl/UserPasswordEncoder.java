@@ -1,7 +1,6 @@
 package com.kpiorecki.parking.ejb.service.user.impl;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -20,7 +19,7 @@ public class UserPasswordEncoder {
 		byte[] digest = encodeSHA256(plainText);
 		String hexString = encodeHex(digest);
 
-		logger.debug("encoded password to SHA-256={}, Hex={}", digest.toString(), hexString);
+		logger.debug("encoded password to SHA-256 Hex={}", hexString);
 
 		return hexString;
 	}
@@ -38,6 +37,14 @@ public class UserPasswordEncoder {
 	}
 
 	private String encodeHex(byte[] digest) {
-		return new BigInteger(1, digest).toString(16);
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < digest.length; ++i) {
+			String hex = Integer.toHexString(0xff & digest[i]);
+			if (hex.length() == 1) {
+				sb.append('0');
+			}
+			sb.append(hex);
+		}
+		return sb.toString();
 	}
 }

@@ -44,7 +44,7 @@ public class User extends ArchivableEntity implements Serializable {
 	@Column(nullable = false)
 	private String email;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 64)
 	private String password;
 
 	@ElementCollection
