@@ -10,6 +10,7 @@ public class UserDto implements Serializable {
 	private String firstName;
 	private String lastName;
 	private String email;
+	private String password;
 	private Integer version;
 
 	public String getLogin() {
@@ -44,6 +45,14 @@ public class UserDto implements Serializable {
 		this.email = email;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	public Integer getVersion() {
 		return version;
 	}
@@ -69,5 +78,4 @@ public class UserDto implements Serializable {
 
 		return builder.toString();
 	}
-
 }

@@ -26,8 +26,8 @@ import com.kpiorecki.parking.ejb.service.booking.impl.BookingEventHandler;
 import com.kpiorecki.parking.ejb.service.user.UserService;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
 
-@WebServlet(value = "/sample")
-public class SampleServlet extends HttpServlet {
+@WebServlet(value = "/test")
+public class TestServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
@@ -59,6 +59,7 @@ public class SampleServlet extends HttpServlet {
 		user.setLastName("lastname");
 		user.setLogin("login_" + millis);
 		user.setEmail("user_" + millis + "@mail.com");
+		user.setPassword("password");
 
 		userService.addUser(user);
 

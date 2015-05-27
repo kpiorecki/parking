@@ -1,7 +1,10 @@
 package com.kpiorecki.parking.ejb;
 
+import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+
+import com.kpiorecki.parking.ejb.util.DataSourceMigrator;
 
 public class ArquillianFactory {
 
@@ -15,5 +18,10 @@ public class ArquillianFactory {
 
 	public static WebArchive createBasePersistenceDeployment() {
 		return createBaseDeployment().addAsResource("test-persistence.xml", "META-INF/persistence.xml");
+	}
+
+	public static WebArchive createFullDeployment() {
+		return createBasePersistenceDeployment().addPackages(true, Filters.exclude(DataSourceMigrator.class),
+				Package.getPackage("com.kpiorecki.parking.ejb"));
 	}
 }

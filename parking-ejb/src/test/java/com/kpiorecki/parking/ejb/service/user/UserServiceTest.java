@@ -34,8 +34,7 @@ public class UserServiceTest {
 
 	@Deployment
 	public static Archive<?> createDeployment() {
-		return ArquillianFactory.createBasePersistenceDeployment().addPackages(true,
-				Package.getPackage("com.kpiorecki.parking.ejb"));
+		return ArquillianFactory.createFullDeployment();
 	}
 
 	@Inject
@@ -80,6 +79,7 @@ public class UserServiceTest {
 		user.setLastName("lastname");
 		user.setLogin("new login");
 		user.setEmail("user@mail.com");
+		user.setPassword("password");
 
 		// when
 		userService.addUser(user);
@@ -137,6 +137,7 @@ public class UserServiceTest {
 		UserDto userDto = new UserDto();
 		userDto.setLogin(login1);
 		userDto.setEmail("user@mail.com");
+		userDto.setPassword("password");
 
 		userService.addUser(userDto);
 		entityManager.flush();

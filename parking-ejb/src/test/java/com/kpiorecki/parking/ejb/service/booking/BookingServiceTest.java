@@ -35,8 +35,7 @@ public class BookingServiceTest extends GreenMailTest {
 
 	@Deployment
 	public static Archive<?> createDeployment() {
-		return ArquillianFactory.createBasePersistenceDeployment().addPackages(true,
-				Package.getPackage("com.kpiorecki.parking.ejb"));
+		return ArquillianFactory.createFullDeployment();
 	}
 
 	@Inject

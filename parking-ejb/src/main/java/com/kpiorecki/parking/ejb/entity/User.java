@@ -26,11 +26,6 @@ public class User extends ArchivableEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public enum Group {
-		USER,
-		ADMIN;
-	}
-
 	@Id
 	private String login;
 
@@ -51,7 +46,7 @@ public class User extends ArchivableEntity implements Serializable {
 	@CollectionTable(name = "user_groups", joinColumns = @JoinColumn(name = "login"))
 	@Column(name = "group_name", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private Set<Group> groups = new HashSet<>();
+	private Set<UserGroup> groups = new HashSet<>();
 
 	@Version
 	private Integer version;
@@ -96,15 +91,15 @@ public class User extends ArchivableEntity implements Serializable {
 		this.password = password;
 	}
 
-	public Set<Group> getGroups() {
+	public Set<UserGroup> getGroups() {
 		return Collections.unmodifiableSet(groups);
 	}
 
-	public void addGroup(Group group) {
+	public void addGroup(UserGroup group) {
 		groups.add(group);
 	}
 
-	public void removeGroup(Group group) {
+	public void removeGroup(UserGroup group) {
 		groups.remove(group);
 	}
 
