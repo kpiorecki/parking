@@ -12,4 +12,9 @@
 		<view-id value="/faces/login-error.xhtml" />
 	</url-mapping>
 
+	<url-mapping id="home">
+		<pattern value="/" />
+		<view-id value="/faces/home.xhtml" />
+	</url-mapping>
+
 </pretty-config>

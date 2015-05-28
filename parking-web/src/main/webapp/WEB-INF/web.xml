@@ -31,8 +31,8 @@
 		<auth-method>FORM</auth-method>
 		<realm-name>parking-realm</realm-name>
 		<form-login-config>
-			<form-login-page>/faces/login.xhtml</form-login-page>
-			<form-error-page>/faces/login-error.xhtml</form-error-page>
+			<form-login-page>/login</form-login-page>
+			<form-error-page>/login-error</form-error-page>
 		</form-login-config>
 	</login-config>
 
@@ -41,6 +41,7 @@
 		<web-resource-collection>
 			<web-resource-name>admin-area</web-resource-name>
 			<url-pattern>/faces/admin/*</url-pattern>
+			<url-pattern>/faces/user/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>admin</role-name>
