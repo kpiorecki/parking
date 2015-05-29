@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.web.model;
+package com.kpiorecki.parking.web.view;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
@@ -7,13 +7,13 @@ import javax.inject.Named;
 
 @Named
 @RequestScoped
-public class AuthModel {
+public class AuthView {
 
 	@Inject
 	private FacesContext context;
 
 	public String logout() {
 		context.getExternalContext().invalidateSession();
-		return "pretty:home?faces-redirect=true";
+		return "pretty:home";
 	}
 }

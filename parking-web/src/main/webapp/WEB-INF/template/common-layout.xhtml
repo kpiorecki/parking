@@ -5,6 +5,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <h:head>
+	<title>Parking</title>
 	<h:outputStylesheet name="common-style.css" library="css" />
 </h:head>
 
@@ -16,6 +17,9 @@
 			<ui:insert name="header">
 				<ui:include src="/WEB-INF/template/common-header.xhtml" />
 			</ui:insert>
+			<h:form rendered="#{not empty request.remoteUser}">
+				<h:commandLink value="Logout" action="#{authView.logout}" />
+			</h:form>
 		</div>
 
 		<div id="content">
@@ -27,7 +31,6 @@
 				<ui:include src="/WEB-INF/template/common-footer.xhtml" />
 			</ui:insert>
 		</div>
-
 	</div>
 
 </h:body>
