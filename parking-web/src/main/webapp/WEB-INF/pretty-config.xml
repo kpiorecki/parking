@@ -1,8 +1,11 @@
-<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
-                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.com/prettyfaces/3.1.1
+                                   		http://ocpsoft.com/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.1.1.xsd">
 
-	<!-- no auth pages -->
+	<!-- remove trailing slashes -->
+	<rewrite trailingSlash="remove" redirect="301" />
+
+	<!-- public pages -->
 	<url-mapping id="login">
 		<pattern value="/login" />
 		<view-id value="/WEB-INF/view/login.xhtml" />
