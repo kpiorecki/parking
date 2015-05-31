@@ -11,4 +11,5 @@ public class WebResourceProducer {
 	FacesContext getFacesContext() {
 		return FacesContext.getCurrentInstance();
 	}
+
 }

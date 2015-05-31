@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/WEB-INF/view/template/common-layout.xhtml">
+		<ui:define name="content">
+
+			<h:form>
+				<p:panel id="panel" header="Please login">
+					<p:messages globalOnly="true" />
+					<h:panelGrid columns="3">
+						<h:outputLabel for="username" value="Username:" />
+						<p:inputText id="username" value="#{authView.username}" required="true" label="Username" />
+						<p:message for="username" />
+
+						<h:outputLabel for="password" value="Password:" />
+						<p:password id="password" value="#{authView.password}" required="true" label="Password" />
+						<p:message for="password" />
+					</h:panelGrid>
+					<p:commandButton value="Login" action="#{authView.login}" update="panel" />
+				</p:panel>
+			</h:form>
+
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+</html>

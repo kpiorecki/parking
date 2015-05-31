@@ -2,19 +2,32 @@
 	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
                       http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
 
+	<!-- no auth pages -->
 	<url-mapping id="login">
 		<pattern value="/login" />
-		<view-id value="/faces/login.xhtml" />
+		<view-id value="/WEB-INF/view/login.xhtml" />
 	</url-mapping>
 
-	<url-mapping id="login-error">
-		<pattern value="/login-error" />
-		<view-id value="/faces/login-error.xhtml" />
-	</url-mapping>
-
-	<url-mapping id="home">
+	<url-mapping id="index">
 		<pattern value="/" />
-		<view-id value="/faces/home.xhtml" />
+		<view-id value="/WEB-INF/view/index.xhtml" />
+	</url-mapping>
+
+	<!-- user pages -->
+	<url-mapping id="user-home">
+		<pattern value="/user" />
+		<view-id value="/WEB-INF/view/user/home.xhtml" />
+	</url-mapping>
+
+	<!-- admin pages -->
+	<url-mapping id="admin-home">
+		<pattern value="/admin" />
+		<view-id value="/WEB-INF/view/admin/home.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="admin-users">
+		<pattern value="/admin/users" />
+		<view-id value="/WEB-INF/view/admin/users.xhtml" />
 	</url-mapping>
 
 </pretty-config>
