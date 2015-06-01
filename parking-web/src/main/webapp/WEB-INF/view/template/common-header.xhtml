@@ -8,8 +8,11 @@
 
 		<h1>Parking</h1>
 
+		<h:form rendered="#{empty request.remoteUser}">
+			<h:commandButton value="Login" action="pretty:login" />
+		</h:form>
 		<h:form rendered="#{not empty request.remoteUser}">
-			<h:commandLink value="Logout" action="#{authView.logout}" />
+			<h:commandButton value="Logout" action="#{authView.logout}" />
 		</h:form>
 
 	</ui:composition>

@@ -3,7 +3,7 @@
                                    		http://ocpsoft.com/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.1.1.xsd">
 
 	<!-- remove trailing slashes -->
-	<rewrite trailingSlash="remove" redirect="301" />
+	<rewrite trailingSlash="remove" toCase="lowercase" redirect="301" />
 
 	<!-- public pages -->
 	<url-mapping id="login">

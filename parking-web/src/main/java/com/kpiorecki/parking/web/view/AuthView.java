@@ -8,7 +8,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.RequestDispatcher;
@@ -46,15 +45,10 @@ public class AuthView implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		ExternalContext externalContext = context.getExternalContext();
-		Map<String, Object> requestMap = externalContext.getRequestMap();
-
-		String requestContextPath = externalContext.getRequestContextPath();
-		String loginURI = requestContextPath + "/login";
-
+		Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
 		originalURI = (String) requestMap.get(RequestDispatcher.FORWARD_REQUEST_URI);
-		if (loginURI.equalsIgnoreCase(originalURI)) {
-			originalURI = requestContextPath + "/user";
+		if (getLoginURI().equalsIgnoreCase(originalURI)) {
+			originalURI = getHomeURI();
 		} else {
 			String originalQuery = (String) requestMap.get(RequestDispatcher.FORWARD_QUERY_STRING);
 			if (originalQuery != null) {
@@ -63,12 +57,16 @@ public class AuthView implements Serializable {
 		}
 	}
 
+	public void checkLoggedIn() throws IOException {
+		if (isLoggedIn()) {
+			context.getExternalContext().redirect(getHomeURI());
+		}
+	}
+
 	public void login() throws IOException {
-		ExternalContext externalContext = context.getExternalContext();
-		HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
 		try {
-			request.login(username, password);
-			externalContext.redirect(originalURI);
+			getHttpServletRequest().login(username, password);
+			context.getExternalContext().redirect(originalURI);
 		} catch (ServletException e) {
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid username or password", null);
 			context.addMessage(null, message);
@@ -78,6 +76,22 @@ public class AuthView implements Serializable {
 	public String logout() {
 		context.getExternalContext().invalidateSession();
 		return "pretty:index";
+	}
+
+	private boolean isLoggedIn() {
+		return getHttpServletRequest().getRemoteUser() != null;
+	}
+
+	private String getHomeURI() {
+		return context.getExternalContext().getRequestContextPath() + "/user";
+	}
+
+	private String getLoginURI() {
+		return context.getExternalContext().getRequestContextPath() + "/login";
+	}
+
+	private HttpServletRequest getHttpServletRequest() {
+		return (HttpServletRequest) context.getExternalContext().getRequest();
 	}
 
 }
