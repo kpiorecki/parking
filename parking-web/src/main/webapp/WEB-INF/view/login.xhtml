@@ -7,24 +7,24 @@
 <h:body>
 	<ui:composition template="/WEB-INF/view/template/common-layout.xhtml">
 		<ui:define name="header">
-			<h1>Parking</h1>
+			<ui:include src="/WEB-INF/view/template/header-content.xhtml" />
 		</ui:define>
 
 		<ui:define name="content">
-			<f:event type="preRenderView" listener="#{authView.checkLoggedIn}" />
+			<f:event type="preRenderView" listener="#{authController.forwardLoggedIn}" />
 			<h:form>
 				<p:panel id="panel" header="Please login">
 					<p:messages globalOnly="true" />
 					<h:panelGrid columns="3">
-						<h:outputLabel for="username" value="Username:" />
-						<p:inputText id="username" value="#{authView.username}" required="true" label="Username" />
-						<p:message for="username" />
+						<h:outputLabel for="login" value="Login:" />
+						<p:inputText id="login" value="#{authController.login}" required="true" label="Login" />
+						<p:message for="login" />
 
 						<h:outputLabel for="password" value="Password:" />
-						<p:password id="password" value="#{authView.password}" required="true" label="Password" />
+						<p:password id="password" value="#{authController.password}" required="true" label="Password" />
 						<p:message for="password" />
 					</h:panelGrid>
-					<p:commandButton value="Login" action="#{authView.login}" update="panel" />
+					<p:commandButton value="Login" action="#{authController.login}" update="panel" />
 				</p:panel>
 			</h:form>
 

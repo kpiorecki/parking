@@ -6,14 +6,18 @@
 <body>
 	<ui:composition>
 
-		<h1>Parking</h1>
+		<div class="left">
+			<ui:include src="/WEB-INF/view/template/header-content.xhtml" />
+		</div>
 
-		<h:form rendered="#{empty request.remoteUser}">
-			<h:commandButton value="Login" action="pretty:login" />
-		</h:form>
-		<h:form rendered="#{not empty request.remoteUser}">
-			<h:commandButton value="Logout" action="#{authView.logout}" />
-		</h:form>
+		<div class="right">
+			<h:panelGroup rendered="#{not userController.loggedIn}">
+				<ui:include src="/WEB-INF/view/template/header-bar-anonymous.xhtml" />
+			</h:panelGroup>
+			<h:panelGroup rendered="#{userController.loggedIn}">
+				<ui:include src="/WEB-INF/view/template/header-bar-logged.xhtml" />
+			</h:panelGroup>
+		</div>
 
 	</ui:composition>
 </body>

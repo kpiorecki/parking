@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.web.view;
+package com.kpiorecki.parking.web;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -14,25 +15,39 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+
+import com.kpiorecki.parking.ejb.dto.UserDto;
+import com.kpiorecki.parking.ejb.service.user.UserService;
+
 @ManagedBean
 @ViewScoped
-public class AuthView implements Serializable {
+public class AuthController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Inject
+	private Logger logger;
+
+	@Inject
 	private FacesContext context;
 
-	private String username;
+	@Inject
+	private UserService userService;
+
+	@ManagedProperty(value = "#{userController}")
+	private UserController userController;
+
+	private String login;
 	private String password;
 	private String originalURI;
 
-	public String getUsername() {
-		return username;
+	public String getLogin() {
+		return login;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setLogin(String login) {
+		this.login = login;
 	}
 
 	public String getPassword() {
@@ -41,6 +56,10 @@ public class AuthView implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public void setUserController(UserController userController) {
+		this.userController = userController;
 	}
 
 	@PostConstruct
@@ -55,31 +74,36 @@ public class AuthView implements Serializable {
 				originalURI += "?" + originalQuery;
 			}
 		}
+		logger.info("initialized with originalURI {}", originalURI);
 	}
 
-	public void checkLoggedIn() throws IOException {
-		if (isLoggedIn()) {
+	public void forwardLoggedIn() throws IOException {
+		if (userController.isLoggedIn()) {
+			logger.info("forwarding request to home");
 			context.getExternalContext().redirect(getHomeURI());
 		}
 	}
 
 	public void login() throws IOException {
 		try {
-			getHttpServletRequest().login(username, password);
+			logger.info("logging in user {}", login);
+			getHttpServletRequest().login(login, password);
+
+			UserDto user = userService.findUser(login);
+			userController.setLoggedInUser(user);
+
 			context.getExternalContext().redirect(originalURI);
 		} catch (ServletException e) {
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid username or password", null);
+			logger.info("logging in user {} failed", login);
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid login or password", null);
 			context.addMessage(null, message);
 		}
 	}
 
 	public String logout() {
+		logger.info("logging out user {}", userController.getLogin());
 		context.getExternalContext().invalidateSession();
 		return "pretty:index";
-	}
-
-	private boolean isLoggedIn() {
-		return getHttpServletRequest().getRemoteUser() != null;
 	}
 
 	private String getHomeURI() {
