@@ -5,7 +5,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <h:head>
-	<title>Parking</title>
+	<title><ui:insert name="title">Parking</ui:insert></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<h:outputStylesheet name="common-style.css" library="css" />
 </h:head>
 
@@ -15,7 +16,7 @@
 
 		<div id="header">
 			<ui:insert name="header">
-				<ui:include src="common-header.xhtml" />
+				<ui:include src="header-default.xhtml" />
 			</ui:insert>
 		</div>
 
@@ -25,7 +26,7 @@
 
 		<div id="footer">
 			<ui:insert name="footer">
-				<ui:include src="common-footer.xhtml" />
+				<ui:include src="footer-default.xhtml" />
 			</ui:insert>
 		</div>
 	</div>

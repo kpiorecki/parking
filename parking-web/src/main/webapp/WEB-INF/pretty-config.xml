@@ -5,6 +5,20 @@
 	<!-- remove trailing slashes -->
 	<rewrite trailingSlash="remove" toCase="lowercase" redirect="301" />
 
+	<!-- error pages -->
+	<url-mapping id="403">
+		<pattern value="/403" />
+		<view-id value="/WEB-INF/view/error/403.xhtml" />
+	</url-mapping>
+	<url-mapping id="404">
+		<pattern value="/404" />
+		<view-id value="/WEB-INF/view/error/404.xhtml" />
+	</url-mapping>
+	<url-mapping id="error">
+		<pattern value="/error" />
+		<view-id value="/WEB-INF/view/error/error.xhtml" />
+	</url-mapping>
+	
 	<!-- public pages -->
 	<url-mapping id="login">
 		<pattern value="/login" />

@@ -4,32 +4,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-<h:body>
-	<ui:composition template="/WEB-INF/view/template/common-layout.xhtml">
-		<ui:define name="header">
-			<ui:include src="/WEB-INF/view/template/header-content.xhtml" />
-		</ui:define>
+<ui:composition template="/WEB-INF/view/template/layout-basic-header.xhtml">
 
-		<ui:define name="content">
-			<f:event type="preRenderView" listener="#{authController.forwardLoggedIn}" />
-			<h:form>
-				<p:panel id="panel" header="Please login">
-					<p:messages globalOnly="true" />
-					<h:panelGrid columns="3">
-						<h:outputLabel for="login" value="Login:" />
-						<p:inputText id="login" value="#{authController.login}" required="true" label="Login" />
-						<p:message for="login" />
+	<ui:define name="content">
+		<f:event type="preRenderView" listener="#{authController.forwardLoggedIn}" />
+		<h:form>
+			<p:panel id="panel" header="Please login">
+				<p:messages globalOnly="true" />
+				<h:panelGrid columns="3">
+					<h:outputLabel for="login" value="Login:" />
+					<p:inputText id="login" value="#{authController.login}" required="true" label="Login" />
+					<p:message for="login" />
 
-						<h:outputLabel for="password" value="Password:" />
-						<p:password id="password" value="#{authController.password}" required="true" label="Password" />
-						<p:message for="password" />
-					</h:panelGrid>
-					<p:commandButton value="Login" action="#{authController.login}" update="panel" />
-				</p:panel>
-			</h:form>
+					<h:outputLabel for="password" value="Password:" />
+					<p:password id="password" value="#{authController.password}" required="true" label="Password" />
+					<p:message for="password" />
+				</h:panelGrid>
+				<p:commandButton value="Login" action="#{authController.login}" update="panel" />
+			</p:panel>
+		</h:form>
 
-		</ui:define>
-	</ui:composition>
+	</ui:define>
+</ui:composition>
 
-</h:body>
 </html>
