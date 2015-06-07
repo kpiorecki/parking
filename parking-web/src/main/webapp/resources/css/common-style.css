@@ -1,3 +1,17 @@
+* {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+table {
+	border-spacing: 10px 5px;
+	border-collapse: separate;
+}
+
+/* prime faces widgets should be smaller than default */
+.ui-widget {
+	font-size: 90%;
+}
+
 #page {
 	width: 1000px;
 	margin: 0 auto;
@@ -7,7 +21,7 @@
 	height: 60px;
 	margin-bottom: 40px;
 	padding-top: 20px;
-	padding-bottom: 40px;
+	padding-bottom: 20px;
 	border-bottom: 1px solid #EEE;
 }
 
@@ -17,12 +31,12 @@
 
 #footer {
 	margin-top: 40px;
-	padding-top: 40px;
+	padding-top: 20px;
 	padding-bottom: 20px;
 	border-top: 1px solid #EEE;
 	color: #999;
 	font-size: 12px;
-	line-height: 23px;
+	line-height: 24px;
 }
 
 .left {
@@ -39,4 +53,16 @@
 
 .bold {
 	font-weight: bold;
+}
+
+.header-content-text {
+	line-height: 60px;
+	margin-left: 40px;
+	font-size: 26px;
+	color: #333;
+}
+
+.header-bar-text {
+	margin-right: 10px;
+	color: #333;
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html">
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui">
 <ui:composition>
 
 	<div class="left">
@@ -12,16 +12,14 @@
 	<div class="right">
 		<h:panelGroup rendered="#{not userController.loggedIn}">
 			<div class="left">
-				<h:form>
-					<h:commandButton value="Login" action="pretty:login" />
-				</h:form>
+				<p:button value="Login" outcome="pretty:login" />
 			</div>
 		</h:panelGroup>
 		<h:panelGroup rendered="#{userController.loggedIn}">
 			<div class="left">
 				<h:form>
-					<h:outputLabel for="logout" value="#{userController.login}" />
-					<h:commandButton id="logout" value="Logout" action="#{authController.logout}" />
+					<h:outputLabel for="logout" value="#{userController.login}" class="header-bar-text" />
+					<p:commandButton id="logout" value="Logout" action="#{authController.logout}" />
 				</h:form>
 			</div>
 		</h:panelGroup>
