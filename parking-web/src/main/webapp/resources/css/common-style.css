@@ -23,10 +23,11 @@ table {
 	padding-top: 20px;
 	padding-bottom: 20px;
 	border-bottom: 1px solid #EEE;
+	color: #333;
 }
 
 #content {
-	
+	color: #333;
 }
 
 #footer {
@@ -59,10 +60,8 @@ table {
 	line-height: 60px;
 	margin-left: 40px;
 	font-size: 26px;
-	color: #333;
 }
 
 .header-bar-text {
 	margin-right: 10px;
-	color: #333;
 }
