@@ -60,6 +60,10 @@
 											<name>derby.stream.error.file</name>
 											<value>${project.build.directory}/derby/log/derby-error.log</value>
 										</property>
+										<property>
+											<name>java.util.logging.SimpleFormatter.format</name>
+											<value>[%4$s] %5$s%n</value>
+										</property>
 									</properties>
 								</configuration>
 							</execution>
