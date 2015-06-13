@@ -17,6 +17,8 @@
 	<logger name="com.kpiorecki.parking.ejb" level="debug" />
 	<logger name="org.eclipse.persistence" level="debug" />
 	<logger name="org.flywaydb" level="info" />
+	<logger name="org.dozer" level="info" />
+	<logger name="org.apache" level="info" />
 
 	<root>
 		<level value="debug" />
