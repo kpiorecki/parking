@@ -8,21 +8,25 @@
 
 	<ui:define name="content">
 		<f:event type="preRenderView" listener="#{authController.forwardLoggedIn}" />
-		<h:form>
-			<p:panel id="panel" header="Please login">
-				<p:messages globalOnly="true" />
-				<h:panelGrid columns="3">
-					<h:outputLabel for="login" value="Login:" />
-					<p:inputText id="login" value="#{authController.login}" required="true" label="Login" />
-					<p:message for="login" />
+		<div class="center">
+			<div class="center-content">
+				<h:form autocomplete="off">
+					<p:panel id="login-panel" header="Please login">
+						<p:messages id="messages" autoUpdate="true" showIcon="false" />
+						<h:panelGrid columns="2">
+							<h:outputLabel for="login" value="Login:" />
+							<p:inputText id="login" value="#{authController.login}" required="true" label="Login" />
 
-					<h:outputLabel for="password" value="Password:" />
-					<p:password id="password" value="#{authController.password}" required="true" label="Password" />
-					<p:message for="password" />
-				</h:panelGrid>
-				<p:commandButton value="Login" action="#{authController.login}" update="panel" />
-			</p:panel>
-		</h:form>
+							<h:outputLabel for="password" value="Password:" />
+							<p:password id="password" value="#{authController.password}" required="true" label="Password" />
+						</h:panelGrid>
+						<h:panelGrid columns="1" styleClass="panel-grid-center">
+							<p:commandButton value="Login" action="#{authController.login}" update="login-panel" />
+						</h:panelGrid>
+					</p:panel>
+				</h:form>
+			</div>
+		</div>
 
 	</ui:define>
 </ui:composition>

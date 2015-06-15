@@ -8,9 +8,13 @@
 	<ui:define name="content">
 		<f:event type="preRenderView" listener="#{authController.forwardLoggedIn}" />
 
-			Welcome to Parking app
-			
-		</ui:define>
+		<div class="left">Welcome to Parking App!</div>
+
+		<div class="right">
+			<ui:include src="/WEB-INF/view/register.xhtml" />
+		</div>
+
+	</ui:define>
 </ui:composition>
 
 </html>

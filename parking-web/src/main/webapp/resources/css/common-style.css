@@ -7,6 +7,10 @@ table {
 	border-collapse: separate;
 }
 
+.panel-grid-center {
+	margin: 0 auto;
+}
+
 /* prime faces widgets should be smaller than default */
 .ui-widget {
 	font-size: 90%;
@@ -28,6 +32,8 @@ table {
 
 #content {
 	color: #333;
+	display: inline-block;
+	width: 100%;
 }
 
 #footer {
@@ -50,6 +56,11 @@ table {
 
 .center {
 	text-align: center;
+}
+
+.center-content {
+	display: inline-block;
+	text-align: left;
 }
 
 .bold {

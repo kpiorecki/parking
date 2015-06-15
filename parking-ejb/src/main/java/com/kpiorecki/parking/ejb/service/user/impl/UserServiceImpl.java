@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import com.kpiorecki.parking.ejb.dao.UserDao;
 import com.kpiorecki.parking.ejb.dto.UserDto;
 import com.kpiorecki.parking.ejb.entity.User;
+import com.kpiorecki.parking.ejb.entity.UserGroup;
 import com.kpiorecki.parking.ejb.service.user.UserService;
 import com.kpiorecki.parking.ejb.util.CollectionMapper;
 
@@ -44,6 +45,7 @@ public class UserServiceImpl implements UserService {
 		logger.info("adding user {}", userDto);
 
 		User user = mapper.map(userDto, User.class);
+		user.addGroup(UserGroup.USER);
 
 		userDao.save(user);
 	}
