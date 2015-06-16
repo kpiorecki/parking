@@ -44,4 +44,12 @@ public class UserDao extends ArchivableDao<String, User> {
 		}
 
 	}
+
+	public boolean isLoginAvailable(String login) {
+		TypedQuery<Long> query = entityManager.createNamedQuery("User.findLoginCount", Long.class);
+		query.setParameter("login", login);
+		Long result = query.getSingleResult();
+
+		return result.longValue() == 0;
+	}
 }

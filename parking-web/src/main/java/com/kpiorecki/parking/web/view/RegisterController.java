@@ -5,7 +5,9 @@ import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.inject.Inject;
+import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.Email;
 import org.slf4j.Logger;
 
 import com.kpiorecki.parking.ejb.dto.UserDto;
@@ -27,10 +29,20 @@ public class RegisterController implements Serializable {
 	@Inject
 	private UserPasswordEncoder passwordEncoder;
 
+	@Size(min = UserDto.LOGIN_MIN_LEN, max = UserDto.LOGIN_MAX_LEN)
 	private String login;
+
+	@Size(max = UserDto.FIRSTNAME_MAX_LEN)
 	private String firstName;
+
+	@Size(max = UserDto.LASTNAME_MAX_LEN)
 	private String lastName;
+
+	@Email
+	@Size(max = UserDto.EMAIL_MAX_LEN)
 	private String email;
+
+	@Size(min = UserDto.PASSWORD_MIN_LEN, max = UserDto.PASSWORD_MAX_LEN)
 	private String password;
 
 	public String getLogin() {

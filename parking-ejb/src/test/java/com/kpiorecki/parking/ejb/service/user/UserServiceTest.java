@@ -169,4 +169,22 @@ public class UserServiceTest {
 		// then DomainException should be thrown
 	}
 
+	@Test
+	public void shouldFindLoginAvailable() {
+		// when
+		boolean loginAvailable = userService.isLoginAvailable("availableLogin");
+
+		// then
+		assertTrue(loginAvailable);
+	}
+
+	@Test
+	public void shouldFindLoginNotAvailable() {
+		// when
+		boolean loginAvailable = userService.isLoginAvailable(login1);
+
+		// then
+		assertFalse(loginAvailable);
+	}
+
 }

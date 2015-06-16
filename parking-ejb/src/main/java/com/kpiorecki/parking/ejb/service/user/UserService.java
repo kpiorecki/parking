@@ -15,6 +15,8 @@ public interface UserService {
 
 	void deleteUser(String login);
 
+	boolean isLoginAvailable(String login);
+
 	UserDto findUser(String login);
 
 	List<UserDto> findAllUsers();

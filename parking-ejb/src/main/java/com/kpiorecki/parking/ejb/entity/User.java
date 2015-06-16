@@ -14,29 +14,34 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.hibernate.validator.constraints.Email;
 
+import com.kpiorecki.parking.ejb.dto.UserDto;
+
 @Entity
 @Cacheable
 @Table(name = "users")
+@NamedQuery(name = "User.findLoginCount", query = "select count(u) from User u where u.login = :login")
 public class User extends ArchivableEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Column(length = UserDto.LOGIN_MAX_LEN)
 	private String login;
 
-	@Column
+	@Column(length = UserDto.FIRSTNAME_MAX_LEN)
 	private String firstName;
 
-	@Column
+	@Column(length = UserDto.LASTNAME_MAX_LEN)
 	private String lastName;
 
 	@Email
-	@Column(nullable = false)
+	@Column(nullable = false, length = UserDto.EMAIL_MAX_LEN)
 	private String email;
 
 	@Column(nullable = false, length = 64)

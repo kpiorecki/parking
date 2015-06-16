@@ -20,6 +20,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import com.kpiorecki.parking.ejb.entity.User;
@@ -72,7 +73,7 @@ public class MailSender {
 		logger.info("creating mail content using template={} and image={}", templateFile, contentImage);
 
 		Map<String, Object> globalParameters = new HashMap<>(templateParameters);
-		globalParameters.put(TPL_TITLE_USER, user);
+		globalParameters.put(TPL_TITLE_USER, getTitleUser(user));
 		addImageSizeParameters(globalParameters, Image.PARKING_HEADER, TPL_HEADER_IMAGE);
 		addImageSizeParameters(globalParameters, contentImage, TPL_CONTENT_IMAGE);
 
@@ -122,6 +123,15 @@ public class MailSender {
 	private void addImageSizeParameters(Map<String, Object> parameters, Image image, String imageId) {
 		parameters.put(imageId + "W", image.getWidth());
 		parameters.put(imageId + "H", image.getHeight());
+	}
+
+	private String getTitleUser(User user) {
+		String firstName = user.getFirstName();
+		if (StringUtils.isBlank(firstName)) {
+			return user.getLogin();
+		} else {
+			return firstName;
+		}
 	}
 
 }

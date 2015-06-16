@@ -6,6 +6,14 @@ public class UserDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	public static final int LOGIN_MIN_LEN = 4;
+	public static final int LOGIN_MAX_LEN = 64;
+	public static final int FIRSTNAME_MAX_LEN = 255;
+	public static final int LASTNAME_MAX_LEN = 255;
+	public static final int EMAIL_MAX_LEN = 255;
+	public static final int PASSWORD_MIN_LEN = 8;
+	public static final int PASSWORD_MAX_LEN = 255;
+
 	private String login;
 	private String firstName;
 	private String lastName;

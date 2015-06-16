@@ -58,6 +58,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public boolean isLoginAvailable(String login) {
+		logger.info("checking if login={} is available", login);
+
+		return userDao.isLoginAvailable(login);
+	}
+
+	@Override
 	public UserDto findUser(String login) {
 		logger.info("finding user={}", login);
 
