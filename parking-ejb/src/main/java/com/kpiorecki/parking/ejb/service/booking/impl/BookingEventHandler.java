@@ -1,8 +1,5 @@
 package com.kpiorecki.parking.ejb.service.booking.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -11,7 +8,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
 import com.kpiorecki.parking.ejb.util.DateFormatter;
-import com.kpiorecki.parking.ejb.util.Image;
 import com.kpiorecki.parking.ejb.util.MailSender;
 
 @Stateless
@@ -29,22 +25,12 @@ public class BookingEventHandler {
 
 	public void onAssignedEvent(@Observes @BookingAssigned BookingEvent event) {
 		logger.info("received assigned {}", toString(event));
-		mailSender.send(event.getUser(), "Parking booking assigned", "booking-assigned.ftl", toParameters(event),
-				Image.BOOKING_ASSIGNED);
+		mailSender.sendBookingAssignedMail(event.getUser(), event.getParking(), event.getDate());
 	}
 
 	public void onRevokedEvent(@Observes @BookingRevoked BookingEvent event) {
 		logger.info("received revoked {}", toString(event));
-		mailSender.send(event.getUser(), "Parking booking revoked", "booking-revoked.ftl", toParameters(event),
-				Image.BOOKING_REVOKED);
-	}
-
-	private Map<String, Object> toParameters(BookingEvent event) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("date", event.getDate());
-		map.put("parking", event.getParking());
-
-		return map;
+		mailSender.sendBookingRevokedMail(event.getUser(), event.getParking(), event.getDate());
 	}
 
 	private String toString(BookingEvent event) {

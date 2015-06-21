@@ -12,8 +12,20 @@
 					<td style="padding: 10px 0 30px 0;">
 						<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #cccccc; border-collapse: collapse;">
 							<tr>
-								<td align="center" style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
-									<img src="cid:headerImage" alt="" width="${headerImageW}" height="${headerImageH}" style="display: block;" />
+								<td bgcolor="#ffffff" style="padding: 40px 30px 40px 30px;">
+									<table border="0" cellpadding="0" cellspacing="0" width="100%">
+										<tr>
+											<td width="${headerImageW}">
+												<img src="cid:headerImage" alt="" width="${headerImageW}" height="${headerImageH}" style="display: block;" />
+											</td>
+											<td style="font-size: 0; line-height: 0;" width="40">
+   												&nbsp;
+  											</td>
+  											<td style="color: #333; font-size: 26px; font-family: Arial, sans-serif;" width="${600 - 40 - 30 - 30 - headerImageW}">
+   												Share the space smart!
+  											</td>
+										</tr>
+									</table>
 								</td>
 							</tr>
 							<tr>

@@ -20,7 +20,7 @@ public class DataSourceMigrator {
 	private DataSource dataSource;
 
 	@PostConstruct
-	public void migrate() {
+	void migrate() {
 		logger.info("migrating data source");
 
 		Flyway flyway = new Flyway();

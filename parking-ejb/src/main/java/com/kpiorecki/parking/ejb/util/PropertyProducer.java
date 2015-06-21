@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Startup;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
@@ -13,7 +12,6 @@ import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 
-@Startup
 @Singleton
 public class PropertyProducer {
 
@@ -23,7 +21,7 @@ public class PropertyProducer {
 	private Properties properties;
 
 	@PostConstruct
-	public void loadProperties() {
+	void loadProperties() {
 		logger.info("loading configuration properties");
 		properties = new Properties();
 
@@ -38,7 +36,7 @@ public class PropertyProducer {
 
 	@Produces
 	@Property("")
-	public String getStringProperty(InjectionPoint point) {
+	String getStringProperty(InjectionPoint point) {
 		String name = point.getAnnotated().getAnnotation(Property.class).value();
 		String value = properties.getProperty(name);
 		if (value == null) {
@@ -51,14 +49,14 @@ public class PropertyProducer {
 
 	@Produces
 	@Property("")
-	public double getDoubleProperty(InjectionPoint point) {
+	double getDoubleProperty(InjectionPoint point) {
 		String stringValue = getStringProperty(point);
 		return Double.parseDouble(stringValue);
 	}
 
 	@Produces
 	@Property("")
-	public int getIntProperty(InjectionPoint point) {
+	int getIntProperty(InjectionPoint point) {
 		String stringValue = getStringProperty(point);
 		return Integer.parseInt(stringValue);
 	}

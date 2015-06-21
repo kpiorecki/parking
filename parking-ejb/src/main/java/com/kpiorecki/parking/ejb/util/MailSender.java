@@ -21,8 +21,12 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
+import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.User;
 
 import freemarker.template.Configuration;
@@ -39,19 +43,52 @@ public class MailSender {
 	private Logger logger;
 
 	@Inject
+	@DateFormatter
+	private DateTimeFormatter dateFormatter;
+
+	@Inject
 	private Configuration templateConfiguration;
 
 	@Inject
 	private Session mailSession;
 
-	public void send(User user, String subject, String templateFile, Map<String, Object> templateParameters,
-			Image contentImage) {
-		String logMessage = String.format("sending mail to user=%s", user.getLogin());
-		logger.info(logMessage);
+	public void sendBookingAssignedMail(User user, Parking parking, LocalDate date) {
+		logger.info("sending booking assigned mail to user={}, parking={}, date={}", user.getLogin(),
+				parking.getName(), dateFormatter.print(date));
+		sendBookingMail(user, "Parking booking assigned", "booking-assigned.ftl", parking, date, Image.BOOKING_ASSIGNED);
+	}
 
+	public void sendBookingRevokedMail(User user, Parking parking, LocalDate date) {
+		logger.info("sending booking revoked mail to user={}, parking={}, date={}", user.getLogin(), parking.getName(),
+				dateFormatter.print(date));
+		sendBookingMail(user, "Parking booking revoked", "booking-revoked.ftl", parking, date, Image.BOOKING_REVOKED);
+	}
+
+	public void sendRegisterMail(User user, String activationURL, DateTime activationDeadline) {
+		logger.info("sending register mail to user={}, activationURL={}, activationDeadline={}", user.getLogin(),
+				activationURL, dateFormatter.print(activationDeadline));
+
+		Map<String, Object> templateParameters = new HashMap<>();
+		templateParameters.put("activationURL", activationURL);
+		templateParameters.put("activationDeadline", activationDeadline);
+
+		sendMail(user, "Parking - confirm registration", "register-confirm.ftl", templateParameters,
+				Image.REGISTER_CONFIRM);
+	}
+
+	private void sendBookingMail(User user, String subject, String templateFile, Parking parking, LocalDate date,
+			Image contentImage) {
+		Map<String, Object> templateParameters = new HashMap<>();
+		templateParameters.put("date", date);
+		templateParameters.put("parking", parking);
+
+		sendMail(user, subject, templateFile, templateParameters, contentImage);
+	}
+
+	private void sendMail(User user, String subject, String templateFile, Map<String, Object> templateParameters,
+			Image contentImage) {
 		try {
-			String personal = String.format("%s %s", user.getFirstName(), user.getLastName());
-			InternetAddress address = new InternetAddress(user.getEmail(), personal);
+			InternetAddress address = new InternetAddress(user.getEmail(), user.getLogin());
 			Multipart content = createContent(user, templateFile, templateParameters, contentImage);
 
 			MimeMessage message = new MimeMessage(mailSession);
@@ -62,7 +99,7 @@ public class MailSender {
 
 			Transport.send(message);
 		} catch (Exception e) {
-			String warnMessage = String.format("%s - failed", logMessage);
+			String warnMessage = String.format("could not send mail - %s", e.getMessage());
 			logger.warn(warnMessage, e);
 			throw new DomainException(warnMessage, e);
 		}
@@ -74,11 +111,11 @@ public class MailSender {
 
 		Map<String, Object> globalParameters = new HashMap<>(templateParameters);
 		globalParameters.put(TPL_TITLE_USER, getTitleUser(user));
-		addImageSizeParameters(globalParameters, Image.PARKING_HEADER, TPL_HEADER_IMAGE);
+		addImageSizeParameters(globalParameters, Image.PARKING_LOGO, TPL_HEADER_IMAGE);
 		addImageSizeParameters(globalParameters, contentImage, TPL_CONTENT_IMAGE);
 
 		MimeBodyPart bodyPart = createBodyPart(user, templateFile, globalParameters);
-		MimeBodyPart headerImagePart = createImagePart(TPL_HEADER_IMAGE, Image.PARKING_HEADER);
+		MimeBodyPart headerImagePart = createImagePart(TPL_HEADER_IMAGE, Image.PARKING_LOGO);
 		MimeBodyPart contentImagePart = createImagePart(TPL_CONTENT_IMAGE, contentImage);
 
 		Multipart multipart = new MimeMultipart("related");

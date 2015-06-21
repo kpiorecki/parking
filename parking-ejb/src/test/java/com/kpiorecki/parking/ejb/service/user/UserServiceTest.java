@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.kpiorecki.parking.ejb.ArquillianFactory;
+import com.kpiorecki.parking.ejb.GreenMailTest;
 import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.dao.ParkingDao;
 import com.kpiorecki.parking.ejb.dao.UserDao;
@@ -31,7 +32,7 @@ import com.kpiorecki.parking.ejb.entity.User_;
 
 @RunWith(Arquillian.class)
 @Transactional(TransactionMode.ROLLBACK)
-public class UserServiceTest {
+public class UserServiceTest extends GreenMailTest {
 
 	@Deployment
 	public static Archive<?> createDeployment() {
@@ -135,12 +136,13 @@ public class UserServiceTest {
 
 	@Test(expected = Exception.class)
 	public void shouldNotAddDuplicatedUserLogin() {
-		// when
+		// given
 		UserDto userDto = new UserDto();
 		userDto.setLogin(login1);
 		userDto.setEmail("user@mail.com");
 		userDto.setPassword("password");
 
+		// when
 		userService.addUser(userDto);
 		entityManager.flush();
 
@@ -189,4 +191,26 @@ public class UserServiceTest {
 		assertFalse(loginAvailable);
 	}
 
+	@Test
+	public void shouldRegisterUser() {
+		// given
+		String activationUuid = "activationUuid";
+		String activationURL = "http://localhost:8080/activation";
+		String login = "new login";
+
+		UserDto user = new UserDto();
+		user.setLogin(login);
+		user.setFirstName("firstname");
+		user.setLastName("lastname");
+		user.setEmail("user@mail.com");
+		user.setPassword("password");
+
+		// when
+		userService.registerUser(user, activationUuid, activationURL);
+
+		// then
+		assertOneMailSent();
+		assertNull(userService.findUser(login));
+		assertFalse(userService.isLoginAvailable(login));
+	}
 }

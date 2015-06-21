@@ -1,7 +1,6 @@
 package com.kpiorecki.parking.ejb.util;
 
 import javax.annotation.Resource;
-import javax.ejb.Startup;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Singleton;
@@ -20,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
 
-@Startup
 @Singleton
 public class ResourceProducer {
 

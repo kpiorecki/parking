@@ -14,5 +14,5 @@ import javax.inject.Qualifier;
 public @interface Property {
 
 	@Nonbinding
-	public String value();
+	String value();
 }

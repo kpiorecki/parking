@@ -1,10 +1,6 @@
 package com.kpiorecki.parking.ejb.service.booking.impl;
 
-import static org.junit.Assert.assertTrue;
-
 import javax.inject.Inject;
-import javax.mail.Message.RecipientType;
-import javax.mail.internet.MimeMessage;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -14,9 +10,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
 
-import com.icegreen.greenmail.util.GreenMailUtil;
 import com.kpiorecki.parking.ejb.ArquillianFactory;
 import com.kpiorecki.parking.ejb.GreenMailTest;
 import com.kpiorecki.parking.ejb.TestUtilities;
@@ -24,6 +18,7 @@ import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.Booking.Status;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.User;
+import com.kpiorecki.parking.ejb.util.ApplicationSetup;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
 import com.kpiorecki.parking.ejb.util.MailSender;
 import com.kpiorecki.parking.ejb.util.ResourceProducer;
@@ -35,7 +30,7 @@ public class BookingEventHandlerTest extends GreenMailTest {
 	@Deployment
 	public static Archive<?> createDeployment() {
 		return ArquillianFactory.createBaseDeployment().addClasses(BookingEventHandler.class, TestUtilities.class,
-				ResourceProducer.class, UuidGenerator.class, MailSender.class);
+				ResourceProducer.class, UuidGenerator.class, MailSender.class, ApplicationSetup.class);
 	}
 
 	@Inject
@@ -43,9 +38,6 @@ public class BookingEventHandlerTest extends GreenMailTest {
 
 	@Inject
 	private TestUtilities testUtilities;
-
-	@Inject
-	private Logger logger;
 
 	@Inject
 	@DateFormatter
@@ -66,7 +58,7 @@ public class BookingEventHandlerTest extends GreenMailTest {
 	}
 
 	@Test
-	public void shouldSendAssignedEmail() throws Exception {
+	public void shouldSendAssignedEmail() {
 		// given
 		BookingEvent event = createEvent();
 
@@ -74,11 +66,11 @@ public class BookingEventHandlerTest extends GreenMailTest {
 		eventHandler.onAssignedEvent(event);
 
 		// then
-		validateOneEmailSent();
+		assertOneMailSent();
 	}
 
 	@Test
-	public void shouldSendRevokedEmail() throws Exception {
+	public void shouldSendRevokedEmail() {
 		// given
 		BookingEvent event = createEvent();
 
@@ -86,7 +78,7 @@ public class BookingEventHandlerTest extends GreenMailTest {
 		eventHandler.onRevokedEvent(event);
 
 		// then
-		validateOneEmailSent();
+		assertOneMailSent();
 	}
 
 	private BookingEvent createEvent() {
@@ -99,12 +91,4 @@ public class BookingEventHandlerTest extends GreenMailTest {
 		return event;
 	}
 
-	private void validateOneEmailSent() throws Exception {
-		MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
-		assertTrue(receivedMessages.length == 1);
-
-		MimeMessage message = receivedMessages[0];
-		logger.info("sent one email from={}, to={}, subject={}, body:\n{}", message.getFrom(),
-				message.getRecipients(RecipientType.TO), message.getSubject(), GreenMailUtil.getBody(message));
-	}
 }
