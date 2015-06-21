@@ -6,6 +6,11 @@ public class AddressDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	public static final int STREET_MAX_LEN = 255;
+	public static final int NUMBER_MAX_LEN = 32;
+	public static final int POSTAL_CODE_MAX_LEN = 32;
+	public static final int CITY_MAX_LEN = 255;
+
 	private String street;
 	private String number;
 	private String postalCode;

@@ -5,6 +5,8 @@ import java.io.Serializable;
 public class ParkingDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static final int NAME_MAX_LEN = 255;
 
 	private String uuid;
 	private String name;

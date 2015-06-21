@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 
 import com.kpiorecki.parking.ejb.entity.ArchivableEntity;
 import com.kpiorecki.parking.ejb.entity.ArchivableEntity_;
-import com.kpiorecki.parking.ejb.util.DomainException;
 
 public class ArchivableDao<K, E extends ArchivableEntity> extends GenericDao<K, E> {
 
@@ -19,19 +18,6 @@ public class ArchivableDao<K, E extends ArchivableEntity> extends GenericDao<K, 
 
 	public ArchivableDao(Class<E> clazz) {
 		super(clazz);
-	}
-
-	@Override
-	public E load(K id) {
-		E entity = super.load(id);
-
-		if (entity.getRemoved()) {
-			String warnMessage = String.format("%s entity with id=%s is removed", clazz.getSimpleName(), id);
-			logger.warn(warnMessage);
-			throw new DomainException(warnMessage);
-		}
-
-		return entity;
 	}
 
 	@Override
@@ -44,13 +30,28 @@ public class ArchivableDao<K, E extends ArchivableEntity> extends GenericDao<K, 
 	}
 
 	@Override
+	protected E findImpl(K id) {
+		E entity = super.findImpl(id);
+		if (entity != null && entity.getRemoved()) {
+			logger.info("{} entity with id={} is removed - returning null", clazz.getSimpleName(), id);
+			return null;
+		}
+		return entity;
+	}
+
+	@Override
 	protected void adjustFindQuery(CriteriaBuilder builder, CriteriaQuery<E> query, Root<E> root) {
-		Predicate notRemovedPredicate = builder.equal(root.get(ArchivableEntity_.removed), Boolean.FALSE);
+		Predicate predicate = createFindQueryPredicate(builder, query, root);
 		Predicate restriction = query.getRestriction();
 		if (restriction != null) {
-			query.where(restriction, notRemovedPredicate);
+			query.where(restriction, predicate);
 		} else {
-			query.where(notRemovedPredicate);
+			query.where(predicate);
 		}
 	}
+
+	protected Predicate createFindQueryPredicate(CriteriaBuilder builder, CriteriaQuery<E> query, Root<E> root) {
+		return builder.isFalse(root.get(ArchivableEntity_.removed));
+	}
+
 }

@@ -33,9 +33,9 @@ public abstract class GenericDao<K, E> {
 
 	public E load(K id) {
 		logger.info("loading {} entity with id={}", clazz.getSimpleName(), id);
-		E entity = entityManager.find(clazz, id, LockModeType.OPTIMISTIC);
+		E entity = findImpl(id);
 		if (entity == null) {
-			String warnMessage = String.format("%s entity with id=%s not found", clazz.getSimpleName(), id);
+			String warnMessage = String.format("valid %s entity with id=%s was not found", clazz.getSimpleName(), id);
 			logger.warn(warnMessage);
 			throw new DomainException(warnMessage);
 		}
@@ -44,17 +44,22 @@ public abstract class GenericDao<K, E> {
 	}
 
 	public <V> E load(SingularAttribute<E, V> attribute, V value) {
-		logger.info("finding {} single entity by {}={}", clazz.getSimpleName(), attribute.getName(), value);
+		logger.info("loading {} single entity by {}={}", clazz.getSimpleName(), attribute.getName(), value);
 
 		TypedQuery<E> findQuery = createFindQuery(attribute, value);
 		try {
 			return findQuery.getSingleResult();
 		} catch (NoResultException | NonUniqueResultException e) {
-			String warnMessage = String.format("did not find %s single entity by %s=%s", clazz.getSimpleName(),
+			String warnMessage = String.format("did not find valid %s single entity by %s=%s", clazz.getSimpleName(),
 					attribute.getName(), value);
 			logger.warn(warnMessage);
 			throw new DomainException(warnMessage);
 		}
+	}
+
+	public E find(K id) {
+		logger.info("finding {} entity with id={}", clazz.getSimpleName(), id);
+		return findImpl(id);
 	}
 
 	public <V> List<E> find(SingularAttribute<E, V> attribute, V value) {
@@ -100,6 +105,10 @@ public abstract class GenericDao<K, E> {
 		entityManager.remove(entityReference);
 	}
 
+	protected E findImpl(K id) {
+		return entityManager.find(clazz, id, LockModeType.OPTIMISTIC);
+	}
+
 	protected <V> TypedQuery<E> createFindQuery(SingularAttribute<E, V> attribute, V value) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<E> query = builder.createQuery(clazz);
@@ -117,4 +126,5 @@ public abstract class GenericDao<K, E> {
 	protected void adjustFindQuery(CriteriaBuilder builder, CriteriaQuery<E> query, Root<E> root) {
 		// may be overridden by subclasses
 	}
+
 }

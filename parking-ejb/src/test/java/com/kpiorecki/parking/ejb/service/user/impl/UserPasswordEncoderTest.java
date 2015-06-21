@@ -35,7 +35,7 @@ public class UserPasswordEncoderTest {
 		String encodedText = encoder.encode(plainText);
 
 		// then
-		assertEquals(64, encodedText.length());
+		assertEquals(UserPasswordEncoder.PASSWORD_LENGTH, encodedText.length());
 		assertEquals(expectedEncodedText, encodedText);
 	}
 }

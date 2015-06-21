@@ -131,13 +131,14 @@ public class ParkingServiceTest {
 		assertNull(booking);
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void shouldNotFindDeletedParking() {
 		// when
 		parkingService.deleteParking(parkingUuid);
-		parkingService.findParking(parkingUuid);
+		ParkingDto foundParking = parkingService.findParking(parkingUuid);
 
-		// then exception should be thrown
+		// then
+		assertNull(foundParking);
 	}
 
 	@Test

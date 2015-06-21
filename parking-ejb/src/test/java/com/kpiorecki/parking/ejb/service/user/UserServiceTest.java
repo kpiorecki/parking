@@ -3,6 +3,7 @@ package com.kpiorecki.parking.ejb.service.user;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -113,12 +114,13 @@ public class UserServiceTest {
 		assertNotNull(user);
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void shouldNotFindNonExistingUser() {
 		// when
-		userService.findUser("new login");
+		UserDto foundUser = userService.findUser("new login");
 
-		// then exception should be thrown
+		// then
+		assertNull(foundUser);
 	}
 
 	@Test

@@ -4,6 +4,7 @@ import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
+import com.kpiorecki.parking.ejb.service.user.impl.UserHouseKeeper;
 import com.kpiorecki.parking.ejb.util.DataSourceMigrator;
 
 public class ArquillianFactory {
@@ -21,7 +22,8 @@ public class ArquillianFactory {
 	}
 
 	public static WebArchive createFullDeployment() {
-		return createBasePersistenceDeployment().addPackages(true, Filters.exclude(DataSourceMigrator.class),
+		return createBasePersistenceDeployment().addPackages(true,
+				Filters.exclude(DataSourceMigrator.class, UserHouseKeeper.class),
 				Package.getPackage("com.kpiorecki.parking.ejb"));
 	}
 }

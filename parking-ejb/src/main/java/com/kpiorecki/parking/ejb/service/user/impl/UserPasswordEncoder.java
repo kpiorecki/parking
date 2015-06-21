@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 @Stateless
 public class UserPasswordEncoder {
 
+	public static final int PASSWORD_LENGTH = 64;
+
 	@Inject
 	private Logger logger;
 

@@ -16,6 +16,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import com.kpiorecki.parking.ejb.dto.ParkingDto;
+import com.kpiorecki.parking.ejb.util.UuidGenerator;
+
 @Entity
 @Cacheable
 @Table(name = "parkings")
@@ -24,9 +27,10 @@ public class Parking implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Column(length = UuidGenerator.UUID_LENGTH)
 	private String uuid;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = ParkingDto.NAME_MAX_LEN)
 	private String name;
 
 	@Column(nullable = false)

@@ -14,18 +14,24 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.hibernate.validator.constraints.Email;
+import org.joda.time.DateTime;
 
 import com.kpiorecki.parking.ejb.dto.UserDto;
+import com.kpiorecki.parking.ejb.service.user.impl.UserPasswordEncoder;
+import com.kpiorecki.parking.ejb.util.UuidGenerator;
 
 @Entity
 @Cacheable
 @Table(name = "users")
-@NamedQuery(name = "User.findLoginCount", query = "select count(u) from User u where u.login = :login")
+@NamedQueries({
+		@NamedQuery(name = "User.findLoginCount", query = "select count(u) from User u where u.login = :login"),
+		@NamedQuery(name = "User.findOutdatedNotActivatedUsers", query = "select u.login from User u where u.activationDeadline > :dateTime and u.activationUuid is not null") })
 public class User extends ArchivableEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -44,8 +50,14 @@ public class User extends ArchivableEntity implements Serializable {
 	@Column(nullable = false, length = UserDto.EMAIL_MAX_LEN)
 	private String email;
 
-	@Column(nullable = false, length = 64)
+	@Column(nullable = false, length = UserPasswordEncoder.PASSWORD_LENGTH)
 	private String password;
+
+	@Column(unique = true, length = UuidGenerator.UUID_LENGTH)
+	private String activationUuid;
+
+	@Column
+	private DateTime activationDeadline;
 
 	@ElementCollection
 	@CollectionTable(name = "user_groups", joinColumns = @JoinColumn(name = "login"))
@@ -94,6 +106,22 @@ public class User extends ArchivableEntity implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getActivationUuid() {
+		return activationUuid;
+	}
+
+	public void setActivationUuid(String activationUuid) {
+		this.activationUuid = activationUuid;
+	}
+
+	public DateTime getActivationDeadline() {
+		return activationDeadline;
+	}
+
+	public void setActivationDeadline(DateTime activationDeadline) {
+		this.activationDeadline = activationDeadline;
 	}
 
 	public Set<UserGroup> getGroups() {

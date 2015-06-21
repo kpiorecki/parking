@@ -86,17 +86,21 @@ public class AuthController implements Serializable {
 
 	public void login() throws IOException {
 		try {
+			UserDto user = userService.findUser(login);
+			if (user == null) {
+				onLoginFailed();
+				return;
+			}
+
+			// authenticating user will throw ServletException if failed
 			logger.info("logging in user {}", login);
 			getHttpServletRequest().login(login, password);
 
-			UserDto user = userService.findUser(login);
+			// authentication succeeded, set logged in user in userController
 			userController.setLoggedInUser(user);
-
 			context.getExternalContext().redirect(originalURI);
 		} catch (ServletException e) {
-			logger.info("logging in user {} failed", login);
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid login or password", null);
-			context.addMessage(null, message);
+			onLoginFailed();
 		}
 	}
 
@@ -104,6 +108,12 @@ public class AuthController implements Serializable {
 		logger.info("logging out user {}", userController.getLogin());
 		context.getExternalContext().invalidateSession();
 		return "pretty:index";
+	}
+
+	private void onLoginFailed() {
+		logger.info("logging in user {} failed", login);
+		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid login or password", null);
+		context.addMessage(null, message);
 	}
 
 	private String getHomeURI() {

@@ -127,7 +127,11 @@ public class ParkingServiceImpl implements ParkingService {
 	public ParkingDto findParking(String parkingUuid) {
 		logger.info("finding parking={}", parkingUuid);
 
-		Parking parking = parkingDao.load(parkingUuid);
+		Parking parking = parkingDao.find(parkingUuid);
+		if (parking == null) {
+			return null;
+		}
+		
 		return mapper.map(parking, ParkingDto.class);
 	}
 
