@@ -53,15 +53,19 @@ public class MailSender {
 	private Session mailSession;
 
 	public void sendBookingAssignedMail(User user, Parking parking, LocalDate date) {
+		String dateString = dateFormatter.print(date);
+		String subject = String.format("Booking assigned for parking %s on %s", parking.getName(), dateString);
 		logger.info("sending booking assigned mail to user={}, parking={}, date={}", user.getLogin(),
-				parking.getName(), dateFormatter.print(date));
-		sendBookingMail(user, "Parking booking assigned", "booking-assigned.ftl", parking, date, Image.BOOKING_ASSIGNED);
+				parking.getName(), dateString);
+		sendBookingMail(user, subject, "booking-assigned.ftl", parking, date, Image.BOOKING_ASSIGNED);
 	}
 
 	public void sendBookingRevokedMail(User user, Parking parking, LocalDate date) {
+		String dateString = dateFormatter.print(date);
+		String subject = String.format("Booking revoked from parking %s on %s", parking.getName(), dateString);
 		logger.info("sending booking revoked mail to user={}, parking={}, date={}", user.getLogin(), parking.getName(),
-				dateFormatter.print(date));
-		sendBookingMail(user, "Parking booking revoked", "booking-revoked.ftl", parking, date, Image.BOOKING_REVOKED);
+				dateString);
+		sendBookingMail(user, subject, "booking-revoked.ftl", parking, date, Image.BOOKING_REVOKED);
 	}
 
 	public void sendRegisterMail(User user, String activationURL, DateTime activationDeadline) {

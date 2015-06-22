@@ -78,6 +78,17 @@ public class UserDao extends ArchivableDao<String, User> {
 		}
 	}
 
+	public User findUserToActivate(String activationUuid) {
+		TypedQuery<User> query = entityManager.createNamedQuery("User.findUserToActivate", User.class);
+		query.setParameter("activationUuid", activationUuid);
+		List<User> resultList = query.getResultList();
+		if (resultList.size() == 1) {
+			return resultList.get(0);
+		} else {
+			return null;
+		}
+	}
+
 	@Override
 	protected User findImpl(String id) {
 		User user = super.findImpl(id);

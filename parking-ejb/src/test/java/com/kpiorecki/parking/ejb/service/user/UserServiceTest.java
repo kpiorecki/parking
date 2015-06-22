@@ -17,6 +17,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.shrinkwrap.api.Archive;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -194,7 +195,7 @@ public class UserServiceTest extends GreenMailTest {
 	@Test
 	public void shouldRegisterUser() {
 		// given
-		String activationUuid = "activationUuid";
+		String activationUuid = "testActivationUuid";
 		String activationURL = "http://localhost:8080/activation";
 		String login = "new login";
 
@@ -212,5 +213,32 @@ public class UserServiceTest extends GreenMailTest {
 		assertOneMailSent();
 		assertNull(userService.findUser(login));
 		assertFalse(userService.isLoginAvailable(login));
+	}
+
+	@Test
+	public void shouldActivateUser() {
+		// given
+		String activationUuid = "uuid";
+		String login = "activationLogin";
+		User user = testUtilities.createUser(login);
+		user.setActivationUuid(activationUuid);
+		user.setActivationDeadline(new DateTime().plusDays(1));
+		entityManager.persist(user);
+
+		// when
+		UserDto activatedUser = userService.activateUser(activationUuid);
+
+		// then
+		assertNotNull(activatedUser);
+		assertEquals(login, activatedUser.getLogin());
+	}
+
+	@Test
+	public void shouldNotActivateUser() {
+		// when
+		UserDto activatedUser = userService.activateUser("nonExistingUuid");
+
+		// then
+		assertNull(activatedUser);
 	}
 }

@@ -17,9 +17,9 @@ public interface UserService {
 
 	void registerUser(UserDto user, String activationUuid, String activationURL);
 
-	void activateUser(String activationUuid);
-
 	boolean isLoginAvailable(String login);
+
+	UserDto activateUser(String activationUuid);
 
 	UserDto findUser(String login);
 

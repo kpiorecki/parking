@@ -85,16 +85,29 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void activateUser(String activationUuid) {
-		logger.info("activating user with activationUuid={}", activationUuid);
-		// TODO
-	}
-
-	@Override
 	public boolean isLoginAvailable(String login) {
 		logger.info("checking if login={} is available", login);
 
 		return userDao.isLoginAvailable(login);
+	}
+
+	@Override
+	public UserDto activateUser(String activationUuid) {
+		logger.info("activating user with activationUuid={}", activationUuid);
+
+		User user = userDao.findUserToActivate(activationUuid);
+		if (user == null) {
+			logger.warn("did not find user with activationUuid={}", activationUuid);
+			return null;
+		}
+
+		user.setActivationUuid(null);
+		user.setActivationDeadline(null);
+		userDao.save(user);
+
+		logger.info("activated user={} with activationUuid={}", user.getLogin(), activationUuid);
+
+		return mapper.map(user, UserDto.class);
 	}
 
 	@Override
