@@ -29,6 +29,11 @@
 		<pattern value="/" />
 		<view-id value="/WEB-INF/view/index.xhtml" />
 	</url-mapping>
+	
+	<url-mapping id="register-info">
+		<pattern value="/register-info" />
+		<view-id value="/WEB-INF/view/register-info.xhtml" />
+	</url-mapping>
 
 	<!-- user pages -->
 	<url-mapping id="user-home">
