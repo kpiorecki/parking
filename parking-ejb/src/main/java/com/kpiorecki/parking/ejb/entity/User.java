@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 import org.hibernate.validator.constraints.Email;
@@ -61,7 +62,8 @@ public class User extends ArchivableEntity implements Serializable {
 	private DateTime activationDeadline;
 
 	@ElementCollection
-	@CollectionTable(name = "user_groups", joinColumns = @JoinColumn(name = "login"))
+	@CollectionTable(name = "user_groups", joinColumns = @JoinColumn(name = "login"), uniqueConstraints = @UniqueConstraint(columnNames = {
+			"login", "group_name" }))
 	@Column(name = "group_name", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Set<UserGroup> groups = new HashSet<>();

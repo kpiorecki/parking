@@ -8,6 +8,7 @@ CREATE TABLE records (ID BIGINT NOT NULL, POINTS INTEGER NOT NULL, VERSION INTEG
 CREATE TABLE user_groups (login VARCHAR(64), group_name VARCHAR(255) NOT NULL);
 ALTER TABLE booking_entries ADD CONSTRAINT booking_entries0 UNIQUE (login, booking_id);
 ALTER TABLE records ADD CONSTRAINT UNQ_records_0 UNIQUE (login, parking_uuid);
+ALTER TABLE user_groups ADD CONSTRAINT UNQ_user_groups_0 UNIQUE (login, group_name);
 ALTER TABLE booking_entries ADD CONSTRAINT bokingentrieslogin FOREIGN KEY (login) REFERENCES users (LOGIN);
 ALTER TABLE booking_entries ADD CONSTRAINT bkngentriesbkingid FOREIGN KEY (booking_id) REFERENCES bookings (ID);
 ALTER TABLE bookings ADD CONSTRAINT bokingsparkinguuid FOREIGN KEY (parking_uuid) REFERENCES parkings (UUID);
