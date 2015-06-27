@@ -16,14 +16,14 @@
 	<!-- error pages -->
 	<error-page>
 		<error-code>403</error-code>
-		<location>/403</location>
+		<location>/message/403</location>
 	</error-page>
 	<error-page>
 		<error-code>404</error-code>
-		<location>/404</location>
+		<location>/message/404</location>
 	</error-page>
 	<error-page>
-		<location>/error</location>
+		<location>/message/error</location>
 	</error-page>
 
 	<!-- parameter -->

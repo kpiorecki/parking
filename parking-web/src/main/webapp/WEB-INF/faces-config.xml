@@ -4,6 +4,10 @@
     http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
 	version="2.0">
 	<application>
-		<message-bundle>i18n.MyMessages</message-bundle>
+		<message-bundle>i18n.JSFMessages</message-bundle>
+		<resource-bundle>
+			<base-name>i18n.Messages</base-name>
+			<var>messages</var>
+		</resource-bundle>
 	</application>
 </faces-config>

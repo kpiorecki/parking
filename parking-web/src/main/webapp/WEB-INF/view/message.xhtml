@@ -2,14 +2,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
 
 <ui:composition template="/WEB-INF/view/template/layout-basic-header.xhtml">
+
+	<ui:define name="title">#{messageController.title}</ui:define>
 
 	<ui:define name="content">
 		<div class="center">
 			<h3>
-				<ui:insert name="message" />
+				<h:outputText value="#{messageController.message}" escape="false" />
 				<br /> <br />
 				<p:button value="Go to the main page" outcome="pretty:index" />
 			</h3>
@@ -19,3 +21,4 @@
 </ui:composition>
 
 </html>
+

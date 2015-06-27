@@ -3,6 +3,7 @@ package com.kpiorecki.parking.web.view;
 import java.io.Serializable;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -38,6 +39,9 @@ public class RegisterController implements Serializable {
 	@Inject
 	private FacesContext context;
 
+	@ManagedProperty(value = "#{messageController}")
+	private MessageController messageController;
+
 	@Size(min = UserDto.LOGIN_MIN_LEN, max = UserDto.LOGIN_MAX_LEN)
 	private String login;
 
@@ -53,6 +57,10 @@ public class RegisterController implements Serializable {
 
 	@Size(min = UserDto.PASSWORD_MIN_LEN, max = UserDto.PASSWORD_MAX_LEN)
 	private String password;
+
+	public void setMessageController(MessageController messageController) {
+		this.messageController = messageController;
+	}
 
 	public String getLogin() {
 		return login;
@@ -103,7 +111,8 @@ public class RegisterController implements Serializable {
 
 		userService.registerUser(user, activationUuid, activationURL);
 
-		return "pretty:register-info";
+		messageController.setMessageId("register-info");
+		return "pretty:message";
 	}
 
 	private UserDto createUser() {
