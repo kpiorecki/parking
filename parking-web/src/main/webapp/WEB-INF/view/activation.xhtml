@@ -6,11 +6,20 @@
 
 <ui:composition template="/WEB-INF/view/template/layout-basic-header.xhtml">
 
+	<ui:define name="title">Parking - Activation</ui:define>
+
 	<ui:define name="content">
-	
+		<div class="center">
+			<h3>
+				<h:outputFormat value="#{messages['activation.text']}" escape="false">
+					<f:param value="#{activationController.login}" />
+				</h:outputFormat>
+			</h3>
+		</div>
+		<br />
 		<ui:include src="/WEB-INF/view/login-form.xhtml" />
 	</ui:define>
-	
+
 </ui:composition>
 
 </html>

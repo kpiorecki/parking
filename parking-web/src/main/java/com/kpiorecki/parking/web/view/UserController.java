@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -18,6 +19,9 @@ public class UserController implements Serializable {
 
 	@Inject
 	private Logger logger;
+
+	@Inject
+	private ExternalContext externalContext;
 
 	private String login;
 	private String firstName;
@@ -53,4 +57,18 @@ public class UserController implements Serializable {
 		email = user.getEmail();
 	}
 
+	public String logout() {
+		if (isLoggedIn()) {
+			logger.info("logging out user {}", login);
+
+			login = null;
+			firstName = null;
+			lastName = null;
+			email = null;
+		}
+		logger.info("invalidating http session");
+		externalContext.invalidateSession();
+
+		return "pretty:index";
+	}
 }

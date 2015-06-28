@@ -1,11 +1,8 @@
 package com.kpiorecki.parking.web.util;
 
-import java.util.Base64;
-import java.util.Base64.Decoder;
-import java.util.Base64.Encoder;
-
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Singleton;
 
@@ -19,13 +16,9 @@ public class WebResourceProducer {
 	}
 
 	@Produces
-	Encoder getURLEncoder() {
-		return Base64.getUrlEncoder();
-	}
-
-	@Produces
-	Decoder getURLDecoder() {
-		return Base64.getUrlDecoder();
+	@RequestScoped
+	ExternalContext getExternalContext() {
+		return FacesContext.getCurrentInstance().getExternalContext();
 	}
 
 }

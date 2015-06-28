@@ -3,7 +3,7 @@
                                    		http://ocpsoft.com/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.1.1.xsd">
 
 	<!-- remove trailing slashes -->
-	<rewrite trailingSlash="remove" toCase="lowercase" redirect="301" />
+	<rewrite trailingSlash="remove" redirect="301" />
 
 	<!-- public pages -->
 	<url-mapping id="login">
@@ -21,6 +21,12 @@
 			<validate index="0" validator="#{messageController.validateMessageId}" onError="#{messageController.forwardInvalidMessageId}" />
 		</pattern>
 		<view-id value="/WEB-INF/view/message.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="activation">
+		<pattern value="/activation/#{activationController.encodedActivationUuid}" />
+		<view-id value="/WEB-INF/view/activation.xhtml" />
+		<action onPostback="false">#{activationController.activate}</action>
 	</url-mapping>
 
 	<!-- user pages -->

@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
+import javax.faces.context.ExternalContext;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
@@ -17,6 +17,7 @@ import com.kpiorecki.parking.ejb.dto.UserDto;
 import com.kpiorecki.parking.ejb.service.user.UserService;
 import com.kpiorecki.parking.ejb.service.user.impl.UserPasswordEncoder;
 import com.kpiorecki.parking.ejb.util.UuidGenerator;
+import com.kpiorecki.parking.web.util.URLEncoder;
 
 @ManagedBean
 @RequestScoped
@@ -34,10 +35,13 @@ public class RegisterController implements Serializable {
 	private UserPasswordEncoder passwordEncoder;
 
 	@Inject
+	private URLEncoder urlEncoder;
+
+	@Inject
 	private UuidGenerator uuidGenerator;
 
 	@Inject
-	private FacesContext context;
+	private ExternalContext externalContext;
 
 	@ManagedProperty(value = "#{messageController}")
 	private MessageController messageController;
@@ -107,7 +111,9 @@ public class RegisterController implements Serializable {
 
 		UserDto user = createUser();
 		String activationUuid = uuidGenerator.generateUuid();
-		String activationURL = createActivationURL(activationUuid);
+
+		String encodedUuid = urlEncoder.encode(activationUuid);
+		String activationURL = getContextRootURL() + "/activation/" + encodedUuid;
 
 		userService.registerUser(user, activationUuid, activationURL);
 
@@ -126,13 +132,8 @@ public class RegisterController implements Serializable {
 		return user;
 	}
 
-	private String createActivationURL(String activationUuid) {
-		String encodedUuid = passwordEncoder.encode(activationUuid);
-		return getContextRootURL() + "/register/" + encodedUuid;
-	}
-
 	private String getContextRootURL() {
-		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+		HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
 		String requestURL = request.getRequestURL().toString();
 		String rootURL = requestURL.substring(0, requestURL.length() - request.getRequestURI().length());
 		return rootURL + request.getContextPath();

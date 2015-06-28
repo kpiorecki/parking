@@ -2,6 +2,8 @@ package com.kpiorecki.parking.web.view;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -9,6 +11,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.RequestDispatcher;
@@ -33,6 +36,9 @@ public class AuthController implements Serializable {
 	private FacesContext context;
 
 	@Inject
+	private ExternalContext externalContext;
+
+	@Inject
 	private UserService userService;
 
 	@ManagedProperty(value = "#{userController}")
@@ -40,7 +46,7 @@ public class AuthController implements Serializable {
 
 	private String login;
 	private String password;
-	private String originalURI;
+	private String redirectURL;
 
 	public String getLogin() {
 		return login;
@@ -64,23 +70,25 @@ public class AuthController implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
-		originalURI = (String) requestMap.get(RequestDispatcher.FORWARD_REQUEST_URI);
-		if (getLoginURI().equalsIgnoreCase(originalURI)) {
-			originalURI = getHomeURI();
+		Map<String, Object> requestMap = externalContext.getRequestMap();
+		redirectURL = (String) requestMap.get(RequestDispatcher.FORWARD_REQUEST_URI);
+		if (!isSecuredURL(redirectURL)) {
+			String loggedHomeURL = getLoggedHomeURL();
+			logger.info("initialized with redirectURL {} instead of not secured {}", loggedHomeURL, redirectURL);
+			redirectURL = loggedHomeURL;
 		} else {
 			String originalQuery = (String) requestMap.get(RequestDispatcher.FORWARD_QUERY_STRING);
 			if (originalQuery != null) {
-				originalURI += "?" + originalQuery;
+				redirectURL += "?" + originalQuery;
 			}
+			logger.info("initialized with redirectURL {}", redirectURL);
 		}
-		logger.info("initialized with originalURI {}", originalURI);
 	}
 
-	public void forwardLoggedIn() throws IOException {
+	public void redirectLoggedIn() throws IOException {
 		if (userController.isLoggedIn()) {
-			logger.info("forwarding request to home");
-			context.getExternalContext().redirect(getHomeURI());
+			logger.info("user {} is logged in - redirecting to logged home", userController.getLogin());
+			externalContext.redirect(getLoggedHomeURL());
 		}
 	}
 
@@ -94,20 +102,15 @@ public class AuthController implements Serializable {
 
 			// authenticating user will throw ServletException if failed
 			logger.info("logging in user {}", login);
-			getHttpServletRequest().login(login, password);
+			HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
+			request.login(login, password);
 
 			// authentication succeeded, set logged in user in userController
 			userController.setLoggedInUser(user);
-			context.getExternalContext().redirect(originalURI);
+			externalContext.redirect(redirectURL);
 		} catch (ServletException e) {
 			onLoginFailed();
 		}
-	}
-
-	public String logout() {
-		logger.info("logging out user {}", userController.getLogin());
-		context.getExternalContext().invalidateSession();
-		return "pretty:index";
 	}
 
 	private void onLoginFailed() {
@@ -116,16 +119,26 @@ public class AuthController implements Serializable {
 		context.addMessage(null, message);
 	}
 
-	private String getHomeURI() {
-		return context.getExternalContext().getRequestContextPath() + "/user";
+	private String getLoggedHomeURL() {
+		return externalContext.getRequestContextPath() + "/user";
 	}
 
-	private String getLoginURI() {
-		return context.getExternalContext().getRequestContextPath() + "/login";
+	private boolean isSecuredURL(String url) {
+		for (String prefix : getSecuredURLPrefixes()) {
+			String securedURL = externalContext.getRequestContextPath() + prefix;
+			if (url.toLowerCase().startsWith(securedURL)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
-	private HttpServletRequest getHttpServletRequest() {
-		return (HttpServletRequest) context.getExternalContext().getRequest();
+	private List<String> getSecuredURLPrefixes() {
+		List<String> prefixes = new LinkedList<>();
+		prefixes.add("/user");
+		prefixes.add("/admin");
+
+		return prefixes;
 	}
 
 }
