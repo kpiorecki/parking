@@ -16,14 +16,14 @@
 	<!-- error pages -->
 	<error-page>
 		<error-code>403</error-code>
-		<location>/message/403</location>
+		<location>/WEB-INF/view/message.xhtml?messageId=403</location>
 	</error-page>
 	<error-page>
 		<error-code>404</error-code>
-		<location>/message/404</location>
+		<location>/WEB-INF/view/message.xhtml?messageId=404</location>
 	</error-page>
 	<error-page>
-		<location>/message/error</location>
+		<location>/WEB-INF/view/message.xhtml?messageId=error</location>
 	</error-page>
 
 	<!-- parameter -->

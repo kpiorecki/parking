@@ -118,7 +118,7 @@ public class RegisterController implements Serializable {
 		userService.registerUser(user, activationUuid, activationURL);
 
 		messageController.setMessageId("register-info");
-		return "pretty:message";
+		return "/WEB-INF/view/message.xhtml";
 	}
 
 	private UserDto createUser() {

@@ -16,13 +16,6 @@
 		<view-id value="/WEB-INF/view/index.xhtml" />
 	</url-mapping>
 
-	<url-mapping id="message">
-		<pattern value="/message/#{messageController.messageId}">
-			<validate index="0" validator="#{messageController.validateMessageId}" onError="#{messageController.forwardInvalidMessageId}" />
-		</pattern>
-		<view-id value="/WEB-INF/view/message.xhtml" />
-	</url-mapping>
-
 	<url-mapping id="activation">
 		<pattern value="/activation/#{activationController.encodedActivationUuid}" />
 		<view-id value="/WEB-INF/view/activation.xhtml" />
@@ -39,11 +32,6 @@
 	<url-mapping id="admin-home">
 		<pattern value="/admin" />
 		<view-id value="/WEB-INF/view/admin/home.xhtml" />
-	</url-mapping>
-
-	<url-mapping id="admin-users">
-		<pattern value="/admin/users" />
-		<view-id value="/WEB-INF/view/admin/users.xhtml" />
 	</url-mapping>
 
 </pretty-config>

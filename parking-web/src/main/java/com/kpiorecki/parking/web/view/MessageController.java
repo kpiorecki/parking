@@ -2,15 +2,9 @@ package com.kpiorecki.parking.web.view;
 
 import java.io.Serializable;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
-
-import org.slf4j.Logger;
 
 import com.kpiorecki.parking.web.util.MessageProvider;
 
@@ -19,9 +13,6 @@ import com.kpiorecki.parking.web.util.MessageProvider;
 public class MessageController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	@Inject
-	private Logger logger;
 
 	@Inject
 	private MessageProvider messageProvider;
@@ -34,21 +25,6 @@ public class MessageController implements Serializable {
 
 	public void setMessageId(String messageId) {
 		this.messageId = messageId;
-	}
-
-	public void validateMessageId(FacesContext context, UIComponent component, Object object) throws ValidatorException {
-		String messageKey = getMessageKey((String) object);
-		if (!messageProvider.containsMessage(messageKey)) {
-			logger.warn("did not find messageKey={} in messages bundle", messageKey);
-
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Page not found", null);
-			throw new ValidatorException(message);
-		}
-	}
-
-	public String forwardInvalidMessageId() {
-		this.messageId = "404";
-		return "pretty:message";
 	}
 
 	public String getTitle() {
