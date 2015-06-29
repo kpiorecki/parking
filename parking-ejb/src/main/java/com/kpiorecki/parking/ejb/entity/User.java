@@ -32,7 +32,7 @@ import com.kpiorecki.parking.ejb.util.UuidGenerator;
 @Table(name = "users")
 @NamedQueries({
 		@NamedQuery(name = "User.findLoginCount", query = "select count(u) from User u where u.login = :login"),
-		@NamedQuery(name = "User.findOutdatedNotActivatedUsers", query = "select u.login from User u where u.activationDeadline > :dateTime and u.activationUuid is not null"),
+		@NamedQuery(name = "User.findOutdatedNotActivatedUsers", query = "select u.login from User u where u.activationDeadline > :dateTime"),
 		@NamedQuery(name = "User.findUserToActivate", query = "select u from User u where u.activationUuid = :activationUuid") })
 public class User extends ArchivableEntity implements Serializable {
 

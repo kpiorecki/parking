@@ -102,7 +102,6 @@ public class UserServiceImpl implements UserService {
 			return null;
 		}
 
-		user.setActivationUuid(null);
 		user.setActivationDeadline(null);
 		userDao.save(user);
 

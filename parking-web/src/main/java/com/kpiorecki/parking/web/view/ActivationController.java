@@ -84,8 +84,7 @@ public class ActivationController implements Serializable {
 			}
 		}
 
-		messageController.setMessageId("404");
+		messageController.setMessageId("activation-wrong-param");
 		return "/WEB-INF/view/message.xhtml";
 	}
-
 }

@@ -92,7 +92,7 @@ public class UserDao extends ArchivableDao<String, User> {
 	@Override
 	protected User findImpl(String id) {
 		User user = super.findImpl(id);
-		if (user != null && user.getActivationUuid() != null) {
+		if (user != null && user.getActivationDeadline() != null) {
 			logger.info("user={} is not activated - returning null", id);
 			return null;
 		}
@@ -101,7 +101,7 @@ public class UserDao extends ArchivableDao<String, User> {
 
 	@Override
 	protected Predicate createFindQueryPredicate(CriteriaBuilder builder, CriteriaQuery<User> query, Root<User> root) {
-		Predicate activatedPredicate = builder.isNull(root.get(User_.activationUuid));
+		Predicate activatedPredicate = builder.isNull(root.get(User_.activationDeadline));
 		Predicate findQueryPredicate = super.createFindQueryPredicate(builder, query, root);
 
 		return builder.and(findQueryPredicate, activatedPredicate);
