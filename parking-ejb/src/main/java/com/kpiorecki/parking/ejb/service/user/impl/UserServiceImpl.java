@@ -2,6 +2,7 @@ package com.kpiorecki.parking.ejb.service.user.impl;
 
 import java.util.List;
 
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -129,5 +130,11 @@ public class UserServiceImpl implements UserService {
 		List<User> users = userDao.findAll();
 
 		return collectionMapper.mapToArrayList(users, UserDto.class);
+	}
+
+	@Schedule(dayOfWeek = "*", hour = "3", minute = "15", persistent = false)
+	public void deleteOutdatedNotActivatedUsers() {
+		logger.info("deleting outdated not activated users");
+		userDao.deleteOutdatedNotActivatedUsers();
 	}
 }
