@@ -8,7 +8,16 @@
 	<ui:define name="content">
 		<f:event type="preRenderView" listener="#{authController.redirectLoggedIn}" />
 
-		<div class="left">Welcome to Parking App!</div>
+		<div class="left index-page">
+			<h1>Use your limited parking space efficiently</h1>
+			<ul>
+				<li>fair places sharing algorithm</li>
+				<li>dynamic bookings and cancellations</li>
+				<li>mail notifications about changes</li>
+				<li>different user statuses</li>
+				<li>assignment forecast for upcoming weeks</li>
+			</ul>
+		</div>
 
 		<div class="right">
 			<ui:include src="/WEB-INF/view/register-form.xhtml" />
