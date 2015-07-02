@@ -1,7 +1,7 @@
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3 http://maven.apache.org/xsd/assembly-1.1.3.xsd">
 
-	<!-- assemble unpacked ear content folder into zip archive -->
+	<!-- assemble unpacked parking-web content folder into zip archive -->
 
 	<id>${embedded-assembly-id}</id>
 	<formats>
@@ -10,7 +10,7 @@
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<fileSets>
 		<fileSet>
-			<directory>${unpacked-ear-dir}</directory>
+			<directory>${unpacked-war-dir}</directory>
 			<outputDirectory></outputDirectory>
 		</fileSet>
 	</fileSets>

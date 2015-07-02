@@ -16,7 +16,7 @@
 		<profile>
 			<id>embedded</id>
 			<properties>
-				<unpacked-ear-dir>${project.build.directory}/unpacked-ear</unpacked-ear-dir>
+				<unpacked-war-dir>${project.build.directory}/unpacked-war</unpacked-war-dir>
 				<greenmail-dir>${project.build.directory}/greenmail</greenmail-dir>
 				<config-dir>${project.build.directory}/config</config-dir>
 				<embedded-assembly-id>embedded</embedded-assembly-id>
@@ -24,9 +24,9 @@
 			<dependencies>
 				<dependency>
 					<groupId>${project.groupId}</groupId>
-					<artifactId>parking-ear</artifactId>
+					<artifactId>parking-web</artifactId>
 					<version>${project.version}</version>
-					<type>ear</type>
+					<type>war</type>
 				</dependency>
 				<dependency>
 					<groupId>com.icegreen</groupId>
@@ -100,9 +100,9 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-dependency-plugin</artifactId>
 						<executions>
-							<!-- unpack ear dependency content into target directory -->
+							<!-- unpack parking-web dependency content into target directory -->
 							<execution>
-								<id>unpack-ear</id>
+								<id>unpack-parking-web</id>
 								<phase>generate-resources</phase>
 								<goals>
 									<goal>unpack</goal>
@@ -111,11 +111,11 @@
 									<artifactItems>
 										<artifactItem>
 											<groupId>${project.groupId}</groupId>
-											<artifactId>parking-ear</artifactId>
+											<artifactId>parking-web</artifactId>
 											<version>${project.version}</version>
-											<type>ear</type>
+											<type>war</type>
 											<overWrite>true</overWrite>
-											<outputDirectory>${unpacked-ear-dir}</outputDirectory>
+											<outputDirectory>${unpacked-war-dir}</outputDirectory>
 										</artifactItem>
 									</artifactItems>
 								</configuration>
@@ -148,7 +148,7 @@
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>truezip-maven-plugin</artifactId>
 						<executions>
-							<!-- add sql scripts into parking-ejb module jar -->
+							<!-- add sql scripts into parking-ejb jar -->
 							<execution>
 								<id>copy-sql-scripts</id>
 								<phase>generate-resources</phase>
@@ -161,7 +161,7 @@
 										<includes>
 											<include>*</include>
 										</includes>
-										<outputDirectory>${unpacked-ear-dir}/parking-ejb-${project.version}.jar/db/migration</outputDirectory>
+										<outputDirectory>${unpacked-war-dir}/WEB-INF/lib/parking-ejb-${project.version}.jar/db/migration</outputDirectory>
 									</fileset>
 								</configuration>
 							</execution>
@@ -172,7 +172,7 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-assembly-plugin</artifactId>
 						<executions>
-							<!-- assemble embedded ear zip archive with overwritten persistence.xml and glassfish-resources.xml -->
+							<!-- assemble embedded war zip archive with overwritten persistence.xml and glassfish-resources.xml -->
 							<execution>
 								<id>make-assembly</id>
 								<phase>package</phase>

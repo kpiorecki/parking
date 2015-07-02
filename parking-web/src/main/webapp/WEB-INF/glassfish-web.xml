@@ -2,6 +2,8 @@
 <!DOCTYPE glassfish-web-app PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Servlet 3.0//EN" "http://glassfish.org/dtds/glassfish-web-app_3_0-1.dtd">
 <glassfish-web-app>
 
+	<context-root>parking</context-root>
+
 	<security-role-mapping>
 		<role-name>admin</role-name>
 		<group-name>ADMIN</group-name>
@@ -13,4 +15,5 @@
 	</security-role-mapping>
 
 	<class-loader delegate="true" />
+	
 </glassfish-web-app>
