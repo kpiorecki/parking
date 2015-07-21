@@ -30,16 +30,11 @@ import org.joda.time.LocalDate;
 @Table(name = "bookings", indexes = { @Index(columnList = "parking_uuid, date", unique = true) })
 @NamedQueries({
 		@NamedQuery(name = "Booking.findByParkingAndDate", query = "select b from Booking b where b.parking.uuid = :parkingUuid and b.date = :date"),
-		@NamedQuery(name = "Booking.findIdsByParking", query = "select b.id from Booking b where b.parking.uuid = :parkingUuid") })
+		@NamedQuery(name = "Booking.findIdsByParking", query = "select b.id from Booking b where b.parking.uuid = :parkingUuid"),
+		@NamedQuery(name = "Booking.findByDateRangeAndParkings", query = "select b from Booking b where b.date >= :startDate and b.date < :endDate and b.parking in :parkingList order by b.date") })
 public class Booking implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	public enum Status {
-		DRAFT,
-		RELEASED,
-		LOCKED;
-	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "seq_bookings")
@@ -59,7 +54,7 @@ public class Booking implements Serializable {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private Status status = Status.DRAFT;
+	private BookingStatus status = BookingStatus.DRAFT;
 
 	@Version
 	private Integer version;
@@ -118,11 +113,11 @@ public class Booking implements Serializable {
 		this.date = date;
 	}
 
-	public Status getStatus() {
+	public BookingStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(BookingStatus status) {
 		this.status = status;
 	}
 

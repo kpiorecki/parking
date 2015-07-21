@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<configuration>
+		<copy-by-references>
+			<copy-by-reference>org.joda.time.LocalDate</copy-by-reference>
+			<copy-by-reference>org.joda.time.DateTime</copy-by-reference>
+		</copy-by-references>
+	</configuration>
+
+	<mapping>
+		<class-a>com.kpiorecki.parking.ejb.entity.BookingEntry</class-a>
+		<class-b>com.kpiorecki.parking.ejb.dto.BookingEntryDto</class-b>
+		<field>
+			<a>user.login</a>
+			<b>login</b>
+		</field>
+	</mapping>
+
+	<mapping>
+		<class-a>com.kpiorecki.parking.ejb.entity.Booking</class-a>
+		<class-b>com.kpiorecki.parking.ejb.dto.BookingDto</class-b>
+		<field>
+			<a>entries</a>
+			<b>entries</b>
+			<a-hint>com.kpiorecki.parking.ejb.entity.BookingEntry</a-hint>
+			<b-hint>com.kpiorecki.parking.ejb.dto.BookingEntryDto</b-hint>
+		</field>
+	</mapping>
+
+</mappings> 

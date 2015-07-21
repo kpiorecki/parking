@@ -18,7 +18,6 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.shrinkwrap.api.Archive;
 import org.joda.time.LocalDate;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -56,32 +55,9 @@ public class ParkingServiceTest {
 	@Inject
 	private TestUtilities testUtilities;
 
-	private Parking parking;
-	private String parkingUuid;
-	private LocalDate bookingDate;
-
-	private String addedLogin1 = "user1";
-	private String addedLogin2 = "user2";
-	private String freeLogin3 = "user3";
-
-	@Before
-	public void prepareData() {
-		User addedUser1 = testUtilities.persistUser(addedLogin1);
-		User addedUser2 = testUtilities.persistUser(addedLogin2);
-
-		parking = testUtilities.persistParking(addedUser1, addedUser2);
-		parkingUuid = parking.getUuid();
-		bookingDate = new LocalDate(2015, 04, 01);
-
-		testUtilities.persistUser(freeLogin3);
-		testUtilities.persistBooking(parking, bookingDate, addedUser1, addedUser2);
-
-		entityManager.flush();
-	}
-
 	@Test
 	public void shouldAddParking() {
-		// given
+		// when
 		AddressDto addressDto = new AddressDto();
 		addressDto.setCity("city");
 		addressDto.setPostalCode("code");
@@ -93,7 +69,6 @@ public class ParkingServiceTest {
 		parkingDto.setCapacity(50);
 		parkingDto.setName("name");
 
-		// when
 		String uuid = parkingService.addParking(parkingDto);
 
 		// then
@@ -104,15 +79,17 @@ public class ParkingServiceTest {
 	@Test
 	public void shouldModifyParking() {
 		// given
-		ParkingDto parkingDto = mapper.map(parking, ParkingDto.class);
+		Parking parking = testUtilities.persistParking();
+		entityManager.flush();
 
 		// when
+		ParkingDto parkingDto = mapper.map(parking, ParkingDto.class);
 		parkingDto.setCapacity(100);
 		parkingDto.getAddress().setCity("new city");
 		parkingService.modifyParking(parkingDto);
 
 		// then
-		ParkingDto foundParkingDto = parkingService.findParking(parkingUuid);
+		ParkingDto foundParkingDto = parkingService.findParking(parking.getUuid());
 		assertNotNull(foundParkingDto);
 		assertEquals((Integer) 100, foundParkingDto.getCapacity());
 		assertEquals("new city", foundParkingDto.getAddress().getCity());
@@ -120,19 +97,30 @@ public class ParkingServiceTest {
 
 	@Test
 	public void shouldDeleteParking() {
+		// given
+		User user = testUtilities.persistUser("login");
+		Parking parking = testUtilities.persistParking(user);
+		LocalDate bookingDate = new LocalDate(2015, 04, 01);
+		testUtilities.persistBooking(parking, bookingDate, user);
+		entityManager.flush();
+
 		// when
-		parkingService.deleteParking(parkingUuid);
+		parkingService.deleteParking(parking.getUuid());
 
 		// then
 		List<ParkingDto> allParkings = parkingService.findAllParkings();
 		assertTrue(allParkings.isEmpty());
 
-		Booking booking = bookingDao.find(parkingUuid, bookingDate);
+		Booking booking = bookingDao.find(parking.getUuid(), bookingDate);
 		assertNull(booking);
 	}
 
 	@Test
 	public void shouldNotFindDeletedParking() {
+		// given
+		String parkingUuid = testUtilities.persistParking().getUuid();
+		entityManager.flush();
+
 		// when
 		parkingService.deleteParking(parkingUuid);
 		ParkingDto foundParking = parkingService.findParking(parkingUuid);
@@ -143,6 +131,10 @@ public class ParkingServiceTest {
 
 	@Test
 	public void shouldFindParking() {
+		// given
+		String parkingUuid = testUtilities.persistParking().getUuid();
+		entityManager.flush();
+
 		// when
 		ParkingDto parkingDto = parkingService.findParking(parkingUuid);
 
@@ -153,16 +145,28 @@ public class ParkingServiceTest {
 
 	@Test
 	public void shouldFindAllParkings() {
+		// given
+		testUtilities.persistParking();
+		testUtilities.persistParking();
+		testUtilities.persistParking();
+		entityManager.flush();
+
 		// when
 		List<ParkingDto> allParkings = parkingService.findAllParkings();
 
 		// then
 		assertNotNull(allParkings);
-		assertEquals(1, allParkings.size());
+		assertEquals(3, allParkings.size());
 	}
 
 	@Test
 	public void shouldFindRecords() {
+		// given
+		User user1 = testUtilities.persistUser("login1");
+		User user2 = testUtilities.persistUser("login2");
+		String parkingUuid = testUtilities.persistParking(user1, user2).getUuid();
+		entityManager.flush();
+
 		// when
 		Collection<RecordDto> records = parkingService.findRecords(parkingUuid);
 
@@ -173,8 +177,15 @@ public class ParkingServiceTest {
 
 	@Test
 	public void shouldAssignUser() {
+		// given
+		User user1 = testUtilities.persistUser("login1");
+		User user2 = testUtilities.persistUser("login2");
+		String parkingUuid = testUtilities.persistParking(user1, user2).getUuid();
+		testUtilities.persistUser("login3");
+		entityManager.flush();
+
 		// when
-		parkingService.assignUser(parkingUuid, freeLogin3, true);
+		parkingService.assignUser(parkingUuid, "login3", true);
 
 		// then
 		Collection<RecordDto> records = parkingService.findRecords(parkingUuid);
@@ -184,8 +195,13 @@ public class ParkingServiceTest {
 
 	@Test(expected = Exception.class)
 	public void shouldNotAssignUserTwice() {
+		// given
+		User user = testUtilities.persistUser("login");
+		String parkingUuid = testUtilities.persistParking(user).getUuid();
+		entityManager.flush();
+
 		// when
-		parkingService.assignUser(parkingUuid, addedLogin1, true);
+		parkingService.assignUser(parkingUuid, "login", true);
 		entityManager.flush();
 
 		// then unique constraint violation should be thrown (user already assigned)
@@ -193,25 +209,43 @@ public class ParkingServiceTest {
 
 	@Test
 	public void shouldRevokeUser() {
+		// given
+		User user1 = testUtilities.persistUser("login1");
+		User user2 = testUtilities.persistUser("login2");
+		String parkingUuid = testUtilities.persistParking(user1, user2).getUuid();
+		entityManager.flush();
+
 		// when
-		parkingService.revokeUser(parkingUuid, addedLogin1);
+		parkingService.revokeUser(parkingUuid, "login1");
 
 		// then
-		Collection<RecordDto> records = parkingService.findRecords(parkingUuid);
+		List<RecordDto> records = parkingService.findRecords(parkingUuid);
 		assertNotNull(records);
 		assertEquals(1, records.size());
+		assertEquals("login2", records.get(0).getUser().getLogin());
 	}
 
 	@Test(expected = Exception.class)
 	public void shouldNotRevokeUnassignedUser() {
+		// given
+		User user = testUtilities.persistUser("login");
+		String parkingUuid = testUtilities.persistParking(user).getUuid();
+		entityManager.flush();
+
 		// when
-		parkingService.revokeUser(parkingUuid, freeLogin3);
+		parkingService.revokeUser(parkingUuid, "new login");
 
 		// then exception should be thrown - user was not assigned to parking
 	}
 
 	@Test
 	public void shouldRevokeAllUsers() {
+		// given
+		User user1 = testUtilities.persistUser("login1");
+		User user2 = testUtilities.persistUser("login2");
+		String parkingUuid = testUtilities.persistParking(user1, user2).getUuid();
+		entityManager.flush();
+
 		// when
 		parkingService.revokeAllUsers(parkingUuid);
 
@@ -221,4 +255,41 @@ public class ParkingServiceTest {
 		assertTrue(records.isEmpty());
 	}
 
+	@Test
+	public void shouldNotFindUserParkings() {
+		// given
+		testUtilities.persistUser("login");
+		entityManager.flush();
+
+		// when
+		List<ParkingDto> userParkings = parkingService.findUserParkings("login");
+
+		// then
+		assertNotNull(userParkings);
+		assertTrue(userParkings.isEmpty());
+	}
+
+	@Test
+	public void shouldFindUserParkings() {
+		// given
+		User user1 = testUtilities.persistUser("login1");
+		User user2 = testUtilities.persistUser("login2");
+		User user3 = testUtilities.persistUser("login3");
+		String parking1Uuid = testUtilities.persistParking(user1, user2).getUuid();
+		String parking2Uuid = testUtilities.persistParking(user1, user2, user3).getUuid();
+		String parking3Uuid = testUtilities.persistParking(user1).getUuid();
+		String parking4Uuid = testUtilities.persistParking(user2, user3).getUuid();
+		entityManager.flush();
+
+		// when
+		List<ParkingDto> userParkings = parkingService.findUserParkings("login1");
+
+		// then
+		assertNotNull(userParkings);
+		assertEquals(3, userParkings.size());
+		assertTrue(userParkings.stream().anyMatch(u -> u.getUuid().equals(parking1Uuid)));
+		assertTrue(userParkings.stream().anyMatch(u -> u.getUuid().equals(parking2Uuid)));
+		assertTrue(userParkings.stream().anyMatch(u -> u.getUuid().equals(parking3Uuid)));
+		assertTrue(userParkings.stream().noneMatch(u -> u.getUuid().equals(parking4Uuid)));
+	}
 }

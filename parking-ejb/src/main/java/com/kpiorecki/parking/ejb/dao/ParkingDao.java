@@ -37,6 +37,16 @@ public class ParkingDao extends GenericDao<String, Parking> {
 		return !records.isEmpty();
 	}
 
+	public List<Parking> findUserParkings(String login) {
+		logger.info("finding parkings containing user={} record", login);
+
+		TypedQuery<Parking> query = entityManager.createNamedQuery("Parking.findByUser", Parking.class);
+		query.setParameter("login", login);
+		query.setLockMode(LockModeType.OPTIMISTIC);
+
+		return query.getResultList();
+	}
+
 	@Override
 	public void delete(String id) {
 		logger.info("deleting parking={} bookings", id);

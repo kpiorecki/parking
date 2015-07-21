@@ -1,5 +1,7 @@
 package com.kpiorecki.parking.ejb.dao;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -14,6 +16,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
 import com.kpiorecki.parking.ejb.entity.Booking;
+import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
 import com.kpiorecki.parking.ejb.util.DomainException;
 
@@ -53,6 +56,23 @@ public class BookingDao extends GenericDao<Long, Booking> {
 		} else {
 			return null;
 		}
+	}
+
+	public List<Booking> findBookings(LocalDate startDate, LocalDate endDate, Collection<Parking> parkings) {
+		logger.info("finding bookings in range {} - {} and {} parkings", dateFormatter.print(startDate),
+				dateFormatter.print(endDate), parkings.size());
+		if (parkings.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<Booking> findQuery = entityManager.createNamedQuery("Booking.findByDateRangeAndParkings",
+				Booking.class);
+		findQuery.setLockMode(LockModeType.OPTIMISTIC);
+		findQuery.setParameter("startDate", startDate);
+		findQuery.setParameter("endDate", endDate);
+		findQuery.setParameter("parkingList", parkings);
+
+		return findQuery.getResultList();
 	}
 
 	private TypedQuery<Booking> createFindQuery(String parkingUuid, LocalDate date) {

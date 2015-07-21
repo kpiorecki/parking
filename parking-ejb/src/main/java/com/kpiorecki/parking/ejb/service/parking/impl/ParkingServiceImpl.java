@@ -131,8 +131,16 @@ public class ParkingServiceImpl implements ParkingService {
 		if (parking == null) {
 			return null;
 		}
-		
+
 		return mapper.map(parking, ParkingDto.class);
+	}
+
+	@Override
+	public List<ParkingDto> findUserParkings(String login) {
+		logger.info("finding parkings for user={}", login);
+
+		List<Parking> userParkings = parkingDao.findUserParkings(login);
+		return collectionMapper.mapToArrayList(userParkings, ParkingDto.class);
 	}
 
 	@Override

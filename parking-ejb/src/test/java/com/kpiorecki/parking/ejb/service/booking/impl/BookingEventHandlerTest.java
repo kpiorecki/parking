@@ -7,7 +7,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -15,8 +14,8 @@ import com.kpiorecki.parking.ejb.ArquillianFactory;
 import com.kpiorecki.parking.ejb.GreenMailTest;
 import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.entity.Booking;
-import com.kpiorecki.parking.ejb.entity.Booking.Status;
 import com.kpiorecki.parking.ejb.entity.Parking;
+import com.kpiorecki.parking.ejb.entity.BookingStatus;
 import com.kpiorecki.parking.ejb.entity.User;
 import com.kpiorecki.parking.ejb.util.ApplicationSetup;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
@@ -43,20 +42,6 @@ public class BookingEventHandlerTest extends GreenMailTest {
 	@DateFormatter
 	private DateTimeFormatter dateFormatter;
 
-	private LocalDate date;
-	private User user;
-	private Parking parking;
-	private Booking booking;
-
-	@Before
-	public void prepareData() {
-		date = new LocalDate(2015, 4, 10);
-		user = testUtilities.createUser("login");
-		parking = testUtilities.createParking(user);
-		booking = testUtilities.createBooking(parking, date, user);
-		booking.setStatus(Status.RELEASED);
-	}
-
 	@Test
 	public void shouldSendAssignedEmail() {
 		// given
@@ -82,6 +67,12 @@ public class BookingEventHandlerTest extends GreenMailTest {
 	}
 
 	private BookingEvent createEvent() {
+		LocalDate date = new LocalDate(2015, 4, 10);
+		User user = testUtilities.createUser("login");
+		Parking parking = testUtilities.createParking(user);
+		Booking booking = testUtilities.createBooking(parking, date, user);
+		booking.setStatus(BookingStatus.RELEASED);
+
 		BookingEvent event = new BookingEvent();
 		event.setDate(date);
 		event.setParking(parking);

@@ -1,5 +1,8 @@
 package com.kpiorecki.parking.ejb.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -37,7 +40,13 @@ public class ResourceProducer {
 	@Produces
 	@Singleton
 	Mapper createMapper() {
-		return new DozerBeanMapper();
+		List<String> mappingFiles = new ArrayList<String>();
+		mappingFiles.add("dozer-mapping.xml");
+
+		DozerBeanMapper mapper = new DozerBeanMapper();
+		mapper.setMappingFiles(mappingFiles);
+
+		return mapper;
 	}
 
 	@Produces

@@ -18,7 +18,6 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.shrinkwrap.api.Archive;
 import org.joda.time.DateTime;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -58,33 +57,15 @@ public class UserServiceTest extends GreenMailTest {
 	@Inject
 	private Mapper mapper;
 
-	private String login1 = "login1";
-	private String login2 = "login2";
-
-	private String parkingUuid;
-
-	private User user1;
-
-	@Before
-	public void prepareData() {
-		user1 = testUtilities.persistUser(login1);
-		User user2 = testUtilities.persistUser(login2);
-		parkingUuid = testUtilities.persistParking(user1, user2).getUuid();
-
-		entityManager.flush();
-	}
-
 	@Test
 	public void shouldAddUser() {
-		// given
+		// when
 		UserDto user = new UserDto();
 		user.setFirstName("firstname");
 		user.setLastName("lastname");
 		user.setLogin("new login");
 		user.setEmail("user@mail.com");
 		user.setPassword("password");
-
-		// when
 		userService.addUser(user);
 
 		// then
@@ -95,22 +76,28 @@ public class UserServiceTest extends GreenMailTest {
 	@Test
 	public void shouldModifyUser() {
 		// given
-		UserDto user = mapper.map(user1, UserDto.class);
+		User user = testUtilities.persistUser("login");
+		entityManager.flush();
 
 		// when
-		user.setFirstName("new firstname");
-		userService.modifyUser(user);
+		UserDto userDto = mapper.map(user, UserDto.class);
+		userDto.setFirstName("new firstname");
+		userService.modifyUser(userDto);
 
 		// then
-		UserDto foundUser = userService.findUser(login1);
+		UserDto foundUser = userService.findUser("login");
 		assertNotNull(foundUser);
 		assertEquals("new firstname", foundUser.getFirstName());
 	}
 
 	@Test
 	public void shouldFindUser() {
+		// given
+		testUtilities.persistUser("login");
+		entityManager.flush();
+
 		// when
-		UserDto user = userService.findUser(login1);
+		UserDto user = userService.findUser("login");
 
 		// then
 		assertNotNull(user);
@@ -118,6 +105,10 @@ public class UserServiceTest extends GreenMailTest {
 
 	@Test
 	public void shouldNotFindNonExistingUser() {
+		// given
+		testUtilities.persistUser("login");
+		entityManager.flush();
+
 		// when
 		UserDto foundUser = userService.findUser("new login");
 
@@ -127,6 +118,10 @@ public class UserServiceTest extends GreenMailTest {
 
 	@Test
 	public void shouldFindAllUsers() {
+		// given
+		testUtilities.persistUser("login1");
+		testUtilities.persistUser("login2");
+
 		// when
 		List<UserDto> allUsers = userService.findAllUsers();
 
@@ -138,12 +133,14 @@ public class UserServiceTest extends GreenMailTest {
 	@Test(expected = Exception.class)
 	public void shouldNotAddDuplicatedUserLogin() {
 		// given
-		UserDto userDto = new UserDto();
-		userDto.setLogin(login1);
-		userDto.setEmail("user@mail.com");
-		userDto.setPassword("password");
+		testUtilities.persistUser("login");
+		entityManager.flush();
 
 		// when
+		UserDto userDto = new UserDto();
+		userDto.setLogin("login");
+		userDto.setEmail("user@mail.com");
+		userDto.setPassword("password");
 		userService.addUser(userDto);
 		entityManager.flush();
 
@@ -152,17 +149,23 @@ public class UserServiceTest extends GreenMailTest {
 
 	@Test
 	public void shouldDeleteUser() {
+		// given
+		User user1 = testUtilities.persistUser("login1");
+		User user2 = testUtilities.persistUser("login2");
+		String parkingUuid = testUtilities.persistParking(user1, user2).getUuid();
+		entityManager.flush();
+
 		// when
-		userService.deleteUser(login1);
+		userService.deleteUser("login1");
 
 		// then
-		List<User> foundUsers = userDao.find(User_.login, login1);
+		List<User> foundUsers = userDao.find(User_.login, "login1");
 		assertTrue(foundUsers.isEmpty());
 
-		boolean user1Assigned = parkingDao.isUserAssigned(parkingUuid, login1);
+		boolean user1Assigned = parkingDao.isUserAssigned(parkingUuid, "login1");
 		assertFalse(user1Assigned);
 
-		boolean user2Assigned = parkingDao.isUserAssigned(parkingUuid, login2);
+		boolean user2Assigned = parkingDao.isUserAssigned(parkingUuid, "login2");
 		assertTrue(user2Assigned);
 	}
 
@@ -185,8 +188,12 @@ public class UserServiceTest extends GreenMailTest {
 
 	@Test
 	public void shouldFindLoginNotAvailable() {
+		// given
+		testUtilities.persistUser("login");
+		entityManager.flush();
+
 		// when
-		boolean loginAvailable = userService.isLoginAvailable(login1);
+		boolean loginAvailable = userService.isLoginAvailable("login");
 
 		// then
 		assertFalse(loginAvailable);
@@ -197,10 +204,9 @@ public class UserServiceTest extends GreenMailTest {
 		// given
 		String activationUuid = "testActivationUuid";
 		String activationURL = "http://localhost:8080/activation";
-		String login = "new login";
 
 		UserDto user = new UserDto();
-		user.setLogin(login);
+		user.setLogin("login");
 		user.setFirstName("firstname");
 		user.setLastName("lastname");
 		user.setEmail("user@mail.com");
@@ -211,8 +217,8 @@ public class UserServiceTest extends GreenMailTest {
 
 		// then
 		assertOneMailSent();
-		assertNull(userService.findUser(login));
-		assertFalse(userService.isLoginAvailable(login));
+		assertNull(userService.findUser("login"));
+		assertFalse(userService.isLoginAvailable("login"));
 	}
 
 	@Test

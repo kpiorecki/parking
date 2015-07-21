@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import org.joda.time.LocalDate;
 
-import com.kpiorecki.parking.ejb.entity.Booking.Status;
 import com.kpiorecki.parking.ejb.entity.Parking;
+import com.kpiorecki.parking.ejb.entity.BookingStatus;
 import com.kpiorecki.parking.ejb.entity.User;
 
 public class BookingEvent implements Serializable {
@@ -15,7 +15,7 @@ public class BookingEvent implements Serializable {
 	private LocalDate date;
 	private User user;
 	private Parking parking;
-	private Status bookingStatus;
+	private BookingStatus bookingStatus;
 
 	public LocalDate getDate() {
 		return date;
@@ -41,11 +41,11 @@ public class BookingEvent implements Serializable {
 		this.parking = parking;
 	}
 
-	public Status getBookingStatus() {
+	public BookingStatus getBookingStatus() {
 		return bookingStatus;
 	}
 
-	public void setBookingStatus(Status bookingStatus) {
+	public void setBookingStatus(BookingStatus bookingStatus) {
 		this.bookingStatus = bookingStatus;
 	}
 

@@ -21,9 +21,11 @@ public interface ParkingService {
 	void revokeUser(String parkingUuid, String login);
 
 	void revokeAllUsers(String parkingUuid);
-	
+
 	ParkingDto findParking(String parkingUuid);
-	
+
+	List<ParkingDto> findUserParkings(String login);
+
 	List<ParkingDto> findAllParkings();
 
 	List<RecordDto> findRecords(String parkingUuid);

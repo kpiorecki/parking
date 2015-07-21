@@ -15,7 +15,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,13 +34,44 @@ public class DateConverterTest {
 	@Inject
 	private EntityManager entityManager;
 
-	private DateTime dateTime;
-	private LocalDate date;
+	@Test
+	public void shouldFindByLocalDate() {
+		// given
+		DateEntity entity = addDateEntity();
 
-	@Before
-	public void prepareData() {
-		dateTime = new DateTime();
-		date = dateTime.toLocalDate();
+		// when
+		TypedQuery<DateEntity> findQuery = entityManager.createQuery("select d from DateEntity d where d.date = :date",
+				DateEntity.class);
+		findQuery.setParameter("date", entity.getDate());
+		DateEntity foundEntity = findQuery.getSingleResult();
+
+		// then
+		assertNotNull(foundEntity);
+		assertEquals(entity.getDate(), foundEntity.getDate());
+		assertEquals(entity.getDateTime(), foundEntity.getDateTime());
+	}
+
+	@Test
+	public void shouldFindByUTCDateTime() {
+		// given
+		DateEntity entity = addDateEntity();
+
+		// when
+		DateTime dateTimeUTC = entity.getDateTime().withZone(DateTimeZone.UTC);
+		TypedQuery<DateEntity> findQuery = entityManager.createQuery(
+				"select d from DateEntity d where d.dateTime = :dateTime", DateEntity.class);
+		findQuery.setParameter("dateTime", dateTimeUTC);
+		DateEntity foundEntity = findQuery.getSingleResult();
+
+		// then
+		assertNotNull(foundEntity);
+		assertEquals(entity.getDate(), foundEntity.getDate());
+		assertEquals(entity.getDateTime(), foundEntity.getDateTime());
+	}
+
+	private DateEntity addDateEntity() {
+		DateTime dateTime = new DateTime();
+		LocalDate date = dateTime.toLocalDate();
 
 		DateEntity dateEntity = new DateEntity();
 		dateEntity.setDate(date);
@@ -49,38 +79,7 @@ public class DateConverterTest {
 
 		entityManager.persist(dateEntity);
 		entityManager.flush();
-	}
 
-	@Test
-	public void shouldFindByLocalDate() {
-		// given
-		TypedQuery<DateEntity> findQuery = entityManager.createQuery("select d from DateEntity d where d.date = :date",
-				DateEntity.class);
-		findQuery.setParameter("date", date);
-
-		// when
-		DateEntity dateEntity = findQuery.getSingleResult();
-
-		// then
-		assertNotNull(dateEntity);
-		assertEquals(date, dateEntity.getDate());
-		assertEquals(dateTime, dateEntity.getDateTime());
-	}
-
-	@Test
-	public void shouldFindByUTCDateTime() {
-		// given
-		DateTime dateTimeUTC = dateTime.withZone(DateTimeZone.UTC);
-		TypedQuery<DateEntity> findQuery = entityManager.createQuery(
-				"select d from DateEntity d where d.dateTime = :dateTime", DateEntity.class);
-		findQuery.setParameter("dateTime", dateTimeUTC);
-
-		// when
-		DateEntity dateEntity = findQuery.getSingleResult();
-
-		// then
-		assertNotNull(dateEntity);
-		assertEquals(date, dateEntity.getDate());
-		assertEquals(dateTime, dateEntity.getDateTime());
+		return dateEntity;
 	}
 }
