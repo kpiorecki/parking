@@ -2,10 +2,9 @@ package com.kpiorecki.parking.web.view;
 
 import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.slf4j.Logger;
 
@@ -13,7 +12,7 @@ import com.kpiorecki.parking.ejb.dto.UserDto;
 import com.kpiorecki.parking.ejb.service.user.UserService;
 import com.kpiorecki.parking.web.util.URLEncoder;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class ActivationController implements Serializable {
 
@@ -28,30 +27,18 @@ public class ActivationController implements Serializable {
 	@Inject
 	private URLEncoder urlEncoder;
 
-	@ManagedProperty(value = "#{messageController}")
+	@Inject
 	private MessageController messageController;
 
-	@ManagedProperty(value = "#{userController}")
+	@Inject
 	private UserController userController;
 
-	@ManagedProperty(value = "#{authController}")
+	@Inject
 	private AuthController authController;
 
 	private String login;
 
 	private String encodedActivationUuid;
-
-	public void setMessageController(MessageController messageController) {
-		this.messageController = messageController;
-	}
-
-	public void setUserController(UserController userController) {
-		this.userController = userController;
-	}
-
-	public void setAuthController(AuthController authController) {
-		this.authController = authController;
-	}
 
 	public String getLogin() {
 		return login;

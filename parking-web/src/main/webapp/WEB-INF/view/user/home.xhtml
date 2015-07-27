@@ -2,12 +2,32 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:parking="http://xmlns.jcp.org/jsf/composite/parking">
 <h:body>
+
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewAction action="#{bookingOverviewController.loadUserBookings}" />
+		</f:metadata>
+	</ui:define>
+
 	<ui:composition template="/WEB-INF/view/template/layout-default.xhtml">
 		<ui:define name="content">
-			User Home Page
+			<c:choose>
+				<c:when test="#{empty bookingOverviewController.userBookings}">
+					<h:outputText value="You are not assigned to any parking" />
+				</c:when>
+				<c:otherwise>
+					<ui:repeat value="#{bookingOverviewController.userBookings}" var="value">
+						<parking:parking-booking parkingBooking="#{value}" />
+						<br />
+						<br />
+					</ui:repeat>
+				</c:otherwise>
+			</c:choose>
 		</ui:define>
 	</ui:composition>
+
 </h:body>
 </html>

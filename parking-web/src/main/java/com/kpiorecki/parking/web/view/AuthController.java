@@ -8,12 +8,11 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +22,7 @@ import org.slf4j.Logger;
 import com.kpiorecki.parking.ejb.dto.UserDto;
 import com.kpiorecki.parking.ejb.service.user.UserService;
 
-@ManagedBean
+@Named
 @ViewScoped
 public class AuthController implements Serializable {
 
@@ -41,7 +40,7 @@ public class AuthController implements Serializable {
 	@Inject
 	private UserService userService;
 
-	@ManagedProperty(value = "#{userController}")
+	@Inject
 	private UserController userController;
 
 	private String login;
@@ -62,10 +61,6 @@ public class AuthController implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public void setUserController(UserController userController) {
-		this.userController = userController;
 	}
 
 	@PostConstruct

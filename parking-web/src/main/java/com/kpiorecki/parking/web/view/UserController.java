@@ -2,16 +2,16 @@ package com.kpiorecki.parking.web.view;
 
 import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.slf4j.Logger;
 
 import com.kpiorecki.parking.ejb.dto.UserDto;
 
-@ManagedBean
+@Named
 @SessionScoped
 public class UserController implements Serializable {
 

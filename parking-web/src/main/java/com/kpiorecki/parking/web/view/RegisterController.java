@@ -2,11 +2,10 @@ package com.kpiorecki.parking.web.view;
 
 import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.ExternalContext;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
 
@@ -19,7 +18,7 @@ import com.kpiorecki.parking.ejb.service.user.impl.UserPasswordEncoder;
 import com.kpiorecki.parking.ejb.util.UuidGenerator;
 import com.kpiorecki.parking.web.util.URLEncoder;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class RegisterController implements Serializable {
 
@@ -43,7 +42,7 @@ public class RegisterController implements Serializable {
 	@Inject
 	private ExternalContext externalContext;
 
-	@ManagedProperty(value = "#{messageController}")
+	@Inject
 	private MessageController messageController;
 
 	@Size(min = UserDto.LOGIN_MIN_LEN, max = UserDto.LOGIN_MAX_LEN)
@@ -61,10 +60,6 @@ public class RegisterController implements Serializable {
 
 	@Size(min = UserDto.PASSWORD_MIN_LEN, max = UserDto.PASSWORD_MAX_LEN)
 	private String password;
-
-	public void setMessageController(MessageController messageController) {
-		this.messageController = messageController;
-	}
 
 	public String getLogin() {
 		return login;
