@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
@@ -31,7 +30,6 @@ public class ParkingDao extends GenericDao<String, Parking> {
 		TypedQuery<Record> query = entityManager.createNamedQuery("Record.findRecordByUserAndParking", Record.class);
 		query.setParameter("login", login);
 		query.setParameter("parkingUuid", parkingUuid);
-		query.setLockMode(LockModeType.OPTIMISTIC);
 
 		List<Record> records = query.getResultList();
 		return !records.isEmpty();
@@ -42,7 +40,6 @@ public class ParkingDao extends GenericDao<String, Parking> {
 
 		TypedQuery<Parking> query = entityManager.createNamedQuery("Parking.findByUser", Parking.class);
 		query.setParameter("login", login);
-		query.setLockMode(LockModeType.OPTIMISTIC);
 
 		return query.getResultList();
 	}

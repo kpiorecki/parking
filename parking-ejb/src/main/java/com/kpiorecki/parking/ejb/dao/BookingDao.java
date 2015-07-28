@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
@@ -67,7 +66,6 @@ public class BookingDao extends GenericDao<Long, Booking> {
 
 		TypedQuery<Booking> findQuery = entityManager.createNamedQuery("Booking.findByDateRangeAndParkings",
 				Booking.class);
-		findQuery.setLockMode(LockModeType.OPTIMISTIC);
 		findQuery.setParameter("startDate", startDate);
 		findQuery.setParameter("endDate", endDate);
 		findQuery.setParameter("parkingList", parkings);
@@ -77,7 +75,6 @@ public class BookingDao extends GenericDao<Long, Booking> {
 
 	private TypedQuery<Booking> createFindQuery(String parkingUuid, LocalDate date) {
 		TypedQuery<Booking> findQuery = entityManager.createNamedQuery("Booking.findByParkingAndDate", Booking.class);
-		findQuery.setLockMode(LockModeType.OPTIMISTIC);
 		findQuery.setParameter("parkingUuid", parkingUuid);
 		findQuery.setParameter("date", date);
 

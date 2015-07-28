@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -39,7 +38,6 @@ public class UserDao extends ArchivableDao<String, User> {
 		// remove user's parking assignments
 		TypedQuery<Record> query = entityManager.createNamedQuery("Record.findRecordsByUser", Record.class);
 		query.setParameter("login", id);
-		query.setLockMode(LockModeType.OPTIMISTIC);
 		List<Record> records = query.getResultList();
 
 		for (Record record : records) {

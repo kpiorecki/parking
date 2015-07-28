@@ -81,7 +81,6 @@ public abstract class GenericDao<K, E> {
 		adjustFindQuery(builder, query, root);
 
 		TypedQuery<E> findAllQuery = entityManager.createQuery(query);
-		findAllQuery.setLockMode(LockModeType.OPTIMISTIC);
 		List<E> entities = findAllQuery.getResultList();
 
 		logger.info("{} - {} found", message, entities.size());
@@ -106,7 +105,7 @@ public abstract class GenericDao<K, E> {
 	}
 
 	protected E findImpl(K id) {
-		return entityManager.find(clazz, id, LockModeType.OPTIMISTIC);
+		return entityManager.find(clazz, id);
 	}
 
 	protected <V> TypedQuery<E> createFindQuery(SingularAttribute<E, V> attribute, V value) {
@@ -118,7 +117,6 @@ public abstract class GenericDao<K, E> {
 		adjustFindQuery(builder, query, root);
 
 		TypedQuery<E> findQuery = entityManager.createQuery(query);
-		findQuery.setLockMode(LockModeType.OPTIMISTIC);
 
 		return findQuery;
 	}
