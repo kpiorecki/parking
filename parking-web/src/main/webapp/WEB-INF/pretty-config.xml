@@ -11,6 +11,11 @@
 		<view-id value="/WEB-INF/view/login.xhtml" />
 	</url-mapping>
 
+	<url-mapping id="logout">
+		<pattern value="/logout" />
+		<view-id value="/WEB-INF/view/logout.xhtml" />
+	</url-mapping>
+
 	<url-mapping id="index">
 		<pattern value="/" />
 		<view-id value="/WEB-INF/view/index.xhtml" />

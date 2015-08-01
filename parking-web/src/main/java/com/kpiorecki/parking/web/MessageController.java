@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.web.view;
+package com.kpiorecki.parking.web;
 
 import java.io.Serializable;
 

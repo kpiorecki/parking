@@ -10,10 +10,14 @@ public class URLEncoderTest {
 
 	@Test
 	public void shouldEncodeAndDecode() {
+		// given
 		String nastyParameter = "nasty_parameter:/?#[]@!$&'()*+,;=ąężźć";
+
+		// when
 		String encodedText = encoder.encode(nastyParameter);
 		String decodedText = encoder.decode(encodedText);
 
+		// then
 		assertEquals(nastyParameter, decodedText);
 	}
 }

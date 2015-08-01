@@ -15,12 +15,12 @@
 	<ui:composition template="/WEB-INF/view/template/layout-default.xhtml">
 		<ui:define name="content">
 			<c:choose>
-				<c:when test="#{empty bookingOverviewController.userBookings}">
+				<c:when test="#{empty bookingOverviewController.bookingModels}">
 					<h:outputText value="You are not assigned to any parking" />
 				</c:when>
 				<c:otherwise>
-					<ui:repeat value="#{bookingOverviewController.userBookings}" var="value">
-						<parking:parking-booking parkingBooking="#{value}" />
+					<ui:repeat value="#{bookingOverviewController.bookingModels}" var="value">
+						<parking:parking-booking bookingModel="#{value}" />
 						<br />
 						<br />
 					</ui:repeat>

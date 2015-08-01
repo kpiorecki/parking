@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.web.view;
+package com.kpiorecki.parking.web;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -40,9 +40,6 @@ public class AuthController implements Serializable {
 	@Inject
 	private UserService userService;
 
-	@Inject
-	private UserController userController;
-
 	private String login;
 	private String password;
 	private String redirectURL;
@@ -81,8 +78,9 @@ public class AuthController implements Serializable {
 	}
 
 	public void redirectLoggedIn() throws IOException {
-		if (userController.isLoggedIn()) {
-			logger.info("user {} is logged in - redirecting to logged home", userController.getLogin());
+		String login = externalContext.getRemoteUser();
+		if (login != null) {
+			logger.info("user {} is logged in - redirecting to logged home", login);
 			externalContext.redirect(getLoggedHomeURL());
 		}
 	}
@@ -100,12 +98,19 @@ public class AuthController implements Serializable {
 			HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
 			request.login(login, password);
 
-			// authentication succeeded, set logged in user in userController
-			userController.setLoggedInUser(user);
+			// authentication succeeded
 			externalContext.redirect(redirectURL);
 		} catch (ServletException e) {
 			onLoginFailed();
 		}
+	}
+
+	public void logout() throws IOException {
+		logger.info("logging out current user");
+		externalContext.invalidateSession();
+
+		// redirect to home page
+		externalContext.redirect(externalContext.getRequestContextPath());
 	}
 
 	private void onLoginFailed() {

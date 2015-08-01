@@ -84,3 +84,15 @@ table {
 .header-bar-text {
 	margin-right: 10px;
 }
+
+table.parking-booking {
+	border: 1px solid #000;
+	padding: 4px;
+	border-collapse: collapse;
+}
+
+td.parking-booking-week {
+	background-color: #AFEEEE;
+	color: #000;
+	text-align: center;
+}

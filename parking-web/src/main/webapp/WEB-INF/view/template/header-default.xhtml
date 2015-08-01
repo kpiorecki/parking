@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui">
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 <ui:composition>
 
 	<div class="left">
@@ -10,17 +11,16 @@
 	</div>
 
 	<div class="right">
-		<h:panelGroup rendered="#{not userController.loggedIn}">
+		<c:set var="login" value="#{facesContext.externalContext.remoteUser}" />
+		<h:panelGroup rendered="#{empty login}">
 			<div class="left">
 				<p:button value="Login" outcome="pretty:login" />
 			</div>
 		</h:panelGroup>
-		<h:panelGroup rendered="#{userController.loggedIn}">
+		<h:panelGroup rendered="#{not empty login}">
 			<div class="left">
-				<h:form>
-					<h:outputLabel for="logout" value="#{userController.login}" class="header-bar-text" />
-					<p:commandButton id="logout" value="Logout" action="#{userController.logout}" />
-				</h:form>
+				<h:outputLabel for="logout" value="#{login}" class="header-bar-text" />
+				<p:button id="logout" value="Logout" outcome="pretty:logout" />
 			</div>
 		</h:panelGroup>
 	</div>

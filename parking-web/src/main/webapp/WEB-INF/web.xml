@@ -13,20 +13,30 @@
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
 
-	<!-- error pages -->
+	<!-- error pages needed by OmniFaces FullAjaxExceptionHandler -->
+	<error-page>
+		<exception-type>javax.faces.application.ViewExpiredException</exception-type>
+		<location>/WEB-INF/view/error/expired.xhtml</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/WEB-INF/view/error/error.xhtml</location>
+	</error-page>
+
+	<!-- default error pages -->
 	<error-page>
 		<error-code>403</error-code>
-		<location>/WEB-INF/view/message.xhtml?messageId=403</location>
+		<location>/WEB-INF/view/error/403.xhtml</location>
 	</error-page>
 	<error-page>
 		<error-code>404</error-code>
-		<location>/WEB-INF/view/message.xhtml?messageId=404</location>
+		<location>/WEB-INF/view/error/404.xhtml</location>
 	</error-page>
 	<error-page>
-		<location>/WEB-INF/view/message.xhtml?messageId=error</location>
+		<location>/WEB-INF/view/error/error.xhtml</location>
 	</error-page>
 
-	<!-- parameter -->
+	<!-- parameters -->
 	<context-param>
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
 		<param-value>Development</param-value>
@@ -85,6 +95,17 @@
 			<transport-guarantee>NONE</transport-guarantee>
 		</user-data-constraint>
 	</security-constraint>
+
+	<!-- filters -->
+	<filter>
+		<filter-name>noCache</filter-name>
+		<filter-class>org.omnifaces.filter.CacheControlFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>noCache</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
 </web-app>
 

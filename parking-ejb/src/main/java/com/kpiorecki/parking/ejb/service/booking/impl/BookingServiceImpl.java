@@ -166,8 +166,6 @@ public class BookingServiceImpl implements BookingService {
 		for (Parking parking : parkings) {
 			ParkingBookingDto parkingBooking = new ParkingBookingDto();
 			parkingBooking.setParking(mapper.map(parking, ParkingDto.class));
-			parkingBooking.setStartDate(startDate);
-			parkingBooking.setEndDate(endDate);
 			parkingBooking.setBookingList(new ArrayList<BookingDto>());
 
 			parkingBookings.add(parkingBooking);

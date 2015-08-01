@@ -1,8 +1,10 @@
-package com.kpiorecki.parking.web.view;
+package com.kpiorecki.parking.web;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.ExternalContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -31,10 +33,10 @@ public class ActivationController implements Serializable {
 	private MessageController messageController;
 
 	@Inject
-	private UserController userController;
+	private AuthController authController;
 
 	@Inject
-	private AuthController authController;
+	private ExternalContext externalContext;
 
 	private String login;
 
@@ -56,14 +58,16 @@ public class ActivationController implements Serializable {
 		this.encodedActivationUuid = encodedActivationUuid;
 	}
 
-	public String activate() {
+	public String activate() throws IOException {
 		logger.info("activating user with parameter={}", encodedActivationUuid);
 
 		String activationUuid = urlEncoder.decode(encodedActivationUuid);
 		if (activationUuid != null) {
 			UserDto user = userService.activateUser(activationUuid);
 			if (user != null) {
-				userController.logout();
+				logger.info("invalidating current session");
+				externalContext.invalidateSession();
+
 				login = user.getLogin();
 				authController.setLogin(login);
 
