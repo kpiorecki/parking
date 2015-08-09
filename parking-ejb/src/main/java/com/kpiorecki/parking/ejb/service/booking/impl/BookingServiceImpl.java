@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -30,6 +31,7 @@ import com.kpiorecki.parking.ejb.entity.User;
 import com.kpiorecki.parking.ejb.service.booking.BookingService;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
 import com.kpiorecki.parking.ejb.util.DomainException;
+import com.kpiorecki.parking.ejb.util.Role;
 
 @Stateless
 public class BookingServiceImpl implements BookingService {
@@ -57,6 +59,7 @@ public class BookingServiceImpl implements BookingService {
 	private DateTimeFormatter dateFormatter;
 
 	@Override
+	@RolesAllowed(Role.USER)
 	public void book(String parkingUuid, String login, LocalDate date) {
 		String message = String.format("adding booking entry to parking=%s for user=%s and date=%s", parkingUuid,
 				login, dateFormatter.print(date));
@@ -86,6 +89,7 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
+	@RolesAllowed(Role.USER)
 	public void cancel(String parkingUuid, String login, LocalDate date) {
 		String message = String.format("removing booking entry from parking=%s for user=%s and date=%s", parkingUuid,
 				login, dateFormatter.print(date));
@@ -149,6 +153,7 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
+	@RolesAllowed(Role.USER)
 	public List<ParkingBookingDto> findUserBookings(String login, LocalDate startDate, LocalDate endDate) {
 		logger.info("finding bookings for user={}, startDate={}, endDate={}", login, dateFormatter.print(startDate),
 				dateFormatter.print(endDate));

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -24,6 +25,7 @@ import com.kpiorecki.parking.ejb.entity.User;
 import com.kpiorecki.parking.ejb.service.parking.ParkingService;
 import com.kpiorecki.parking.ejb.util.CollectionMapper;
 import com.kpiorecki.parking.ejb.util.DomainException;
+import com.kpiorecki.parking.ejb.util.Role;
 import com.kpiorecki.parking.ejb.util.UuidGenerator;
 
 @Stateless
@@ -48,6 +50,7 @@ public class ParkingServiceImpl implements ParkingService {
 	private UuidGenerator uuidGenerator;
 
 	@Override
+	@RolesAllowed(Role.ADMIN)
 	public String addParking(ParkingDto parkingDto) {
 		logger.info("adding parking {}", parkingDto);
 
@@ -63,6 +66,7 @@ public class ParkingServiceImpl implements ParkingService {
 	}
 
 	@Override
+	@RolesAllowed(Role.ADMIN)
 	public void modifyParking(ParkingDto parkingDto) {
 		logger.info("modifying parking {}", parkingDto);
 
@@ -72,6 +76,7 @@ public class ParkingServiceImpl implements ParkingService {
 	}
 
 	@Override
+	@RolesAllowed(Role.ADMIN)
 	public void deleteParking(String parkingUuid) {
 		logger.info("deleting parking={}", parkingUuid);
 
@@ -79,6 +84,7 @@ public class ParkingServiceImpl implements ParkingService {
 	}
 
 	@Override
+	@RolesAllowed(Role.ADMIN)
 	public void assignUser(String parkingUuid, String login, boolean vip) {
 		logger.info("assigning user={}, vip={} to parking={}", login, vip, parkingUuid);
 
@@ -96,6 +102,7 @@ public class ParkingServiceImpl implements ParkingService {
 	}
 
 	@Override
+	@RolesAllowed(Role.ADMIN)
 	public void revokeUser(String parkingUuid, String login) {
 		logger.info("revoking user={} from parking={}", login, parkingUuid);
 
@@ -115,6 +122,7 @@ public class ParkingServiceImpl implements ParkingService {
 	}
 
 	@Override
+	@RolesAllowed(Role.ADMIN)
 	public void revokeAllUsers(String parkingUuid) {
 		logger.info("revoking all users from parking={}", parkingUuid);
 

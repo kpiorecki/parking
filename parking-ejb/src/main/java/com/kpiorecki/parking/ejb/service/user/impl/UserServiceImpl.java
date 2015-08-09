@@ -2,6 +2,7 @@ package com.kpiorecki.parking.ejb.service.user.impl;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,6 +20,7 @@ import com.kpiorecki.parking.ejb.service.user.UserService;
 import com.kpiorecki.parking.ejb.util.CollectionMapper;
 import com.kpiorecki.parking.ejb.util.MailSender;
 import com.kpiorecki.parking.ejb.util.Property;
+import com.kpiorecki.parking.ejb.util.Role;
 
 @Stateless
 public class UserServiceImpl implements UserService {
@@ -43,6 +45,7 @@ public class UserServiceImpl implements UserService {
 	private int activationDeadlineDays;
 
 	@Override
+	@RolesAllowed(Role.USER)
 	public void modifyUser(UserDto userDto) {
 		logger.info("modifying user {}", userDto);
 
@@ -53,6 +56,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@RolesAllowed(Role.ADMIN)
 	public void addUser(UserDto userDto) {
 		logger.info("adding user {}", userDto);
 
@@ -63,6 +67,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@RolesAllowed(Role.USER)
 	public void deleteUser(String login) {
 		logger.info("deleting user={}", login);
 

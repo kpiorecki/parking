@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.kpiorecki.parking.ejb.ArquillianFactory;
+import com.kpiorecki.parking.ejb.GlassFishSecuredTest;
 import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.dao.BookingDao;
 import com.kpiorecki.parking.ejb.dto.AddressDto;
@@ -33,7 +34,7 @@ import com.kpiorecki.parking.ejb.entity.User;
 
 @RunWith(Arquillian.class)
 @Transactional(TransactionMode.ROLLBACK)
-public class ParkingServiceTest {
+public class ParkingServiceTest extends GlassFishSecuredTest {
 
 	@Deployment
 	public static Archive<?> createDeployment() {

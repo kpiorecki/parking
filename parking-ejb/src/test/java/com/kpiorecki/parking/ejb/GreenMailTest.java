@@ -15,7 +15,7 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetupTest;
 
-public abstract class GreenMailTest {
+public abstract class GreenMailTest extends GlassFishSecuredTest {
 
 	@Inject
 	private Logger logger;
@@ -23,13 +23,13 @@ public abstract class GreenMailTest {
 	protected GreenMail greenMail;
 
 	@Before
-	public void startGreenMail() throws Exception {
+	public void startGreenMail() {
 		greenMail = new GreenMail(ServerSetupTest.SMTP);
 		greenMail.start();
 	}
 
 	@After
-	public void stopGreenMail() throws Exception {
+	public void stopGreenMail() {
 		greenMail.stop();
 	}
 
