@@ -55,6 +55,7 @@
 		<arquillian-version>1.1.7.Final</arquillian-version>
 		<arquillian-transaction-version>1.0.1.Final</arquillian-transaction-version>
 		<arquillian-glassfish-embedded-version>1.0.0.CR4</arquillian-glassfish-embedded-version>
+		<mockito-version>1.10.19</mockito-version>
 
 		<!-- ejb specification version -->
 		<ejb-spec-version>3.2</ejb-spec-version>
@@ -176,6 +177,11 @@
 				<groupId>org.jboss.arquillian.container</groupId>
 				<artifactId>arquillian-glassfish-embedded-3.1</artifactId>
 				<version>${arquillian-glassfish-embedded-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>${mockito-version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://java.sun.com/jsf/html" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets">
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 <composite:interface>
 	<composite:attribute name="bookingModel" required="true" />
@@ -11,22 +11,50 @@
 
 <composite:implementation>
 	<c:set var="bookingModel" value="#{cc.attrs.bookingModel}" />
-	<h:outputLabel value="#{bookingModel.parking.name}" />
-	<br />
-	<table class="parking-booking">
-		<tbody>
-			<tr>
-				<ui:repeat value="#{bookingModel.weekModels}" var="model">
-					<td class="parking-booking-week" colspan="#{model.columnSpan}">#{model.week}</td>
-				</ui:repeat>
-			</tr>
-			<tr>
-				<ui:repeat value="#{bookingModel.dayModels}" var="model">
-					<td>#{model.date.dayOfMonth}</td>
-				</ui:repeat>
-			</tr>
-		</tbody>
-	</table>
+	<h:form>
+		<p:panel header="#{bookingModel.parking.name}" class="parking-panel">
+			<table class="parking-booking">
+				<tbody>
+					<tr>
+						<ui:repeat value="#{bookingModel.weekModels}" var="model">
+							<td class="#{bookingView.getWeekClass()}" colspan="#{model.columnSpan}">
+								<h:outputText value="#{model.week}" />
+							</td>
+						</ui:repeat>
+					</tr>
+					<tr>
+						<ui:repeat value="#{bookingModel.dayModels}" var="model">
+							<td class="#{bookingView.getDayNumberClass(model)}">
+								<h:outputText value="#{model.date.dayOfMonth}" />
+							</td>
+						</ui:repeat>
+					</tr>
+					<tr>
+						<ui:repeat value="#{bookingModel.dayModels}" var="model">
+							<td class="#{bookingView.getDayTextClass(model)}">
+								<h:outputText value="#{model.date}" converter="dayShortTextConverter" />
+							</td>
+						</ui:repeat>
+					</tr>
+					<tr>
+						<ui:repeat value="#{bookingModel.dayModels}" var="model">
+							<td class="#{bookingView.getDayCapacityClass(model)}">
+								<h:outputText value="#{model.availableCapacity}" rendered="#{model.enabled}" />
+							</td>																
+						</ui:repeat>
+					</tr>
+					<tr>
+						<ui:repeat value="#{bookingModel.dayModels}" var="model">
+							<td class="#{bookingView.getDayStatusClass(model)}">
+								<h:graphicImage library="images" name="parking-accepted.png" width="24"	height="24" rendered="#{model.status eq 'ACCEPTED'}" /> 
+								<h:graphicImage library="images" name="parking-rejected.png" width="24" height="24" rendered="#{model.status eq 'REJECTED'}" />
+							</td>
+						</ui:repeat>
+					</tr>
+				</tbody>
+			</table>
+		</p:panel>
+	</h:form>
 </composite:implementation>
 
 </html>

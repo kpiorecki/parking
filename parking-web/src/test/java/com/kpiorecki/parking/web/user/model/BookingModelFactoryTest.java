@@ -3,20 +3,38 @@ package com.kpiorecki.parking.web.user.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.context.ExternalContext;
+
 import org.joda.time.LocalDate;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.kpiorecki.parking.ejb.dto.BookingDto;
 import com.kpiorecki.parking.ejb.dto.ParkingBookingDto;
 import com.kpiorecki.parking.ejb.dto.ParkingDto;
 
+@RunWith(MockitoJUnitRunner.class)
 public class BookingModelFactoryTest {
 
+	@Mock
+	private ExternalContext externalContext;
+
+	@InjectMocks
 	private BookingModelFactory modelFactory = new BookingModelFactory();
+
+	@Before
+	public void initMocks() {
+		when(externalContext.getRemoteUser()).thenReturn(null);
+	}
 
 	@Test
 	public void shouldCreateModelForMonth() {
