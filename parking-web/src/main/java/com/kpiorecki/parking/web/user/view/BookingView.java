@@ -3,6 +3,8 @@ package com.kpiorecki.parking.web.user.view;
 import javax.ejb.Stateless;
 import javax.inject.Named;
 
+import org.joda.time.LocalDate;
+
 import com.kpiorecki.parking.web.user.model.DayModel;
 
 @Named
@@ -15,6 +17,7 @@ public class BookingView {
 	private static final String DAY_CAPACITY_POSITIVE = "parking-capacity-pos";
 	private static final String DAY_CAPACITY_NEGATIVE = "parking-capacity-neg";
 	private static final String DAY_DISABLED = "parking-day-disabled";
+	private static final String DAY_TODAY = "parking-day-today";
 
 	private static final String WEEK_DEFAULT = "parking-booking-week";
 
@@ -59,6 +62,11 @@ public class BookingView {
 
 		if (!model.isEnabled()) {
 			appendCssClass(builder, DAY_DISABLED);
+		}
+
+		LocalDate today = new LocalDate();
+		if (today.isEqual(model.getDate())) {
+			appendCssClass(builder, DAY_TODAY);
 		}
 
 		return builder.toString();

@@ -138,3 +138,8 @@ table {
 .parking-day-disabled {
 	background-color: #FCFC9A;
 }
+
+.parking-day-today {
+	border-width: 0px 3px 1px;
+	border-color: #333 #FC0;
+}
