@@ -40,6 +40,7 @@ public class BookingModelFactory {
 					dateFormatter.print(endDate), dateFormatter.print(startDate)));
 		}
 
+		// TODO all days should be already available in parkingBooking
 		int daysNumber = Days.daysBetween(startDate, endDate).getDays();
 		List<WeekModel> weekModels = createWeekModels(startDate, daysNumber);
 		List<DayModel> dayModels = createDayModels(parkingBooking, startDate, daysNumber);
@@ -70,6 +71,8 @@ public class BookingModelFactory {
 			daysMap.put(date, dayModel);
 		}
 
+		// TODO all BookingDtos should be in the list (for each day)
+
 		// update DayModels content based on booking list
 		for (BookingDto booking : parkingBooking.getBookingList()) {
 			DayModel dayModel = daysMap.get(booking.getDate());
@@ -84,6 +87,7 @@ public class BookingModelFactory {
 	}
 
 	private boolean isDayEnabled(LocalDate date) {
+		// TODO replace with business holiday logic (with message)
 		switch (date.getDayOfWeek()) {
 		case DateTimeConstants.SATURDAY:
 		case DateTimeConstants.SUNDAY:
@@ -104,6 +108,7 @@ public class BookingModelFactory {
 		List<String> acceptedUsers = new ArrayList<String>();
 		List<String> rejectedUsers = new ArrayList<String>();
 		Status status = Status.EMPTY;
+		boolean selected = false;
 		String currentUser = externalContext.getRemoteUser();
 
 		for (BookingEntryDto entry : entries) {
@@ -116,12 +121,14 @@ public class BookingModelFactory {
 			}
 			if (Objects.equals(currentUser, login)) {
 				status = accepted ? Status.ACCEPTED : Status.REJECTED;
+				selected = true;
 			}
 		}
 		sortUsersList(acceptedUsers);
 		sortUsersList(rejectedUsers);
 
 		dayModel.setStatus(status);
+		dayModel.setSelected(selected);
 		dayModel.setAcceptedUsers(acceptedUsers);
 		dayModel.setRejectedUsers(rejectedUsers);
 	}

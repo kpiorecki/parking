@@ -16,9 +16,13 @@ public class DayModel {
 	private LocalDate date;
 	private int availableCapacity;
 
+	// TODO rename editable and enabled to more useful names
 	private boolean editable = true;
 	private boolean enabled = true;
+	private boolean selected = false;
 	private Status status = Status.EMPTY;
+	
+	// TODO add tooltip with accepted/rejected users
 	private List<String> acceptedUsers = new ArrayList<>();
 	private List<String> rejectedUsers = new ArrayList<>();
 
@@ -52,6 +56,14 @@ public class DayModel {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
 	}
 
 	public Status getStatus() {

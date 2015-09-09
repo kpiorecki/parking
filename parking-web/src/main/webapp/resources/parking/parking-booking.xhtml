@@ -3,15 +3,18 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://java.sun.com/jsf/html" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
 <composite:interface>
 	<composite:attribute name="bookingModel" required="true" />
+	<composite:attribute name="readonly" required="true" />
 </composite:interface>
 
 <composite:implementation>
 	<c:set var="bookingModel" value="#{cc.attrs.bookingModel}" />
-	<h:form>
+	<c:set var="readonly" value="#{cc.attrs.readonly}" />
+	
+    <h:form>
 		<p:panel header="#{bookingModel.parking.name}" class="parking-panel">
 			<table class="parking-booking">
 				<tbody>
@@ -51,6 +54,17 @@
 							</td>
 						</ui:repeat>
 					</tr>
+					<c:if test="#{not readonly}">
+						<tr>
+							<ui:repeat value="#{bookingModel.dayModels}" var="model">
+								<td class="#{bookingView.getDayEditClass(model)}">
+									<p:selectBooleanCheckbox value="#{model.selected}" rendered="#{model.enabled and model.editable}">
+										<p:ajax listener="#{bookingController.updateDirty(model)}" />
+									</p:selectBooleanCheckbox>
+								</td>
+							</ui:repeat>
+						</tr>
+					</c:if>
 				</tbody>
 			</table>
 		</p:panel>

@@ -46,6 +46,10 @@ public class BookingView {
 		return getDayClass(model);
 	}
 
+	public String getDayEditClass(DayModel model) {
+		return getDayClass(model);
+	}
+
 	public String getWeekClass() {
 		StringBuilder builder = new StringBuilder();
 		appendCssClass(builder, WEEK_DEFAULT);
@@ -63,6 +67,8 @@ public class BookingView {
 		if (!model.isEnabled()) {
 			appendCssClass(builder, DAY_DISABLED);
 		}
+
+		// TODO add class for not editable
 
 		LocalDate today = new LocalDate();
 		if (today.isEqual(model.getDate())) {

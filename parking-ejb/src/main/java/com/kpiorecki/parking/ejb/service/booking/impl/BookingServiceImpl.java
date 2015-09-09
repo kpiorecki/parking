@@ -58,6 +58,8 @@ public class BookingServiceImpl implements BookingService {
 	@DateFormatter
 	private DateTimeFormatter dateFormatter;
 
+	// TODO add logic (config property) to set deadlines for changing booking status
+	
 	@Override
 	@RolesAllowed(Role.USER)
 	public void book(String parkingUuid, String login, LocalDate date) {
@@ -77,6 +79,7 @@ public class BookingServiceImpl implements BookingService {
 			booking.setParking(parking);
 		}
 
+		// TODO logic for setting status in new Booking
 		validateStatus(booking, EnumSet.of(BookingStatus.DRAFT, BookingStatus.RELEASED));
 
 		User user = userDao.load(login);
@@ -190,6 +193,9 @@ public class BookingServiceImpl implements BookingService {
 			BookingDto bookingDto = mapper.map(booking, BookingDto.class);
 			parkingBooking.getBookingList().add(bookingDto);
 		}
+		
+		// TODO return always bookings for each day (even if not created yet) with properly set status
+		// TODO add business holiday UC
 
 		return parkingBookings;
 	}

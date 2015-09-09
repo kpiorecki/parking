@@ -32,6 +32,12 @@
 		<pattern value="/user" />
 		<view-id value="/WEB-INF/view/user/home.xhtml" />
 	</url-mapping>
+	
+	<url-mapping id="user-booking">
+		<pattern value="/user/#{bookingController.year}/#{bookingController.month}/#{bookingController.encodedParkingUuid}" />
+		<view-id value="/WEB-INF/view/user/booking.xhtml" />
+		<action onPostback="false">#{bookingController.loadBooking}</action>
+	</url-mapping>
 
 	<!-- admin pages -->
 	<url-mapping id="admin-home">

@@ -20,7 +20,7 @@
 				</c:when>
 				<c:otherwise>
 					<ui:repeat value="#{bookingOverviewController.bookingModels}" var="value">
-						<parking:parking-booking bookingModel="#{value}" />
+						<parking:parking-booking bookingModel="#{value}" readonly="true" />
 						<br />
 						<br />
 					</ui:repeat>
