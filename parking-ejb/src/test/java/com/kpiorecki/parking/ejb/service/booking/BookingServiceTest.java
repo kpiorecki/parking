@@ -211,8 +211,23 @@ public class BookingServiceTest extends GreenMailTest {
 		}
 	}
 
+	@Test(expected = Exception.class)
+	public void shouldNotFindBookings() {
+		// given
+		Parking parking = testUtilities.persistParking();
+		testUtilities.persistUser("login");
+		entityManager.flush();
+
+		// when
+		LocalDate startDate = new DateTime().toLocalDate();
+		LocalDate endDate = startDate.plusDays(7);
+		bookingService.findBookings(parking.getUuid(), "login", startDate, endDate);
+
+		// then exception should be thrown - user is not assigned to given parking
+	}
+	
 	@Test
-	public void shouldNotFindUserBookings() {
+	public void shouldNotFindAllBookings() {
 		// given
 		testUtilities.persistUser("login");
 		entityManager.flush();
@@ -220,7 +235,7 @@ public class BookingServiceTest extends GreenMailTest {
 		// when
 		LocalDate startDate = new DateTime().toLocalDate();
 		LocalDate endDate = startDate.plusDays(7);
-		List<ParkingBookingDto> bookings = bookingService.findUserBookings("login", startDate, endDate);
+		List<ParkingBookingDto> bookings = bookingService.findAllBookings("login", startDate, endDate);
 
 		// then
 		assertNotNull(bookings);
@@ -228,7 +243,7 @@ public class BookingServiceTest extends GreenMailTest {
 	}
 
 	@Test
-	public void shouldFindUserBookings() {
+	public void shouldFindAllBookings() {
 		// given
 		User user1 = testUtilities.persistUser("login1");
 		User user2 = testUtilities.persistUser("login2");
@@ -258,7 +273,7 @@ public class BookingServiceTest extends GreenMailTest {
 		entityManager.flush();
 
 		// when
-		List<ParkingBookingDto> bookings = bookingService.findUserBookings("login1", startDate, endDate);
+		List<ParkingBookingDto> bookings = bookingService.findAllBookings("login1", startDate, endDate);
 
 		// then
 		assertNotNull(bookings);

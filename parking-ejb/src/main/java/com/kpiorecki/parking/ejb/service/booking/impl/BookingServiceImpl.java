@@ -59,7 +59,7 @@ public class BookingServiceImpl implements BookingService {
 	private DateTimeFormatter dateFormatter;
 
 	// TODO add logic (config property) to set deadlines for changing booking status
-	
+
 	@Override
 	@RolesAllowed(Role.USER)
 	public void book(String parkingUuid, String login, LocalDate date) {
@@ -157,15 +157,52 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	@RolesAllowed(Role.USER)
-	public List<ParkingBookingDto> findUserBookings(String login, LocalDate startDate, LocalDate endDate) {
-		logger.info("finding bookings for user={}, startDate={}, endDate={}", login, dateFormatter.print(startDate),
-				dateFormatter.print(endDate));
+	public ParkingBookingDto findBookings(String parkingUuid, String login, LocalDate startDate, LocalDate endDate) {
+		logger.info("finding bookings for parking={}, user={}, startDate={}, endDate={}", parkingUuid, login,
+				dateFormatter.print(startDate), dateFormatter.print(endDate));
+
+		validateUser(parkingUuid, login);
+
+		Parking parking = parkingDao.load(parkingUuid);
+		List<Parking> parkings = Collections.singletonList(parking);
+		List<ParkingBookingDto> parkingBookings = findParkingBookings(startDate, endDate, parkings);
+
+		return parkingBookings.get(0);
+	}
+
+	@Override
+	@RolesAllowed(Role.USER)
+	public List<ParkingBookingDto> findAllBookings(String login, LocalDate startDate, LocalDate endDate) {
+		logger.info("finding all bookings for user={}, startDate={}, endDate={}", login,
+				dateFormatter.print(startDate), dateFormatter.print(endDate));
 
 		// find parking entities that the user is assigned to
 		List<Parking> parkings = parkingDao.findUserParkings(login);
 		Collections.sort(parkings, new ParkingComparator());
 
-		// find bookings for given parkings and date range
+		return findParkingBookings(startDate, endDate, parkings);
+	}
+
+	private void validateStatus(Booking booking, Set<BookingStatus> allowedStatuses) {
+		BookingStatus bookingStatus = booking.getStatus();
+		if (!allowedStatuses.contains(bookingStatus)) {
+			String warnMessage = String.format("invalid booking status %s", bookingStatus);
+			logger.warn(warnMessage);
+			throw new DomainException(warnMessage);
+		}
+	}
+
+	private void validateUser(String parkingUuid, String login) {
+		boolean userAssigned = parkingDao.isUserAssigned(parkingUuid, login);
+		if (!userAssigned) {
+			String warnMessage = String.format("user=%s is not assigned to parking=%s", login, parkingUuid);
+			logger.warn(warnMessage);
+			throw new DomainException(warnMessage);
+		}
+	}
+
+	private List<ParkingBookingDto> findParkingBookings(LocalDate startDate, LocalDate endDate, List<Parking> parkings) {
+		// find bookings for given parking list and date range
 		List<Booking> bookings = bookingDao.findBookings(startDate, endDate, parkings);
 
 		// initialize list of parking bookings data transfer objects and helper map
@@ -193,29 +230,10 @@ public class BookingServiceImpl implements BookingService {
 			BookingDto bookingDto = mapper.map(booking, BookingDto.class);
 			parkingBooking.getBookingList().add(bookingDto);
 		}
-		
+
 		// TODO return always bookings for each day (even if not created yet) with properly set status
 		// TODO add business holiday UC
 
 		return parkingBookings;
 	}
-
-	private void validateStatus(Booking booking, Set<BookingStatus> allowedStatuses) {
-		BookingStatus bookingStatus = booking.getStatus();
-		if (!allowedStatuses.contains(bookingStatus)) {
-			String warnMessage = String.format("invalid booking status %s", bookingStatus);
-			logger.warn(warnMessage);
-			throw new DomainException(warnMessage);
-		}
-	}
-
-	private void validateUser(String parkingUuid, String login) {
-		boolean userAssigned = parkingDao.isUserAssigned(parkingUuid, login);
-		if (!userAssigned) {
-			String warnMessage = String.format("user=%s is not assigned to parking=%s", login, parkingUuid);
-			logger.warn(warnMessage);
-			throw new DomainException(warnMessage);
-		}
-	}
-
 }

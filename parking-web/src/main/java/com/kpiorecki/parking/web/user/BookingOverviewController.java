@@ -47,14 +47,14 @@ public class BookingOverviewController implements Serializable {
 		return bookingModels;
 	}
 
-	public void loadUserBookings() {
+	public void loadAllUserBookings() {
 		LocalDate startDate = new LocalDate().withDayOfMonth(1);
 		LocalDate endDate = startDate.plusMonths(1);
 		String login = externalContext.getRemoteUser();
 
 		logger.info("loading bookings for user={}, startDate={}, endDate={}", login, dateFormatter.print(startDate),
 				dateFormatter.print(endDate));
-		List<ParkingBookingDto> parkingBookings = bookingService.findUserBookings(login, startDate, endDate);
+		List<ParkingBookingDto> parkingBookings = bookingService.findAllBookings(login, startDate, endDate);
 
 		bookingModels = new ArrayList<BookingModel>(parkingBookings.size());
 		for (ParkingBookingDto parkingBooking : parkingBookings) {
