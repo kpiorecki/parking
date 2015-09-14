@@ -11,18 +11,9 @@ public class BookingDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
 	private Set<BookingEntryDto> entries;
 	private LocalDate date;
 	private BookingStatus status;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public Set<BookingEntryDto> getEntries() {
 		return entries;

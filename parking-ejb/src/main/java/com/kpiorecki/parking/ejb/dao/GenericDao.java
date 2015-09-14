@@ -35,9 +35,7 @@ public abstract class GenericDao<K, E> {
 		logger.info("loading {} entity with id={}", clazz.getSimpleName(), id);
 		E entity = findImpl(id);
 		if (entity == null) {
-			String warnMessage = String.format("valid %s entity with id=%s was not found", clazz.getSimpleName(), id);
-			logger.warn(warnMessage);
-			throw new DomainException(warnMessage);
+			throw new DomainException(String.format("%s entity with id=%s was not found", clazz.getSimpleName(), id));
 		}
 
 		return entity;
@@ -50,10 +48,8 @@ public abstract class GenericDao<K, E> {
 		try {
 			return findQuery.getSingleResult();
 		} catch (NoResultException | NonUniqueResultException e) {
-			String warnMessage = String.format("did not find valid %s single entity by %s=%s", clazz.getSimpleName(),
-					attribute.getName(), value);
-			logger.warn(warnMessage);
-			throw new DomainException(warnMessage);
+			throw new DomainException(String.format("did not find valid %s single entity by %s=%s", clazz
+					.getSimpleName(), attribute.getName(), value));
 		}
 	}
 

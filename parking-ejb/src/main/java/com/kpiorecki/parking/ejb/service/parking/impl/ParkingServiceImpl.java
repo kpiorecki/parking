@@ -115,10 +115,8 @@ public class ParkingServiceImpl implements ParkingService {
 				return;
 			}
 		}
-		String message = String.format("could not revoke user=%s from parking=%s - user record was not found", login,
-				parkingUuid);
-		logger.warn(message);
-		throw new DomainException(message);
+		throw new DomainException(String.format("could not revoke user=%s from parking=%s - user record was not found",
+				login, parkingUuid));
 	}
 
 	@Override
@@ -176,6 +174,7 @@ public class ParkingServiceImpl implements ParkingService {
 			 * calculate new record's points as mean value of existing records points (rounded upwards)
 			 */
 			Function<Record, Integer> getPointsFunction = new Function<Record, Integer>() {
+
 				@Override
 				public Integer apply(Record record) {
 					return record.getPoints();

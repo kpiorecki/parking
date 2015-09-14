@@ -103,9 +103,7 @@ public class MailSender {
 
 			Transport.send(message);
 		} catch (Exception e) {
-			String warnMessage = String.format("could not send mail - %s", e.getMessage());
-			logger.warn(warnMessage, e);
-			throw new DomainException(warnMessage, e);
+			throw new DomainException(String.format("could not send mail - %s", e.getMessage()), e);
 		}
 	}
 

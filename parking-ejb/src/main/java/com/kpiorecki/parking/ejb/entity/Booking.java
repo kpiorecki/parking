@@ -54,7 +54,7 @@ public class Booking implements Serializable {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private BookingStatus status = BookingStatus.DRAFT;
+	private BookingStatus status;
 
 	@Version
 	private Integer version;

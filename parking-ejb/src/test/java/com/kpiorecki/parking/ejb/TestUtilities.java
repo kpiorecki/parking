@@ -9,6 +9,7 @@ import org.joda.time.LocalDate;
 import com.kpiorecki.parking.ejb.entity.Address;
 import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.BookingEntry;
+import com.kpiorecki.parking.ejb.entity.BookingStatus;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.Record;
 import com.kpiorecki.parking.ejb.entity.User;
@@ -82,6 +83,7 @@ public class TestUtilities {
 		Booking booking = new Booking();
 		booking.setParking(parking);
 		booking.setDate(date);
+		booking.setStatus(BookingStatus.DRAFT);
 		for (User user : users) {
 			BookingEntry entry = new BookingEntry();
 			entry.setUser(user);

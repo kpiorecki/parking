@@ -9,7 +9,6 @@ public class RecordDto implements Serializable {
 	private UserDto user;
 	private Integer points;
 	private Boolean vip;
-	private Integer version;
 
 	public UserDto getUser() {
 		return user;
@@ -35,14 +34,6 @@ public class RecordDto implements Serializable {
 		this.vip = vip;
 	}
 
-	public Integer getVersion() {
-		return version;
-	}
-
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -52,8 +43,6 @@ public class RecordDto implements Serializable {
 		builder.append(points);
 		builder.append(", vip=");
 		builder.append(vip);
-		builder.append(", version=");
-		builder.append(version);
 		builder.append("]");
 
 		return builder.toString();

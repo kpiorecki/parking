@@ -8,18 +8,9 @@ public class BookingEntryDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
 	private String login;
 	private DateTime creationTime;
 	private Boolean accepted;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getLogin() {
 		return login;

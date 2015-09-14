@@ -39,10 +39,8 @@ public class BookingDao extends GenericDao<Long, Booking> {
 		try {
 			return createFindQuery(parkingUuid, date).getSingleResult();
 		} catch (NoResultException | NonUniqueResultException e) {
-			String warnMessage = String.format("booking for parking=%s and date=%s was not found", parkingUuid,
-					dateFormatter.print(date));
-			logger.warn(warnMessage);
-			throw new DomainException(warnMessage);
+			throw new DomainException(String.format("booking for parking=%s and date=%s was not found", parkingUuid,
+					dateFormatter.print(date)));
 		}
 	}
 

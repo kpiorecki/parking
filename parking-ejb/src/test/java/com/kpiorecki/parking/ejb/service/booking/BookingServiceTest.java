@@ -65,7 +65,7 @@ public class BookingServiceTest extends GreenMailTest {
 		entityManager.flush();
 
 		// when
-		LocalDate date = new DateTime().toLocalDate();
+		LocalDate date = new DateTime().toLocalDate().plusWeeks(1);
 		bookingService.book(parkingUuid, "login1", date);
 
 		// then
@@ -220,12 +220,12 @@ public class BookingServiceTest extends GreenMailTest {
 
 		// when
 		LocalDate startDate = new DateTime().toLocalDate();
-		LocalDate endDate = startDate.plusDays(7);
+		LocalDate endDate = startDate.plusWeeks(1);
 		bookingService.findBookings(parking.getUuid(), "login", startDate, endDate);
 
 		// then exception should be thrown - user is not assigned to given parking
 	}
-	
+
 	@Test
 	public void shouldNotFindAllBookings() {
 		// given
@@ -234,7 +234,7 @@ public class BookingServiceTest extends GreenMailTest {
 
 		// when
 		LocalDate startDate = new DateTime().toLocalDate();
-		LocalDate endDate = startDate.plusDays(7);
+		LocalDate endDate = startDate.plusWeeks(1);
 		List<ParkingBookingDto> bookings = bookingService.findAllBookings("login", startDate, endDate);
 
 		// then
@@ -262,7 +262,7 @@ public class BookingServiceTest extends GreenMailTest {
 		entityManager.persist(parking3);
 
 		LocalDate startDate = new DateTime().toLocalDate();
-		LocalDate endDate = startDate.plusDays(7);
+		LocalDate endDate = startDate.plusWeeks(1);
 		LocalDate cursorDate = startDate;
 		while (cursorDate.isBefore(endDate)) {
 			testUtilities.persistBooking(parking1, cursorDate, user1);

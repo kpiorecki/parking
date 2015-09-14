@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 	private MailSender mailSender;
 
 	@Inject
-	@Property("userService.activation.deadline.days")
+	@Property(value = "userService.activation.deadline.days", minIntValue = 0)
 	private int activationDeadlineDays;
 
 	@Override
