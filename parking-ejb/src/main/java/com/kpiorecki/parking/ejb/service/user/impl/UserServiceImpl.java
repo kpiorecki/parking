@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
 	@Inject
 	@Property(value = "userService.activation.deadline.days", minIntValue = 0)
-	private int activationDeadlineDays;
+	private int activationDeadlineDays = 5;
 
 	@Override
 	@RolesAllowed(Role.USER)

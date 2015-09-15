@@ -19,7 +19,6 @@ import org.dozer.Mapper;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
@@ -38,7 +37,6 @@ import com.kpiorecki.parking.ejb.entity.User;
 import com.kpiorecki.parking.ejb.service.booking.BookingService;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
 import com.kpiorecki.parking.ejb.util.DomainException;
-import com.kpiorecki.parking.ejb.util.Property;
 import com.kpiorecki.parking.ejb.util.Role;
 
 @Stateless
@@ -60,15 +58,14 @@ public class BookingServiceImpl implements BookingService {
 	private BookingScheduler scheduler;
 
 	@Inject
+	private BookingStatusPolicy statusPolicy;
+
+	@Inject
 	private Mapper mapper;
 
 	@Inject
 	@DateFormatter
 	private DateTimeFormatter dateFormatter;
-
-	@Inject
-	@Property(value = "bookingService.lock.hour", minIntValue = 0, maxIntValue = 23)
-	private int lockHour;
 
 	@Override
 	@RolesAllowed(Role.USER)
@@ -264,7 +261,7 @@ public class BookingServiceImpl implements BookingService {
 
 		bookingDto.setDate(date);
 		bookingDto.setEntries(new HashSet<BookingEntryDto>());
-		bookingDto.setStatus(getDefaultStatus(date, now));
+		bookingDto.setStatus(statusPolicy.getDefaultStatus(date, now));
 
 		return bookingDto;
 	}
@@ -275,28 +272,9 @@ public class BookingServiceImpl implements BookingService {
 		Booking booking = new Booking();
 		booking.setDate(date);
 		booking.setParking(parking);
-		booking.setStatus(getDefaultStatus(date, new DateTime()));
+		booking.setStatus(statusPolicy.getDefaultStatus(date, new DateTime()));
 
 		return booking;
-	}
-
-	private BookingStatus getDefaultStatus(LocalDate date, DateTime now) {
-		// lock deadline is the day before date with hour set to lockHour
-		LocalTime lockTime = LocalTime.MIDNIGHT.withHourOfDay(lockHour);
-		DateTime lockDeadline = date.minusDays(1).toDateTime(lockTime);
-
-		// status 'LOCKED' when lockDeadline has passed
-		if (now.isAfter(lockDeadline)) {
-			return BookingStatus.LOCKED;
-		}
-
-		// status 'RELEASED' when we're in the same week as date
-		if (date.getWeekOfWeekyear() == now.getWeekOfWeekyear()) {
-			return BookingStatus.RELEASED;
-		}
-
-		// status 'DRAFT' otherwise
-		return BookingStatus.DRAFT;
 	}
 
 	private void validateStatus(Booking booking, Set<BookingStatus> allowedStatuses) {
