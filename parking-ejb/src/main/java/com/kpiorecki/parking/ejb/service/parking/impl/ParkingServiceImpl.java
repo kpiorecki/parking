@@ -52,7 +52,7 @@ public class ParkingServiceImpl implements ParkingService {
 	@Override
 	@RolesAllowed(Role.ADMIN)
 	public String addParking(ParkingDto parkingDto) {
-		logger.info("adding parking {}", parkingDto);
+		logger.info("adding {}", parkingDto);
 
 		Parking parking = mapper.map(parkingDto, Parking.class);
 		if (parking.getUuid() == null) {
@@ -68,7 +68,7 @@ public class ParkingServiceImpl implements ParkingService {
 	@Override
 	@RolesAllowed(Role.ADMIN)
 	public void modifyParking(ParkingDto parkingDto) {
-		logger.info("modifying parking {}", parkingDto);
+		logger.info("modifying {}", parkingDto);
 
 		Parking parking = parkingDao.load(parkingDto.getUuid());
 		mapper.map(parkingDto, parking);

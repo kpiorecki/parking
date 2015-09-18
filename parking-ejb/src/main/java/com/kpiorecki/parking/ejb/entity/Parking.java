@@ -1,7 +1,6 @@
 package com.kpiorecki.parking.ejb.entity;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,6 +11,8 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -44,6 +45,10 @@ public class Parking implements Serializable {
 
 	@OneToMany(mappedBy = "parking", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<Record> records = new HashSet<>();
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "holiday_schedule_uuid")
+	private HolidaySchedule holidaySchedule;
 
 	@Version
 	private Integer version;
@@ -81,7 +86,7 @@ public class Parking implements Serializable {
 	}
 
 	public Set<Record> getRecords() {
-		return Collections.unmodifiableSet(records);
+		return new HashSet<Record>(records);
 	}
 
 	public void addRecord(Record record) {
@@ -98,6 +103,14 @@ public class Parking implements Serializable {
 
 	public void removeAllRecords() {
 		records.clear();
+	}
+
+	public HolidaySchedule getHolidaySchedule() {
+		return holidaySchedule;
+	}
+
+	public void setHolidaySchedule(HolidaySchedule holidaySchedule) {
+		this.holidaySchedule = holidaySchedule;
 	}
 
 	public Integer getVersion() {

@@ -1,7 +1,6 @@
 package com.kpiorecki.parking.ejb.entity;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -76,7 +75,7 @@ public class Booking implements Serializable {
 	}
 
 	public Set<BookingEntry> getEntries() {
-		return Collections.unmodifiableSet(entries);
+		return new HashSet<BookingEntry>(entries);
 	}
 
 	public void addEntry(BookingEntry entry) {
@@ -102,7 +101,7 @@ public class Booking implements Serializable {
 			}
 		}
 
-		return Collections.unmodifiableSet(acceptedEntries);
+		return acceptedEntries;
 	}
 
 	public LocalDate getDate() {

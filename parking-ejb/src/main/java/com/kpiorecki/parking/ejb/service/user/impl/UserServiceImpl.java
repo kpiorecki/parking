@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@RolesAllowed(Role.USER)
 	public void modifyUser(UserDto userDto) {
-		logger.info("modifying user {}", userDto);
+		logger.info("modifying {}", userDto);
 
 		User user = userDao.load(userDto.getLogin());
 		mapper.map(userDto, user);
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@RolesAllowed(Role.ADMIN)
 	public void addUser(UserDto userDto) {
-		logger.info("adding user {}", userDto);
+		logger.info("adding {}", userDto);
 
 		User user = mapper.map(userDto, User.class);
 		user.addGroup(UserGroup.USER);

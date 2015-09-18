@@ -1,7 +1,6 @@
 package com.kpiorecki.parking.ejb.entity;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -128,7 +127,7 @@ public class User extends ArchivableEntity implements Serializable {
 	}
 
 	public Set<UserGroup> getGroups() {
-		return Collections.unmodifiableSet(groups);
+		return new HashSet<UserGroup>(groups);
 	}
 
 	public void addGroup(UserGroup group) {

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://dozer.sourceforge.net
-          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+	xsi:schemaLocation="http://dozer.sourceforge.net http://dozer.sourceforge.net/schema/beanmapping.xsd">
 
 	<configuration>
 		<copy-by-references>
@@ -27,6 +26,23 @@
 			<b>entries</b>
 			<a-hint>com.kpiorecki.parking.ejb.entity.BookingEntry</a-hint>
 			<b-hint>com.kpiorecki.parking.ejb.dto.BookingEntryDto</b-hint>
+		</field>
+	</mapping>
+
+	<mapping>
+		<class-a>com.kpiorecki.parking.ejb.entity.HolidaySchedule</class-a>
+		<class-b>com.kpiorecki.parking.ejb.dto.HolidayScheduleDto</class-b>
+		<field>
+			<a>holidays</a>
+			<b>holidays</b>
+			<a-hint>com.kpiorecki.parking.ejb.entity.Holiday</a-hint>
+			<b-hint>com.kpiorecki.parking.ejb.dto.HolidayDto</b-hint>
+		</field>
+		<field type="one-way">
+			<a>parkings</a>
+			<b>parkings</b>
+			<a-hint>com.kpiorecki.parking.ejb.entity.Parking</a-hint>
+			<b-hint>com.kpiorecki.parking.ejb.dto.ParkingDto</b-hint>
 		</field>
 	</mapping>
 
