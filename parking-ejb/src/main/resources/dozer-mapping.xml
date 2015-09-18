@@ -32,11 +32,15 @@
 	<mapping>
 		<class-a>com.kpiorecki.parking.ejb.entity.HolidaySchedule</class-a>
 		<class-b>com.kpiorecki.parking.ejb.dto.HolidayScheduleDto</class-b>
-		<field>
+		<field remove-orphans="true">
 			<a>holidays</a>
 			<b>holidays</b>
 			<a-hint>com.kpiorecki.parking.ejb.entity.Holiday</a-hint>
 			<b-hint>com.kpiorecki.parking.ejb.dto.HolidayDto</b-hint>
+		</field>
+		<field remove-orphans="true">
+			<a>daysOfWeek</a>
+			<b>daysOfWeek</b>
 		</field>
 		<field type="one-way">
 			<a>parkings</a>
