@@ -10,6 +10,8 @@ import com.kpiorecki.parking.ejb.entity.Address;
 import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.BookingEntry;
 import com.kpiorecki.parking.ejb.entity.BookingStatus;
+import com.kpiorecki.parking.ejb.entity.Holiday;
+import com.kpiorecki.parking.ejb.entity.HolidaySchedule;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.Record;
 import com.kpiorecki.parking.ejb.entity.User;
@@ -43,6 +45,13 @@ public class TestUtilities {
 		entityManager.persist(booking);
 
 		return booking;
+	}
+
+	public HolidaySchedule persistSchedule(LocalDate... holidayDates) {
+		HolidaySchedule schedule = createSchedule(holidayDates);
+		entityManager.persist(schedule);
+
+		return schedule;
 	}
 
 	public User createUser(String login) {
@@ -91,5 +100,17 @@ public class TestUtilities {
 			booking.addEntry(entry);
 		}
 		return booking;
+	}
+
+	public HolidaySchedule createSchedule(LocalDate... holidayDates) {
+		HolidaySchedule schedule = new HolidaySchedule();
+		schedule.setUuid(uuidGenerator.generateUuid());
+		schedule.setName("schedule");
+		for (LocalDate date : holidayDates) {
+			Holiday holiday = new Holiday();
+			holiday.setDate(date);
+			schedule.addHoliday(holiday);
+		}
+		return schedule;
 	}
 }

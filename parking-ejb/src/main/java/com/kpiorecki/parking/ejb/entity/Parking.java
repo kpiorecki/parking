@@ -46,7 +46,7 @@ public class Parking implements Serializable {
 	@OneToMany(mappedBy = "parking", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<Record> records = new HashSet<>();
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "holiday_schedule_uuid")
 	private HolidaySchedule holidaySchedule;
 

@@ -36,6 +36,8 @@ import com.kpiorecki.parking.ejb.entity.User;
 @Transactional(TransactionMode.ROLLBACK)
 public class ParkingServiceTest extends GlassFishSecuredTest {
 
+	// TODO add holiday schedules handling to tests
+
 	@Deployment
 	public static Archive<?> createDeployment() {
 		return ArquillianFactory.createFullDeployment();

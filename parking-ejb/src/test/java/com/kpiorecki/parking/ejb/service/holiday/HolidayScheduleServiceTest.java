@@ -2,6 +2,7 @@ package com.kpiorecki.parking.ejb.service.holiday;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -29,9 +30,9 @@ import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.dto.HolidayDto;
 import com.kpiorecki.parking.ejb.dto.HolidayScheduleDto;
 import com.kpiorecki.parking.ejb.dto.ParkingDto;
-import com.kpiorecki.parking.ejb.entity.Holiday;
 import com.kpiorecki.parking.ejb.entity.HolidaySchedule;
 import com.kpiorecki.parking.ejb.entity.Parking;
+import com.kpiorecki.parking.ejb.entity.User;
 
 @RunWith(Arquillian.class)
 @Transactional(TransactionMode.ROLLBACK)
@@ -88,8 +89,6 @@ public class HolidayScheduleServiceTest extends GlassFishSecuredTest {
 	@Test
 	public void shouldModifySchedule() {
 		// given
-		String scheduleUuid = "uuid";
-
 		LocalDate date1 = new LocalDate(2015, 1, 1);
 		LocalDate date2 = new LocalDate(2015, 2, 20);
 		LocalDate date3 = new LocalDate(2015, 10, 12);
@@ -98,21 +97,12 @@ public class HolidayScheduleServiceTest extends GlassFishSecuredTest {
 		Parking parking2 = testUtilities.persistParking();
 		Parking parking3 = testUtilities.persistParking();
 
-		Holiday holiday1 = new Holiday();
-		holiday1.setDate(date1);
-		Holiday holiday2 = new Holiday();
-		holiday2.setDate(date2);
-
-		HolidaySchedule schedule = new HolidaySchedule();
-		schedule.setUuid(scheduleUuid);
-		schedule.setName("schedule");
+		HolidaySchedule schedule = testUtilities.createSchedule(date1, date2);
 		schedule.addDayOfWeek(DateTimeConstants.MONDAY);
-		schedule.addHoliday(holiday1);
-		schedule.addHoliday(holiday2);
 		schedule.addParking(parking1);
 		schedule.addParking(parking2);
-		entityManager.persist(schedule);
 
+		entityManager.persist(schedule);
 		entityManager.flush();
 
 		ParkingDto parkingDto1 = mapper.map(parking1, ParkingDto.class);
@@ -121,7 +111,7 @@ public class HolidayScheduleServiceTest extends GlassFishSecuredTest {
 		int[] newDaysOfWeek = new int[] { DateTimeConstants.SATURDAY, DateTimeConstants.SUNDAY };
 
 		HolidayScheduleDto scheduleDto = new HolidayScheduleDto();
-		scheduleDto.setUuid(scheduleUuid);
+		scheduleDto.setUuid(schedule.getUuid());
 		scheduleDto.setName("new schedule");
 		scheduleDto.setVersion(schedule.getVersion());
 		setDaysOfWeek(scheduleDto, newDaysOfWeek);
@@ -133,12 +123,42 @@ public class HolidayScheduleServiceTest extends GlassFishSecuredTest {
 		entityManager.flush();
 
 		// then
-		HolidayScheduleDto foundScheduleDto = scheduleService.findSchedule(scheduleUuid);
+		HolidayScheduleDto foundScheduleDto = scheduleService.findSchedule(schedule.getUuid());
 
-		validateSchedule(foundScheduleDto, scheduleUuid, "new schedule");
+		validateSchedule(foundScheduleDto, schedule.getUuid(), "new schedule");
 		validateDaysOfWeek(foundScheduleDto, newDaysOfWeek);
 		validateParkings(foundScheduleDto, parking1.getUuid(), parking3.getUuid());
 		validateHolidays(foundScheduleDto, date1, date3);
+	}
+
+	@Test
+	public void shouldDeleteSchedule() {
+		// given
+		User user = testUtilities.persistUser("login");
+		Parking parking = testUtilities.persistParking(user);
+
+		LocalDate date1 = new LocalDate(2015, 1, 1);
+		LocalDate date2 = new LocalDate(2015, 2, 1);
+
+		HolidaySchedule schedule = testUtilities.createSchedule(date1, date2);
+		String scheduleUuid = schedule.getUuid();
+		schedule.addParking(parking);
+
+		entityManager.persist(schedule);
+		entityManager.flush();
+
+		// when
+		scheduleService.deleteSchedule(scheduleUuid);
+		entityManager.flush();
+
+		// then
+		HolidaySchedule foundSchedule = entityManager.find(HolidaySchedule.class, scheduleUuid);
+		assertNull(foundSchedule);
+
+		Parking foundParking = entityManager.find(Parking.class, parking.getUuid());
+		assertNotNull(foundParking);
+		assertEquals(parking.getUuid(), foundParking.getUuid());
+		assertNull(foundParking.getHolidaySchedule());
 	}
 
 	private void setDaysOfWeek(HolidayScheduleDto scheduleDto, int... days) {

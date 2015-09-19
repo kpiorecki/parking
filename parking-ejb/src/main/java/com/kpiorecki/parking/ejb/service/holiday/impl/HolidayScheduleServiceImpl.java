@@ -73,6 +73,9 @@ public class HolidayScheduleServiceImpl implements HolidayScheduleService {
 	public void deleteSchedule(String scheduleUuid) {
 		logger.info("deleting schedule={}", scheduleUuid);
 
+		HolidaySchedule schedule = scheduleDao.load(scheduleUuid);
+		schedule.removeAllParkings();
+
 		scheduleDao.delete(scheduleUuid);
 	}
 
@@ -99,7 +102,7 @@ public class HolidayScheduleServiceImpl implements HolidayScheduleService {
 	private void fillEntityParkings(HolidaySchedule schedule, HolidayScheduleDto scheduleDto) {
 		// dozer mapping from data transfer object to entity skips parking setting
 		schedule.removeAllParkings();
-		
+
 		Set<ParkingDto> parkingDtoList = scheduleDto.getParkings();
 		if (parkingDtoList != null) {
 			for (ParkingDto parkingDto : parkingDtoList) {

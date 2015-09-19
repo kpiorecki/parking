@@ -59,7 +59,7 @@ public class HolidaySchedule implements Serializable {
 	@Column(nullable = false, length = HolidayScheduleDto.NAME_MAX_LEN)
 	private String name;
 
-	@OneToMany(mappedBy = "holidaySchedule", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "holidaySchedule", cascade = { CascadeType.PERSIST, CascadeType.REFRESH }, fetch = FetchType.LAZY)
 	private Set<Parking> parkings = new HashSet<>();
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
