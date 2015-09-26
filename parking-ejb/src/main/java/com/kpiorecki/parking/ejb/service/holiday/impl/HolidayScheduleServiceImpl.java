@@ -73,9 +73,6 @@ public class HolidayScheduleServiceImpl implements HolidayScheduleService {
 	public void deleteSchedule(String scheduleUuid) {
 		logger.info("deleting schedule={}", scheduleUuid);
 
-		HolidaySchedule schedule = scheduleDao.load(scheduleUuid);
-		schedule.removeAllParkings();
-
 		scheduleDao.delete(scheduleUuid);
 	}
 

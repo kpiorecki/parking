@@ -13,6 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -104,6 +105,7 @@ public class HolidaySchedule implements Serializable {
 		}
 	}
 
+	@PreRemove
 	public void removeAllParkings() {
 		Set<Parking> parkings = getParkings();
 		for (Parking parking : parkings) {

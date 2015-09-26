@@ -38,8 +38,6 @@ import com.kpiorecki.parking.ejb.entity.User;
 @Transactional(TransactionMode.ROLLBACK)
 public class HolidayScheduleServiceTest extends GlassFishSecuredTest {
 
-	// TODO add missing tests
-
 	@Deployment
 	public static Archive<?> createDeployment() {
 		return ArquillianFactory.createFullDeployment();
@@ -159,6 +157,55 @@ public class HolidayScheduleServiceTest extends GlassFishSecuredTest {
 		assertNotNull(foundParking);
 		assertEquals(parking.getUuid(), foundParking.getUuid());
 		assertNull(foundParking.getHolidaySchedule());
+	}
+
+	@Test
+	public void shouldFindSchedule() {
+		// given
+		Parking parking = testUtilities.persistParking();
+
+		LocalDate date1 = new LocalDate(2015, 1, 1);
+		LocalDate date2 = new LocalDate(2015, 2, 1);
+
+		HolidaySchedule schedule = testUtilities.createSchedule(date1, date2);
+		schedule.setName("schedule");
+		schedule.addParking(parking);
+		schedule.addDayOfWeek(DateTimeConstants.MONDAY);
+		schedule.addDayOfWeek(DateTimeConstants.WEDNESDAY);
+
+		entityManager.persist(schedule);
+		entityManager.flush();
+
+		// when
+		HolidayScheduleDto scheduleDto = scheduleService.findSchedule(schedule.getUuid());
+
+		// then
+		validateSchedule(scheduleDto, schedule.getUuid(), "schedule");
+		validateDaysOfWeek(scheduleDto, DateTimeConstants.MONDAY, DateTimeConstants.WEDNESDAY);
+		validateHolidays(scheduleDto, date1, date2);
+	}
+
+	@Test
+	public void shouldFindAllSchedules() {
+		// given
+		int size = 10;
+		List<String> scheduleUuids = new ArrayList<String>(size);
+		for (int i = 0; i < size; ++i) {
+			HolidaySchedule schedule = testUtilities.persistSchedule();
+			scheduleUuids.add(schedule.getUuid());
+		}
+
+		entityManager.flush();
+
+		// when
+		List<HolidayScheduleDto> allSchedules = scheduleService.findAllSchedules();
+
+		// then
+		assertNotNull(allSchedules);
+		assertEquals(size, allSchedules.size());
+		for (String uuid : scheduleUuids) {
+			assertTrue(allSchedules.stream().anyMatch(scheduleDto -> scheduleDto.getUuid().equals(uuid)));
+		}
 	}
 
 	private void setDaysOfWeek(HolidayScheduleDto scheduleDto, int... days) {
