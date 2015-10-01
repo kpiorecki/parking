@@ -25,10 +25,12 @@ import com.kpiorecki.parking.ejb.ArquillianFactory;
 import com.kpiorecki.parking.ejb.GlassFishSecuredTest;
 import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.dao.BookingDao;
+import com.kpiorecki.parking.ejb.dao.HolidayScheduleDao;
 import com.kpiorecki.parking.ejb.dto.AddressDto;
 import com.kpiorecki.parking.ejb.dto.ParkingDto;
 import com.kpiorecki.parking.ejb.dto.RecordDto;
 import com.kpiorecki.parking.ejb.entity.Booking;
+import com.kpiorecki.parking.ejb.entity.HolidaySchedule;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.User;
 
@@ -51,6 +53,9 @@ public class ParkingServiceTest extends GlassFishSecuredTest {
 
 	@Inject
 	private BookingDao bookingDao;
+
+	@Inject
+	private HolidayScheduleDao scheduleDao;
 
 	@Inject
 	private Mapper mapper;
@@ -105,6 +110,11 @@ public class ParkingServiceTest extends GlassFishSecuredTest {
 		Parking parking = testUtilities.persistParking(user);
 		LocalDate bookingDate = new LocalDate(2015, 04, 01);
 		testUtilities.persistBooking(parking, bookingDate, user);
+
+		HolidaySchedule schedule = testUtilities.createSchedule();
+		schedule.addParking(parking);
+		entityManager.persist(schedule);
+
 		entityManager.flush();
 
 		// when
@@ -116,6 +126,9 @@ public class ParkingServiceTest extends GlassFishSecuredTest {
 
 		Booking booking = bookingDao.find(parking.getUuid(), bookingDate);
 		assertNull(booking);
+
+		HolidaySchedule foundSchedule = scheduleDao.find(schedule.getUuid());
+		assertTrue(foundSchedule.getParkings().isEmpty());
 	}
 
 	@Test

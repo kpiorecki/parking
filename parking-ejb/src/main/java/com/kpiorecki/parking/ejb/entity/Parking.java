@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -119,6 +120,13 @@ public class Parking implements Serializable {
 
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+
+	@PreRemove
+	public void clearHolidaySchedule() {
+		if (holidaySchedule != null) {
+			holidaySchedule.removeParking(this);
+		}
 	}
 
 }
