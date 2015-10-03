@@ -22,6 +22,8 @@ import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.BookingEntry;
+import com.kpiorecki.parking.ejb.entity.HolidaySchedule;
+import com.kpiorecki.parking.ejb.entity.HolidaySchedule.DateStatus;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.Record;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
@@ -62,17 +64,20 @@ public class BookingScheduler {
 
 	private List<Element> generateSchedule(Booking booking) {
 		Parking parking = booking.getParking();
-		List<Element> elements = merge(booking.getEntries(), parking.getRecords());
-		Ordering<Element> ordering = Ordering.from(new ElementComparator());
-		List<Element> schedule = ordering.leastOf(elements, parking.getCapacity());
-
 		Set<BookingEntry> oldAcceptedEntries = booking.getAcceptedEntries();
-		Set<BookingEntry> newAcceptedEntries = new HashSet<>(schedule.size());
-		for (Element element : schedule) {
-			newAcceptedEntries.add(element.getBookingEntry());
-		}
-		booking.acceptEntries(newAcceptedEntries);
+		Set<BookingEntry> newAcceptedEntries = new HashSet<>();
+		List<Element> schedule = new ArrayList<>();
 
+		if (isBookingAllowed(parking, booking)) {
+			List<Element> elements = merge(booking.getEntries(), parking.getRecords());
+			Ordering<Element> ordering = Ordering.from(new ElementComparator());
+			schedule = ordering.leastOf(elements, parking.getCapacity());
+			for (Element element : schedule) {
+				newAcceptedEntries.add(element.getBookingEntry());
+			}
+		}
+
+		booking.acceptEntries(newAcceptedEntries);
 		fireEvents(booking, oldAcceptedEntries, newAcceptedEntries);
 
 		return schedule;
@@ -128,6 +133,15 @@ public class BookingScheduler {
 		event.setBookingStatus(booking.getStatus());
 
 		return event;
+	}
+
+	private boolean isBookingAllowed(Parking parking, Booking booking) {
+		HolidaySchedule holidaySchedule = parking.getHolidaySchedule();
+		if (holidaySchedule != null) {
+			DateStatus dateStatus = holidaySchedule.getDateStatus(booking.getDate());
+			return !dateStatus.isHoliday();
+		}
+		return true;
 	}
 
 	private static class Element {

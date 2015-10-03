@@ -1,6 +1,7 @@
 package com.kpiorecki.parking.ejb.dto;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 import org.joda.time.LocalDate;
@@ -14,6 +15,8 @@ public class BookingDto implements Serializable {
 	private Set<BookingEntryDto> entries;
 	private LocalDate date;
 	private BookingStatus status;
+	private boolean holiday;
+	private List<String> notes;
 
 	public Set<BookingEntryDto> getEntries() {
 		return entries;
@@ -37,6 +40,22 @@ public class BookingDto implements Serializable {
 
 	public void setStatus(BookingStatus status) {
 		this.status = status;
+	}
+
+	public boolean isHoliday() {
+		return holiday;
+	}
+
+	public void setHoliday(boolean holiday) {
+		this.holiday = holiday;
+	}
+
+	public List<String> getNotes() {
+		return notes;
+	}
+
+	public void setNotes(List<String> notes) {
+		this.notes = notes;
 	}
 
 }

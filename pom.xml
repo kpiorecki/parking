@@ -24,9 +24,9 @@
 		<maven.min.version>3.0.0</maven.min.version>
 
 		<!-- maven plugin versions -->
-		<ejb-plugin-version>2.5</ejb-plugin-version>
+		<ejb-plugin-version>2.5.1</ejb-plugin-version>
 		<war-plugin-version>2.6</war-plugin-version>
-		<compiler-plugin-version>3.2</compiler-plugin-version>
+		<compiler-plugin-version>3.3</compiler-plugin-version>
 		<resources-plugin-version>2.7</resources-plugin-version>
 		<surefire-plugin-version>2.18.1</surefire-plugin-version>
 		<dependency-plugin-version>2.10</dependency-plugin-version>

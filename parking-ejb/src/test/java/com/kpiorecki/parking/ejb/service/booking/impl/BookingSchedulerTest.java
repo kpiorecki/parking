@@ -15,6 +15,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 import com.kpiorecki.parking.ejb.ArquillianFactory;
 import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.BookingEntry;
+import com.kpiorecki.parking.ejb.entity.HolidaySchedule;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.Record;
 import com.kpiorecki.parking.ejb.entity.User;
@@ -142,6 +144,38 @@ public class BookingSchedulerTest {
 		validate(booking, "u2", "u1");
 		validatePoints(booking, "u2", 15);
 		validatePoints(booking, "u1", 11);
+	}
+
+	@Test
+	public void shouldLockHolidaySchedule() {
+		// given
+		List<Record> records = new ArrayList<>();
+		records.add(createRecord("u1", false, 10));
+		records.add(createRecord("u2", false, 12));
+		records.add(createRecord("u3", false, 14));
+
+		List<BookingEntry> entries = new ArrayList<>();
+		entries.add(createEntry("u1", 10, 4));
+		entries.add(createEntry("u2", 10, 4));
+		entries.add(createEntry("u3", 10, 4));
+
+		Booking booking = createTestCase(records, entries, 20);
+
+		// holiday schedule that marks every day as holiday
+		HolidaySchedule holidaySchedule = new HolidaySchedule();
+		for (int day = DateTimeConstants.MONDAY; day <= DateTimeConstants.SUNDAY; ++day) {
+			holidaySchedule.addDayOfWeek(day);
+		}
+		booking.getParking().setHolidaySchedule(holidaySchedule);
+
+		// when
+		scheduler.lockSchedule(booking);
+
+		// then
+		validate(booking);
+		validatePoints(booking, "u1", 10);
+		validatePoints(booking, "u2", 12);
+		validatePoints(booking, "u3", 14);
 	}
 
 	private void validatePoints(Booking booking, String login, Integer expectedPoints) {

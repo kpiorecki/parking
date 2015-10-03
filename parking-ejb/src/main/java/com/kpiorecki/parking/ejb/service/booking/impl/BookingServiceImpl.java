@@ -32,6 +32,8 @@ import com.kpiorecki.parking.ejb.dto.ParkingDto;
 import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.BookingEntry;
 import com.kpiorecki.parking.ejb.entity.BookingStatus;
+import com.kpiorecki.parking.ejb.entity.HolidaySchedule;
+import com.kpiorecki.parking.ejb.entity.HolidaySchedule.DateStatus;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.User;
 import com.kpiorecki.parking.ejb.service.booking.BookingService;
@@ -193,7 +195,7 @@ public class BookingServiceImpl implements BookingService {
 		final int daysNumber = Days.daysBetween(startDate, endDate).getDays();
 
 		// initialize list of parking bookings data transfer objects and helper parking map
-		List<ParkingBookingDto> parkingBookings = new ArrayList<ParkingBookingDto>(parkings.size());
+		List<ParkingBookingDto> parkingBookings = new ArrayList<>(parkings.size());
 		Map<String, ParkingBookingDto> parkingMap = new HashMap<>(parkings.size());
 		for (Parking parking : parkings) {
 			ParkingBookingDto parkingBookingDto = createParkingBookingDto(parking, daysNumber);
@@ -210,7 +212,11 @@ public class BookingServiceImpl implements BookingService {
 		// add empty bookings for days that have not been booked yet
 		addEmptyBookings(startDate, parkingBookings);
 
-		// TODO add business holiday UC
+		// add holiday information
+		for (Parking parking : parkings) {
+			ParkingBookingDto parkingBookingDto = parkingMap.get(parking.getUuid());
+			addHolidayInfo(parkingBookingDto, parking.getHolidaySchedule());
+		}
 
 		return parkingBookings;
 	}
@@ -277,6 +283,19 @@ public class BookingServiceImpl implements BookingService {
 		return booking;
 	}
 
+	private void addHolidayInfo(ParkingBookingDto parkingBooking, HolidaySchedule schedule) {
+		for (BookingDto bookingDto : parkingBooking.getBookingList()) {
+			if (schedule == null) {
+				bookingDto.setHoliday(false);
+				bookingDto.setNotes(Collections.emptyList());
+			} else {
+				DateStatus dateStatus = schedule.getDateStatus(bookingDto.getDate());
+				bookingDto.setHoliday(dateStatus.isHoliday());
+				bookingDto.setNotes(dateStatus.getNotes());
+			}
+		}
+	}
+
 	private void validateStatus(Booking booking, Set<BookingStatus> allowedStatuses) {
 		BookingStatus bookingStatus = booking.getStatus();
 		if (!allowedStatuses.contains(bookingStatus)) {
@@ -293,8 +312,8 @@ public class BookingServiceImpl implements BookingService {
 
 	private void validateBookingDates(LocalDate startDate, LocalDate endDate) {
 		if (!endDate.isAfter(startDate)) {
-			throw new DomainException(String.format("booking endDate=%s is not after startDate=%s", dateFormatter
-					.print(endDate), dateFormatter.print(startDate)));
+			throw new DomainException(String.format("booking endDate=%s is not after startDate=%s",
+					dateFormatter.print(endDate), dateFormatter.print(startDate)));
 		}
 	}
 }
