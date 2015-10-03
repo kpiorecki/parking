@@ -103,7 +103,7 @@ public class HolidayScheduleServiceImpl implements HolidayScheduleService {
 		Set<ParkingDto> parkingDtoList = scheduleDto.getParkings();
 		if (parkingDtoList != null) {
 			for (ParkingDto parkingDto : parkingDtoList) {
-				Parking parking = parkingDao.load(parkingDto.getUuid());
+				Parking parking = parkingDao.loadReference(parkingDto.getUuid());
 				schedule.addParking(parking);
 			}
 		}

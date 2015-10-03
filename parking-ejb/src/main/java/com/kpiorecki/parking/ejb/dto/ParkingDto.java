@@ -5,13 +5,14 @@ import java.io.Serializable;
 public class ParkingDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final int NAME_MAX_LEN = 255;
 
 	private String uuid;
 	private String name;
 	private Integer capacity;
 	private AddressDto address;
+	private HolidayScheduleBaseDto holidaySchedule;
 	private Integer version;
 
 	public String getUuid() {
@@ -46,6 +47,14 @@ public class ParkingDto implements Serializable {
 		this.address = address;
 	}
 
+	public HolidayScheduleBaseDto getHolidaySchedule() {
+		return holidaySchedule;
+	}
+
+	public void setHolidaySchedule(HolidayScheduleBaseDto holidaySchedule) {
+		this.holidaySchedule = holidaySchedule;
+	}
+
 	public Integer getVersion() {
 		return version;
 	}
@@ -65,9 +74,12 @@ public class ParkingDto implements Serializable {
 		builder.append(capacity);
 		builder.append(", address=");
 		builder.append(address);
+		builder.append(", schedule=");
+		builder.append(holidaySchedule);
 		builder.append(", version=");
 		builder.append(version);
 		builder.append("]");
+
 		return builder.toString();
 	}
 

@@ -50,4 +50,13 @@
 		</field>
 	</mapping>
 
+	<mapping>
+		<class-a>com.kpiorecki.parking.ejb.entity.Parking</class-a>
+		<class-b>com.kpiorecki.parking.ejb.dto.ParkingDto</class-b>
+		<field type="one-way">
+			<a>holidaySchedule</a>
+			<b>holidaySchedule</b>
+		</field>
+	</mapping>
+
 </mappings> 

@@ -48,9 +48,19 @@ public abstract class GenericDao<K, E> {
 		try {
 			return findQuery.getSingleResult();
 		} catch (NoResultException | NonUniqueResultException e) {
-			throw new DomainException(String.format("did not find valid %s single entity by %s=%s", clazz
-					.getSimpleName(), attribute.getName(), value));
+			throw new DomainException(String.format("did not find valid %s single entity by %s=%s",
+					clazz.getSimpleName(), attribute.getName(), value));
 		}
+	}
+
+	public E loadReference(K id) {
+		logger.info("loading {} reference with id={}", clazz.getSimpleName(), id);
+		E entity = entityManager.getReference(clazz, id);
+		if (entity == null) {
+			throw new DomainException(String.format("%s reference with id=%s was not found", clazz.getSimpleName(), id));
+		}
+
+		return entity;
 	}
 
 	public E find(K id) {

@@ -1,37 +1,16 @@
 package com.kpiorecki.parking.ejb.dto;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-public class HolidayScheduleDto implements Serializable {
+public class HolidayScheduleDto extends HolidayScheduleBaseDto {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final int NAME_MAX_LEN = 255;
-
-	private String uuid;
-	private String name;
 	private Integer version;
 	private Set<ParkingDto> parkings;
 	private Set<HolidayDto> holidays;
 	private List<Integer> daysOfWeek;
-
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public Integer getVersion() {
 		return version;
@@ -69,9 +48,9 @@ public class HolidayScheduleDto implements Serializable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("HolidayScheduleDto [uuid=");
-		builder.append(uuid);
+		builder.append(getUuid());
 		builder.append(", name=");
-		builder.append(name);
+		builder.append(getName());
 		builder.append(", version=");
 		builder.append(version);
 		builder.append(", daysOfWeek=");

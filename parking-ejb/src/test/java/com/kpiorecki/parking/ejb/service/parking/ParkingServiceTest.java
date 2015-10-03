@@ -27,6 +27,7 @@ import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.dao.BookingDao;
 import com.kpiorecki.parking.ejb.dao.HolidayScheduleDao;
 import com.kpiorecki.parking.ejb.dto.AddressDto;
+import com.kpiorecki.parking.ejb.dto.HolidayScheduleBaseDto;
 import com.kpiorecki.parking.ejb.dto.ParkingDto;
 import com.kpiorecki.parking.ejb.dto.RecordDto;
 import com.kpiorecki.parking.ejb.entity.Booking;
@@ -37,8 +38,6 @@ import com.kpiorecki.parking.ejb.entity.User;
 @RunWith(Arquillian.class)
 @Transactional(TransactionMode.ROLLBACK)
 public class ParkingServiceTest extends GlassFishSecuredTest {
-
-	// TODO add holiday schedules handling to tests
 
 	@Deployment
 	public static Archive<?> createDeployment() {
@@ -65,7 +64,15 @@ public class ParkingServiceTest extends GlassFishSecuredTest {
 
 	@Test
 	public void shouldAddParking() {
+		// given
+		HolidaySchedule schedule = testUtilities.persistSchedule();
+		entityManager.flush();
+
 		// when
+		HolidayScheduleBaseDto scheduleDto = new HolidayScheduleBaseDto();
+		scheduleDto.setUuid(schedule.getUuid());
+		scheduleDto.setName(schedule.getName());
+
 		AddressDto addressDto = new AddressDto();
 		addressDto.setCity("city");
 		addressDto.setPostalCode("code");
@@ -74,33 +81,51 @@ public class ParkingServiceTest extends GlassFishSecuredTest {
 
 		ParkingDto parkingDto = new ParkingDto();
 		parkingDto.setAddress(addressDto);
+		parkingDto.setHolidaySchedule(scheduleDto);
 		parkingDto.setCapacity(50);
 		parkingDto.setName("name");
 
 		String uuid = parkingService.addParking(parkingDto);
+		entityManager.flush();
 
 		// then
 		ParkingDto foundParking = parkingService.findParking(uuid);
 		assertNotNull(foundParking);
+
+		HolidayScheduleBaseDto foundScheduleDto = foundParking.getHolidaySchedule();
+		assertNotNull(foundScheduleDto);
+		assertEquals(schedule.getUuid(), foundScheduleDto.getUuid());
+		assertEquals(schedule.getName(), foundScheduleDto.getName());
 	}
 
 	@Test
 	public void shouldModifyParking() {
 		// given
+		HolidaySchedule schedule1 = testUtilities.persistSchedule();
+		HolidaySchedule schedule2 = testUtilities.persistSchedule();
 		Parking parking = testUtilities.persistParking();
+		parking.setHolidaySchedule(schedule1);
 		entityManager.flush();
 
 		// when
 		ParkingDto parkingDto = mapper.map(parking, ParkingDto.class);
+		HolidayScheduleBaseDto schedule2Dto = mapper.map(schedule2, HolidayScheduleBaseDto.class);
 		parkingDto.setCapacity(100);
+		parkingDto.setHolidaySchedule(schedule2Dto);
 		parkingDto.getAddress().setCity("new city");
 		parkingService.modifyParking(parkingDto);
+		entityManager.flush();
 
 		// then
 		ParkingDto foundParkingDto = parkingService.findParking(parking.getUuid());
 		assertNotNull(foundParkingDto);
 		assertEquals((Integer) 100, foundParkingDto.getCapacity());
 		assertEquals("new city", foundParkingDto.getAddress().getCity());
+
+		HolidayScheduleBaseDto foundScheduleDto = foundParkingDto.getHolidaySchedule();
+		assertNotNull(foundScheduleDto);
+		assertEquals(schedule2.getUuid(), foundScheduleDto.getUuid());
+		assertEquals(schedule2.getName(), foundScheduleDto.getName());
 	}
 
 	@Test

@@ -21,7 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 
-import com.kpiorecki.parking.ejb.dto.HolidayScheduleDto;
+import com.kpiorecki.parking.ejb.dto.HolidayScheduleBaseDto;
 import com.kpiorecki.parking.ejb.util.UuidGenerator;
 
 @Entity
@@ -57,7 +57,7 @@ public class HolidaySchedule implements Serializable {
 	@Column(length = UuidGenerator.UUID_LENGTH)
 	private String uuid;
 
-	@Column(nullable = false, length = HolidayScheduleDto.NAME_MAX_LEN)
+	@Column(nullable = false, length = HolidayScheduleBaseDto.NAME_MAX_LEN)
 	private String name;
 
 	@OneToMany(mappedBy = "holidaySchedule", cascade = { CascadeType.PERSIST, CascadeType.REFRESH }, fetch = FetchType.LAZY)

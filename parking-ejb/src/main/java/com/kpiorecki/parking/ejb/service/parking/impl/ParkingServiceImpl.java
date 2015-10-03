@@ -15,10 +15,13 @@ import org.slf4j.Logger;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
 import com.google.common.math.DoubleMath;
+import com.kpiorecki.parking.ejb.dao.HolidayScheduleDao;
 import com.kpiorecki.parking.ejb.dao.ParkingDao;
 import com.kpiorecki.parking.ejb.dao.UserDao;
+import com.kpiorecki.parking.ejb.dto.HolidayScheduleBaseDto;
 import com.kpiorecki.parking.ejb.dto.ParkingDto;
 import com.kpiorecki.parking.ejb.dto.RecordDto;
+import com.kpiorecki.parking.ejb.entity.HolidaySchedule;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.Record;
 import com.kpiorecki.parking.ejb.entity.User;
@@ -47,6 +50,9 @@ public class ParkingServiceImpl implements ParkingService {
 	private UserDao userDao;
 
 	@Inject
+	private HolidayScheduleDao scheduleDao;
+
+	@Inject
 	private UuidGenerator uuidGenerator;
 
 	@Override
@@ -55,6 +61,7 @@ public class ParkingServiceImpl implements ParkingService {
 		logger.info("adding {}", parkingDto);
 
 		Parking parking = mapper.map(parkingDto, Parking.class);
+		fillEntitySchedule(parking, parkingDto);
 		if (parking.getUuid() == null) {
 			String uuid = uuidGenerator.generateUuid();
 			parking.setUuid(uuid);
@@ -72,6 +79,8 @@ public class ParkingServiceImpl implements ParkingService {
 
 		Parking parking = parkingDao.load(parkingDto.getUuid());
 		mapper.map(parkingDto, parking);
+		fillEntitySchedule(parking, parkingDto);
+		
 		parkingDao.save(parking);
 	}
 
@@ -185,6 +194,17 @@ public class ParkingServiceImpl implements ParkingService {
 			recordPoints = DoubleMath.roundToInt(pointsMean, RoundingMode.CEILING);
 		}
 		return recordPoints;
+	}
+
+	private void fillEntitySchedule(Parking parking, ParkingDto parkingDto) {
+		// dozer mapping from data transfer object to entity skips schedule setting
+		parking.setHolidaySchedule(null);
+
+		HolidayScheduleBaseDto scheduleDto = parkingDto.getHolidaySchedule();
+		if (scheduleDto != null) {
+			HolidaySchedule schedule = scheduleDao.loadReference(scheduleDto.getUuid());
+			parking.setHolidaySchedule(schedule);
+		}
 	}
 
 }
