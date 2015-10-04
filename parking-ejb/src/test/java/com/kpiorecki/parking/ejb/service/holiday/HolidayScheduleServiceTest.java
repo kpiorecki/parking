@@ -62,13 +62,14 @@ public class HolidayScheduleServiceTest extends GlassFishSecuredTest {
 		entityManager.flush();
 
 		ParkingDto parkingDto = mapper.map(parking, ParkingDto.class);
-		LocalDate date = new LocalDate(2015, 1, 1);
-		int[] daysOfWeek = new int[] { DateTimeConstants.MONDAY, DateTimeConstants.WEDNESDAY };
+		LocalDate date1 = new LocalDate(2015, 10, 14);
+		LocalDate date2 = new LocalDate(2015, 10, 15);
+		int[] daysOfWeek = new int[] { DateTimeConstants.SATURDAY, DateTimeConstants.SUNDAY };
 
 		HolidayScheduleDto scheduleDto = new HolidayScheduleDto();
 		scheduleDto.setName("schedule");
 		setDaysOfWeek(scheduleDto, daysOfWeek);
-		setHolidays(scheduleDto, date);
+		setHolidays(scheduleDto, date1, date2);
 		setParkings(scheduleDto, parkingDto);
 
 		// when
@@ -81,7 +82,7 @@ public class HolidayScheduleServiceTest extends GlassFishSecuredTest {
 		validateSchedule(foundScheduleDto, scheduleUuid, "schedule");
 		validateDaysOfWeek(foundScheduleDto, daysOfWeek);
 		validateParkings(foundScheduleDto, parking.getUuid());
-		validateHolidays(foundScheduleDto, date);
+		validateHolidays(foundScheduleDto, date1, date2);
 	}
 
 	@Test

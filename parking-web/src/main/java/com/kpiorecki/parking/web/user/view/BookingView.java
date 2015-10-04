@@ -16,7 +16,8 @@ public class BookingView {
 	private static final String DAY_TEXT = "parking-day-text";
 	private static final String DAY_CAPACITY_POSITIVE = "parking-capacity-pos";
 	private static final String DAY_CAPACITY_NEGATIVE = "parking-capacity-neg";
-	private static final String DAY_DISABLED = "parking-day-disabled";
+	private static final String DAY_HOLIDAY = "parking-day-holiday";
+	private static final String DAY_LOCKED = "parking-day-locked";
 	private static final String DAY_TODAY = "parking-day-today";
 
 	private static final String WEEK_DEFAULT = "parking-booking-week";
@@ -30,7 +31,7 @@ public class BookingView {
 	}
 
 	public String getDayCapacityClass(DayModel model) {
-		if (model.isEnabled()) {
+		if (!model.isHoliday()) {
 			int availableCapacity = model.getAvailableCapacity();
 			if (availableCapacity > 0) {
 				return getDayClass(model, DAY_CAPACITY_POSITIVE);
@@ -38,7 +39,6 @@ public class BookingView {
 				return getDayClass(model, DAY_CAPACITY_NEGATIVE);
 			}
 		}
-
 		return getDayClass(model);
 	}
 
@@ -64,11 +64,13 @@ public class BookingView {
 			appendCssClass(builder, clazz);
 		}
 
-		if (!model.isEnabled()) {
-			appendCssClass(builder, DAY_DISABLED);
+		if (model.isHoliday()) {
+			appendCssClass(builder, DAY_HOLIDAY);
 		}
 
-		// TODO add class for not editable
+		if (model.isLocked()) {
+			appendCssClass(builder, DAY_LOCKED);
+		}
 
 		LocalDate today = new LocalDate();
 		if (today.isEqual(model.getDate())) {

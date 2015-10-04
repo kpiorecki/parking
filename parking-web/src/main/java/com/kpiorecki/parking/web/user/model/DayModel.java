@@ -13,26 +13,17 @@ public class DayModel {
 		ACCEPTED;
 	}
 
-	private LocalDate date;
 	private int availableCapacity;
-
-	// TODO rename editable and enabled to more useful names
-	private boolean editable = true;
-	private boolean enabled = true;
+	private boolean locked = false;
+	private boolean holiday = false;
 	private boolean selected = false;
+
 	private Status status = Status.EMPTY;
-	
+	private LocalDate date;
+
 	// TODO add tooltip with accepted/rejected users
 	private List<String> acceptedUsers = new ArrayList<>();
 	private List<String> rejectedUsers = new ArrayList<>();
-
-	public LocalDate getDate() {
-		return date;
-	}
-
-	public void setDate(LocalDate date) {
-		this.date = date;
-	}
 
 	public int getAvailableCapacity() {
 		return availableCapacity;
@@ -42,20 +33,20 @@ public class DayModel {
 		this.availableCapacity = availableCapacity;
 	}
 
-	public boolean isEditable() {
-		return editable;
+	public boolean isLocked() {
+		return locked;
 	}
 
-	public void setEditable(boolean editable) {
-		this.editable = editable;
+	public void setLocked(boolean locked) {
+		this.locked = locked;
 	}
 
-	public boolean isEnabled() {
-		return enabled;
+	public boolean isHoliday() {
+		return holiday;
 	}
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+	public void setHoliday(boolean holiday) {
+		this.holiday = holiday;
 	}
 
 	public boolean isSelected() {
@@ -72,6 +63,14 @@ public class DayModel {
 
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+	public LocalDate getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
 	}
 
 	public List<String> getAcceptedUsers() {

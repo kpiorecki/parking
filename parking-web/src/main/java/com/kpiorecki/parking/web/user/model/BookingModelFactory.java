@@ -2,9 +2,7 @@ package com.kpiorecki.parking.web.user.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -12,8 +10,6 @@ import javax.ejb.Stateless;
 import javax.faces.context.ExternalContext;
 import javax.inject.Inject;
 
-import org.joda.time.DateTimeConstants;
-import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -34,16 +30,13 @@ public class BookingModelFactory {
 	@Inject
 	private ExternalContext externalContext;
 
-	public BookingModel createModel(ParkingBookingDto parkingBooking, LocalDate startDate, LocalDate endDate) {
-		if (!endDate.isAfter(startDate)) {
-			throw new IllegalArgumentException(String.format("endDate=%s is not after startDate=%s",
-					dateFormatter.print(endDate), dateFormatter.print(startDate)));
+	public BookingModel createModel(ParkingBookingDto parkingBooking) {
+		if (parkingBooking.getBookingList().isEmpty()) {
+			throw new IllegalArgumentException("booking list cannot be empty");
 		}
 
-		// TODO all days should be already available in parkingBooking
-		int daysNumber = Days.daysBetween(startDate, endDate).getDays();
-		List<WeekModel> weekModels = createWeekModels(startDate, daysNumber);
-		List<DayModel> dayModels = createDayModels(parkingBooking, startDate, daysNumber);
+		List<WeekModel> weekModels = createWeekModels(parkingBooking);
+		List<DayModel> dayModels = createDayModels(parkingBooking);
 
 		BookingModel bookingModel = new BookingModel();
 		bookingModel.setParking(parkingBooking.getParking());
@@ -53,60 +46,25 @@ public class BookingModelFactory {
 		return bookingModel;
 	}
 
-	private List<DayModel> createDayModels(ParkingBookingDto parkingBooking, LocalDate startDate, int daysNumber) {
-		List<DayModel> dayModels = new ArrayList<DayModel>(daysNumber);
-		Map<LocalDate, DayModel> daysMap = new HashMap<>(daysNumber);
+	private List<DayModel> createDayModels(ParkingBookingDto parkingBooking) {
+		List<BookingDto> bookingList = parkingBooking.getBookingList();
+		List<DayModel> dayModels = new ArrayList<DayModel>(bookingList.size());
 
 		int capacity = parkingBooking.getParking().getCapacity();
-		for (int i = 0; i < daysNumber; ++i) {
-			LocalDate date = startDate.plusDays(i);
-
-			// create and add DayModel for current date
-			DayModel dayModel = new DayModel();
-			dayModel.setDate(date);
-			dayModel.setAvailableCapacity(capacity);
-			dayModel.setEnabled(isDayEnabled(date));
-
+		for (BookingDto bookingDto : bookingList) {
+			DayModel dayModel = createDayModel(bookingDto, capacity);
 			dayModels.add(dayModel);
-			daysMap.put(date, dayModel);
-		}
-
-		// TODO all BookingDtos should be in the list (for each day)
-
-		// update DayModels content based on booking list
-		for (BookingDto booking : parkingBooking.getBookingList()) {
-			DayModel dayModel = daysMap.get(booking.getDate());
-			if (dayModel == null) {
-				throw new IllegalArgumentException(String.format("did not find DayModel for %s",
-						dateFormatter.print(booking.getDate())));
-			}
-			updateDateModel(dayModel, booking, capacity);
 		}
 
 		return dayModels;
 	}
 
-	private boolean isDayEnabled(LocalDate date) {
-		// TODO replace with business holiday logic (with message)
-		switch (date.getDayOfWeek()) {
-		case DateTimeConstants.SATURDAY:
-		case DateTimeConstants.SUNDAY:
-			return false;
-		default:
-			return true;
-		}
-	}
-
-	private void updateDateModel(DayModel dayModel, BookingDto booking, int parkingCapacity) {
-		boolean editable = (booking.getStatus() != BookingStatus.LOCKED);
-		dayModel.setEditable(editable);
-
+	private DayModel createDayModel(BookingDto booking, int parkingCapacity) {
 		Set<BookingEntryDto> entries = booking.getEntries();
-		int availableCapacity = parkingCapacity - entries.size();
-		dayModel.setAvailableCapacity(availableCapacity);
 
 		List<String> acceptedUsers = new ArrayList<String>();
 		List<String> rejectedUsers = new ArrayList<String>();
+
 		Status status = Status.EMPTY;
 		boolean selected = false;
 		String currentUser = externalContext.getRemoteUser();
@@ -127,19 +85,31 @@ public class BookingModelFactory {
 		sortUsersList(acceptedUsers);
 		sortUsersList(rejectedUsers);
 
+		DayModel dayModel = new DayModel();
+		dayModel.setDate(booking.getDate());
+		dayModel.setLocked(booking.getStatus() == BookingStatus.LOCKED);
+		dayModel.setHoliday(booking.isHoliday());
 		dayModel.setStatus(status);
 		dayModel.setSelected(selected);
 		dayModel.setAcceptedUsers(acceptedUsers);
 		dayModel.setRejectedUsers(rejectedUsers);
+
+		int availableCapacity = parkingCapacity - entries.size();
+		dayModel.setAvailableCapacity(availableCapacity);
+
+		return dayModel;
 	}
 
-	private List<WeekModel> createWeekModels(LocalDate startDate, int daysNumber) {
+	private List<WeekModel> createWeekModels(ParkingBookingDto parkingBooking) {
 		List<WeekModel> weekModels = new ArrayList<WeekModel>();
+
+		List<BookingDto> bookingList = parkingBooking.getBookingList();
+		LocalDate startDate = bookingList.get(0).getDate();
 
 		int weekColumnSpan = 0;
 		int lastWeekNumber = startDate.getWeekOfWeekyear();
-		for (int i = 0; i < daysNumber; ++i) {
-			LocalDate date = startDate.plusDays(i);
+		for (BookingDto bookingDto : bookingList) {
+			LocalDate date = bookingDto.getDate();
 
 			// check if new WeekModel should be added
 			int weekNumber = date.getWeekOfWeekyear();

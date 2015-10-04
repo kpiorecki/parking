@@ -84,7 +84,7 @@ public class BookingController implements Serializable {
 			logger.info("loading bookings for parking={}, user={}, startDate={}, endDate={}", parkingUuid, login,
 					dateFormatter.print(startDate), dateFormatter.print(endDate));
 			ParkingBookingDto parkingBooking = bookingService.findBookings(parkingUuid, login, startDate, endDate);
-			bookingModel = bookingModelFactory.createModel(parkingBooking, startDate, endDate);
+			bookingModel = bookingModelFactory.createModel(parkingBooking);
 		}
 	}
 

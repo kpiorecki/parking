@@ -42,7 +42,7 @@
 					<tr>
 						<ui:repeat value="#{bookingModel.dayModels}" var="model">
 							<td class="#{bookingView.getDayCapacityClass(model)}">
-								<h:outputText value="#{model.availableCapacity}" rendered="#{model.enabled}" />
+								<h:outputText value="#{model.availableCapacity}" rendered="#{not model.holiday}" />
 							</td>																
 						</ui:repeat>
 					</tr>
@@ -58,7 +58,7 @@
 						<tr>
 							<ui:repeat value="#{bookingModel.dayModels}" var="model">
 								<td class="#{bookingView.getDayEditClass(model)}">
-									<p:selectBooleanCheckbox value="#{model.selected}" rendered="#{model.enabled and model.editable}">
+									<p:selectBooleanCheckbox value="#{model.selected}" rendered="#{(not model.holiday) and (not model.locked)}">
 										<p:ajax listener="#{bookingController.updateDirty(model)}" />
 									</p:selectBooleanCheckbox>
 								</td>

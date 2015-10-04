@@ -135,8 +135,13 @@ table {
 	font-weight: bold;
 }
 
-.parking-day-disabled {
+.parking-day-holiday {
 	background-color: #FCFC9A;
+}
+
+.parking-day-locked {
+	/* TODO add locked icon */
+	
 }
 
 .parking-day-today {

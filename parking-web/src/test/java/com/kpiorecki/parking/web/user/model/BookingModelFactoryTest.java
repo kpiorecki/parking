@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.faces.context.ExternalContext;
@@ -39,12 +40,12 @@ public class BookingModelFactoryTest {
 	@Test
 	public void shouldCreateModelForMonth() {
 		// given
-		ParkingBookingDto parkingBooking = createParkingBooking();
 		LocalDate startDate = new LocalDate(2015, 7, 1);
 		LocalDate endDate = new LocalDate(2015, 8, 1);
+		ParkingBookingDto parkingBooking = createParkingBooking(startDate, endDate);
 
 		// when
-		BookingModel model = modelFactory.createModel(parkingBooking, startDate, endDate);
+		BookingModel model = modelFactory.createModel(parkingBooking);
 
 		// then
 		validateModel(model, startDate, 31, new int[] { 27, 28, 29, 30, 31 });
@@ -53,12 +54,12 @@ public class BookingModelFactoryTest {
 	@Test
 	public void shouldCreateModelForOneDay() {
 		// given
-		ParkingBookingDto parkingBooking = createParkingBooking();
 		LocalDate startDate = new LocalDate(2015, 7, 3);
 		LocalDate endDate = new LocalDate(2015, 7, 4);
+		ParkingBookingDto parkingBooking = createParkingBooking(startDate, endDate);
 
 		// when
-		BookingModel model = modelFactory.createModel(parkingBooking, startDate, endDate);
+		BookingModel model = modelFactory.createModel(parkingBooking);
 
 		// then
 		validateModel(model, startDate, 1, new int[] { 27 });
@@ -67,12 +68,12 @@ public class BookingModelFactoryTest {
 	@Test
 	public void shouldCreateModelForOneWeek() {
 		// given
-		ParkingBookingDto parkingBooking = createParkingBooking();
 		LocalDate startDate = new LocalDate(2015, 8, 3);
 		LocalDate endDate = new LocalDate(2015, 8, 10);
+		ParkingBookingDto parkingBooking = createParkingBooking(startDate, endDate);
 
 		// when
-		BookingModel model = modelFactory.createModel(parkingBooking, startDate, endDate);
+		BookingModel model = modelFactory.createModel(parkingBooking);
 
 		// then
 		validateModel(model, startDate, 7, new int[] { 32 });
@@ -81,12 +82,12 @@ public class BookingModelFactoryTest {
 	@Test
 	public void shouldCreateModelForCustomDays() {
 		// given
-		ParkingBookingDto parkingBooking = createParkingBooking();
 		LocalDate startDate = new LocalDate(2015, 8, 9);
 		LocalDate endDate = new LocalDate(2015, 9, 1);
+		ParkingBookingDto parkingBooking = createParkingBooking(startDate, endDate);
 
 		// when
-		BookingModel model = modelFactory.createModel(parkingBooking, startDate, endDate);
+		BookingModel model = modelFactory.createModel(parkingBooking);
 
 		// then
 		validateModel(model, startDate, 23, new int[] { 32, 33, 34, 35, 36 });
@@ -95,12 +96,12 @@ public class BookingModelFactoryTest {
 	@Test
 	public void shouldCreateModelForPreviousYearWeekNumber() {
 		// given
-		ParkingBookingDto parkingBooking = createParkingBooking();
 		LocalDate startDate = new LocalDate(2016, 1, 1);
 		LocalDate endDate = new LocalDate(2016, 1, 14);
+		ParkingBookingDto parkingBooking = createParkingBooking(startDate, endDate);
 
 		// when
-		BookingModel model = modelFactory.createModel(parkingBooking, startDate, endDate);
+		BookingModel model = modelFactory.createModel(parkingBooking);
 
 		// then
 		validateModel(model, startDate, 13, new int[] { 53, 1, 2 });
@@ -109,21 +110,32 @@ public class BookingModelFactoryTest {
 	@Test
 	public void shouldCreateModelForYearChange() {
 		// given
-		ParkingBookingDto parkingBooking = createParkingBooking();
 		LocalDate startDate = new LocalDate(2015, 12, 25);
 		LocalDate endDate = new LocalDate(2016, 2, 25);
+		ParkingBookingDto parkingBooking = createParkingBooking(startDate, endDate);
 
 		// when
-		BookingModel model = modelFactory.createModel(parkingBooking, startDate, endDate);
+		BookingModel model = modelFactory.createModel(parkingBooking);
 
 		// then
 		validateModel(model, startDate, 62, new int[] { 52, 53, 1, 2, 3, 4, 5, 6, 7, 8 });
 	}
 
-	private ParkingBookingDto createParkingBooking() {
+	private ParkingBookingDto createParkingBooking(LocalDate startDate, LocalDate endDate) {
+		List<BookingDto> bookingList = new ArrayList<BookingDto>();
+		LocalDate currentDate = startDate;
+		while (currentDate.isBefore(endDate)) {
+			BookingDto bookingDto = new BookingDto();
+			bookingDto.setDate(currentDate);
+			bookingDto.setEntries(new HashSet<>());
+
+			bookingList.add(bookingDto);
+			currentDate = currentDate.plusDays(1);
+		}
+
 		ParkingBookingDto parkingBooking = new ParkingBookingDto();
 		parkingBooking.setParking(createParking());
-		parkingBooking.setBookingList(new ArrayList<BookingDto>());
+		parkingBooking.setBookingList(bookingList);
 
 		return parkingBooking;
 	}

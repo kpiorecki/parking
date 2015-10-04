@@ -58,7 +58,7 @@ public class BookingOverviewController implements Serializable {
 
 		bookingModels = new ArrayList<BookingModel>(parkingBookings.size());
 		for (ParkingBookingDto parkingBooking : parkingBookings) {
-			BookingModel bookingModel = bookingModelFactory.createModel(parkingBooking, startDate, endDate);
+			BookingModel bookingModel = bookingModelFactory.createModel(parkingBooking);
 			bookingModels.add(bookingModel);
 		}
 	}

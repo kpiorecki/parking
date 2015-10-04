@@ -20,18 +20,26 @@ INSERT INTO users (LOGIN, ACTIVATIONDEADLINE, ACTIVATIONUUID, EMAIL, FIRSTNAME, 
 VALUES ('speedy', null, null, 'speedy@mail.com', 'Speedy', 'Gonzalez', '04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb', 0, 1);
 INSERT INTO user_groups VALUES ('speedy', 'USER');
 
+-- insert holidays
+INSERT INTO holiday_schedules (UUID, DAYOFWEEKMASK, NAME, VERSION) VALUES ('1', 96, 'Schedule Saturday & Sunday', 1);
+INSERT INTO holidays (ID, DATE, NOTE, REPEATEDEVERYYEAR, holiday_schedule_uuid) VALUES (1, 1444773600000, 'Holiday 2015-10-14 no. 1', 0, '1');
+INSERT INTO holidays (ID, DATE, NOTE, REPEATEDEVERYYEAR, holiday_schedule_uuid) VALUES (2, 1444773600000, 'Holiday 2015-10-14 no. 2', 0, '1');
+INSERT INTO holidays (ID, DATE, NOTE, REPEATEDEVERYYEAR, holiday_schedule_uuid) VALUES (3, 1444860000000, 'Holiday 2015-10-15 (repeated)', 1, '1');
+
+INSERT INTO holiday_schedules (UUID, DAYOFWEEKMASK, NAME, VERSION) VALUES ('2', 1, 'Schedule Monday', 1);
+
 -- insert parkings
-INSERT INTO parkings (UUID, CAPACITY, NAME, VERSION, CITY, NUMBER, POSTALCODE, STREET)
-VALUES ('1', 10, 'Houston Plaza', 1, 'Houston', '11', '22876', 'Louis Armstrong St.');
+INSERT INTO parkings (UUID, CAPACITY, NAME, VERSION, CITY, NUMBER, POSTALCODE, STREET, holiday_schedule_uuid)
+VALUES ('1', 10, 'Moon', 1, 'Moon City', '11', '22876', 'Neil Armstrong St.', '1');
+
+INSERT INTO parkings (UUID, CAPACITY, NAME, VERSION, CITY, NUMBER, POSTALCODE, STREET, holiday_schedule_uuid)
+VALUES ('2', 20, 'Acme', 1, 'Acme City', '7', '19885', 'Acme St.', '2');
 
 INSERT INTO parkings (UUID, CAPACITY, NAME, VERSION, CITY, NUMBER, POSTALCODE, STREET)
-VALUES ('2', 20, 'New York North', 1, 'New York', '7', '19885', 'Acme St.');
+VALUES ('3', 20, 'Movie Parking', 1, 'Movies Town', '12', '8713', 'Die Hard Blvd.');
 
 INSERT INTO parkings (UUID, CAPACITY, NAME, VERSION, CITY, NUMBER, POSTALCODE, STREET)
-VALUES ('3', 20, 'New York Essex', 1, 'New York', '12', '8713', 'Die Hard Blvd.');
-
-INSERT INTO parkings (UUID, CAPACITY, NAME, VERSION, CITY, NUMBER, POSTALCODE, STREET)
-VALUES ('4', 200, 'Los Angeles', 1, 'Los Angeles', '16', '18735', 'Main St.');
+VALUES ('4', 200, 'Disneyland', 1, 'Paris', '16', '18735', 'Disneyland St.');
 
 -- assign users to parkings
 INSERT INTO records (ID, POINTS, VERSION, VIP, parking_uuid, login) 
@@ -65,3 +73,6 @@ VALUES (14, 0, 1, 0, '3', 'speedy');
 
 -- update records sequence
 UPDATE sequence SET seq_count=100 WHERE seq_name='seq_records';
+
+-- update holidays sequence
+UPDATE sequence SET seq_count=100 WHERE seq_name='seq_holidays';
