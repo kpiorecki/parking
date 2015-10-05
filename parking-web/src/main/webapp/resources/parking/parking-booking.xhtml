@@ -35,7 +35,15 @@
 					<tr>
 						<ui:repeat value="#{bookingModel.dayModels}" var="model">
 							<td class="#{bookingView.getDayTextClass(model)}">
-								<h:outputText value="#{model.date}" converter="dayShortTextConverter" />
+								<h:outputText id="dateId" value="#{model.date}" converter="dayShortTextConverter" />
+								<p:tooltip for="dateId" rendered="#{not empty model.holidayNotes}">
+									<h:outputText class="#{bookingView.getTooltipTitleClass()}" value="Notes"/>
+									<br/>
+									<ui:repeat value="#{model.holidayNotes}" var="note">
+										<br/>
+										<h:outputText value="#{note}" />
+									</ui:repeat>
+								</p:tooltip>
 							</td>
 						</ui:repeat>
 					</tr>
@@ -49,8 +57,8 @@
 					<tr>
 						<ui:repeat value="#{bookingModel.dayModels}" var="model">
 							<td class="#{bookingView.getDayStatusClass(model)}">
-								<h:graphicImage library="images" name="parking-accepted.png" width="24"	height="24" rendered="#{model.status eq 'ACCEPTED'}" /> 
-								<h:graphicImage library="images" name="parking-rejected.png" width="24" height="24" rendered="#{model.status eq 'REJECTED'}" />
+								<h:graphicImage library="images" name="parking-accepted.png" width="24"	height="24" rendered="#{model.accepted}" /> 
+								<h:graphicImage library="images" name="parking-rejected.png" width="24" height="24" rendered="#{model.rejected}" />
 							</td>
 						</ui:repeat>
 					</tr>

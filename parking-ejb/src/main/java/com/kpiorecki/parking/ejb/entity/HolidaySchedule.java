@@ -2,6 +2,7 @@ package com.kpiorecki.parking.ejb.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -190,6 +191,8 @@ public class HolidaySchedule implements Serializable {
 				}
 			}
 		}
+
+		Collections.sort(notes, String.CASE_INSENSITIVE_ORDER);
 
 		DateStatus status = new DateStatus();
 		status.setHoliday(matches);

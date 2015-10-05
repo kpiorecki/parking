@@ -139,12 +139,21 @@ table {
 	background-color: #FCFC9A;
 }
 
-.parking-day-locked {
-	/* TODO add locked icon */
-	
+.parking-day-holiday-info {
+	background-image: url("#{resource['images/info-marker.png']}");
+	background-repeat: no-repeat;
+	background-position: top right;
+}
+
+.parking-day-past {
+	opacity: 0.5;
 }
 
 .parking-day-today {
 	border-width: 0px 3px 1px;
 	border-color: #333 #FC0;
+}
+
+.parking-tooltip-title {
+	font-weight: bold;
 }

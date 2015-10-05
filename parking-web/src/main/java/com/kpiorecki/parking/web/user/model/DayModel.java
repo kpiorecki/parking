@@ -1,9 +1,10 @@
 package com.kpiorecki.parking.web.user.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.LocalDate;
+
+import com.kpiorecki.parking.ejb.entity.BookingStatus;
 
 public class DayModel {
 
@@ -14,16 +15,17 @@ public class DayModel {
 	}
 
 	private int availableCapacity;
-	private boolean locked = false;
-	private boolean holiday = false;
-	private boolean selected = false;
+	private boolean holiday;
 
-	private Status status = Status.EMPTY;
 	private LocalDate date;
+	private Status status;
+	private BookingStatus bookingStatus;
 
-	// TODO add tooltip with accepted/rejected users
-	private List<String> acceptedUsers = new ArrayList<>();
-	private List<String> rejectedUsers = new ArrayList<>();
+	private List<String> holidayNotes;
+
+	// TODO process users or delete it
+	private List<String> acceptedUsers;
+	private List<String> rejectedUsers;
 
 	public int getAvailableCapacity() {
 		return availableCapacity;
@@ -31,14 +33,6 @@ public class DayModel {
 
 	public void setAvailableCapacity(int availableCapacity) {
 		this.availableCapacity = availableCapacity;
-	}
-
-	public boolean isLocked() {
-		return locked;
-	}
-
-	public void setLocked(boolean locked) {
-		this.locked = locked;
 	}
 
 	public boolean isHoliday() {
@@ -49,28 +43,48 @@ public class DayModel {
 		this.holiday = holiday;
 	}
 
-	public boolean isSelected() {
-		return selected;
-	}
-
-	public void setSelected(boolean selected) {
-		this.selected = selected;
-	}
-
-	public Status getStatus() {
-		return status;
-	}
-
-	public void setStatus(Status status) {
-		this.status = status;
-	}
-
 	public LocalDate getDate() {
 		return date;
 	}
 
 	public void setDate(LocalDate date) {
 		this.date = date;
+	}
+
+	public boolean isSelected() {
+		return status != Status.EMPTY;
+	}
+
+	public boolean isAccepted() {
+		return status == Status.ACCEPTED;
+	}
+
+	public boolean isRejected() {
+		return status == Status.REJECTED;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public boolean isLocked() {
+		return bookingStatus == BookingStatus.LOCKED;
+	}
+
+	public BookingStatus getBookingStatus() {
+		return bookingStatus;
+	}
+
+	public void setBookingStatus(BookingStatus bookingStatus) {
+		this.bookingStatus = bookingStatus;
+	}
+
+	public List<String> getHolidayNotes() {
+		return holidayNotes;
+	}
+
+	public void setHolidayNotes(List<String> holidayNotes) {
+		this.holidayNotes = holidayNotes;
 	}
 
 	public List<String> getAcceptedUsers() {

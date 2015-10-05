@@ -16,7 +16,6 @@ import org.joda.time.format.DateTimeFormatter;
 import com.kpiorecki.parking.ejb.dto.BookingDto;
 import com.kpiorecki.parking.ejb.dto.BookingEntryDto;
 import com.kpiorecki.parking.ejb.dto.ParkingBookingDto;
-import com.kpiorecki.parking.ejb.entity.BookingStatus;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
 import com.kpiorecki.parking.web.user.model.DayModel.Status;
 
@@ -66,7 +65,6 @@ public class BookingModelFactory {
 		List<String> rejectedUsers = new ArrayList<String>();
 
 		Status status = Status.EMPTY;
-		boolean selected = false;
 		String currentUser = externalContext.getRemoteUser();
 
 		for (BookingEntryDto entry : entries) {
@@ -79,7 +77,6 @@ public class BookingModelFactory {
 			}
 			if (Objects.equals(currentUser, login)) {
 				status = accepted ? Status.ACCEPTED : Status.REJECTED;
-				selected = true;
 			}
 		}
 		sortUsersList(acceptedUsers);
@@ -87,10 +84,10 @@ public class BookingModelFactory {
 
 		DayModel dayModel = new DayModel();
 		dayModel.setDate(booking.getDate());
-		dayModel.setLocked(booking.getStatus() == BookingStatus.LOCKED);
+		dayModel.setBookingStatus(booking.getStatus());
 		dayModel.setHoliday(booking.isHoliday());
+		dayModel.setHolidayNotes(booking.getNotes());
 		dayModel.setStatus(status);
-		dayModel.setSelected(selected);
 		dayModel.setAcceptedUsers(acceptedUsers);
 		dayModel.setRejectedUsers(rejectedUsers);
 
