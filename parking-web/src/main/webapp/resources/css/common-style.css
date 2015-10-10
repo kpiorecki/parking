@@ -139,8 +139,8 @@ table {
 	background-color: #FCFC9A;
 }
 
-.parking-day-holiday-info {
-	background-image: url("#{resource['images/info-marker.png']}");
+.parking-day-note {
+	background-image: url("#{resource['images/note-marker.png']}");
 	background-repeat: no-repeat;
 	background-position: top right;
 }
@@ -156,4 +156,13 @@ table {
 
 .parking-tooltip-title {
 	font-weight: bold;
+}
+
+.parking-button-wrapper {
+	text-align: right;
+	padding-top: 10px;
+}
+
+.parking-button {
+	width: 90px;
 }

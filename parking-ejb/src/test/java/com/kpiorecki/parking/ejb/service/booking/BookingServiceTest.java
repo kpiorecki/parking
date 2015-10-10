@@ -221,7 +221,7 @@ public class BookingServiceTest extends GreenMailTest {
 		// when
 		LocalDate startDate = new DateTime().toLocalDate();
 		LocalDate endDate = startDate.plusWeeks(1);
-		bookingService.findBookings(parking.getUuid(), "login", startDate, endDate);
+		bookingService.findBookings(parking.getName(), "login", startDate, endDate);
 
 		// then exception should be thrown - user is not assigned to given parking
 	}

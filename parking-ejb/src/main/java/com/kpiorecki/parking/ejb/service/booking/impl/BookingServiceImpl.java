@@ -35,6 +35,7 @@ import com.kpiorecki.parking.ejb.entity.BookingStatus;
 import com.kpiorecki.parking.ejb.entity.HolidaySchedule;
 import com.kpiorecki.parking.ejb.entity.HolidaySchedule.DateStatus;
 import com.kpiorecki.parking.ejb.entity.Parking;
+import com.kpiorecki.parking.ejb.entity.Parking_;
 import com.kpiorecki.parking.ejb.entity.User;
 import com.kpiorecki.parking.ejb.service.booking.BookingService;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
@@ -159,14 +160,15 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	@RolesAllowed(Role.USER)
-	public ParkingBookingDto findBookings(String parkingUuid, String login, LocalDate startDate, LocalDate endDate) {
-		logger.info("finding bookings for parking={}, user={}, startDate={}, endDate={}", parkingUuid, login,
+	public ParkingBookingDto findBookings(String parkingName, String login, LocalDate startDate, LocalDate endDate) {
+		logger.info("finding bookings for parkingName={}, user={}, startDate={}, endDate={}", parkingName, login,
 				dateFormatter.print(startDate), dateFormatter.print(endDate));
 
-		validateBookingDates(startDate, endDate);
-		validateUser(parkingUuid, login);
+		Parking parking = parkingDao.load(Parking_.name, parkingName);
 
-		Parking parking = parkingDao.load(parkingUuid);
+		validateBookingDates(startDate, endDate);
+		validateUser(parking.getUuid(), login);
+
 		List<Parking> parkings = Collections.singletonList(parking);
 		List<ParkingBookingDto> parkingBookings = findParkingBookings(startDate, endDate, parkings);
 

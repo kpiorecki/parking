@@ -1,7 +1,6 @@
 package com.kpiorecki.parking.web.user.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -16,8 +15,8 @@ import org.joda.time.format.DateTimeFormatter;
 import com.kpiorecki.parking.ejb.dto.BookingDto;
 import com.kpiorecki.parking.ejb.dto.BookingEntryDto;
 import com.kpiorecki.parking.ejb.dto.ParkingBookingDto;
+import com.kpiorecki.parking.ejb.entity.BookingStatus;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
-import com.kpiorecki.parking.web.user.model.DayModel.Status;
 
 @Stateless
 public class BookingModelFactory {
@@ -60,39 +59,17 @@ public class BookingModelFactory {
 
 	private DayModel createDayModel(BookingDto booking, int parkingCapacity) {
 		Set<BookingEntryDto> entries = booking.getEntries();
-
-		List<String> acceptedUsers = new ArrayList<String>();
-		List<String> rejectedUsers = new ArrayList<String>();
-
-		Status status = Status.EMPTY;
-		String currentUser = externalContext.getRemoteUser();
-
-		for (BookingEntryDto entry : entries) {
-			Boolean accepted = entry.getAccepted();
-			String login = entry.getLogin();
-			if (accepted) {
-				acceptedUsers.add(login);
-			} else {
-				rejectedUsers.add(login);
-			}
-			if (Objects.equals(currentUser, login)) {
-				status = accepted ? Status.ACCEPTED : Status.REJECTED;
-			}
-		}
-		sortUsersList(acceptedUsers);
-		sortUsersList(rejectedUsers);
+		BookingEntryDto userEntry = findCurrentUserEntry(entries);
 
 		DayModel dayModel = new DayModel();
 		dayModel.setDate(booking.getDate());
-		dayModel.setBookingStatus(booking.getStatus());
 		dayModel.setHoliday(booking.isHoliday());
-		dayModel.setHolidayNotes(booking.getNotes());
-		dayModel.setStatus(status);
-		dayModel.setAcceptedUsers(acceptedUsers);
-		dayModel.setRejectedUsers(rejectedUsers);
-
-		int availableCapacity = parkingCapacity - entries.size();
-		dayModel.setAvailableCapacity(availableCapacity);
+		dayModel.setNotes(booking.getNotes());
+		dayModel.setLocked(booking.getStatus() == BookingStatus.LOCKED);
+		dayModel.setSelected(userEntry != null);
+		dayModel.setAccepted(userEntry != null && userEntry.getAccepted());
+		dayModel.setRejected(userEntry != null && (!userEntry.getAccepted()));
+		dayModel.setAvailableCapacity(parkingCapacity - entries.size());
 
 		return dayModel;
 	}
@@ -132,7 +109,15 @@ public class BookingModelFactory {
 		return weekModel;
 	}
 
-	private void sortUsersList(List<String> users) {
-		Collections.sort(users, String.CASE_INSENSITIVE_ORDER);
+	private BookingEntryDto findCurrentUserEntry(Set<BookingEntryDto> entries) {
+		String currentUser = externalContext.getRemoteUser();
+		for (BookingEntryDto entry : entries) {
+			String login = entry.getLogin();
+			if (Objects.equals(currentUser, login)) {
+				return entry;
+			}
+		}
+		return null;
 	}
+
 }

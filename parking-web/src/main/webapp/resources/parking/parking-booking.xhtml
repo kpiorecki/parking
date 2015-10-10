@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://java.sun.com/jsf/html" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 <composite:interface>
 	<composite:attribute name="bookingModel" required="true" />
@@ -13,6 +13,7 @@
 <composite:implementation>
 	<c:set var="bookingModel" value="#{cc.attrs.bookingModel}" />
 	<c:set var="readonly" value="#{cc.attrs.readonly}" />
+	<c:set var="startDate" value="#{bookingModel.dayModels[0].date}" />
 	
     <h:form>
 		<p:panel header="#{bookingModel.parking.name}" class="parking-panel">
@@ -36,10 +37,10 @@
 						<ui:repeat value="#{bookingModel.dayModels}" var="model">
 							<td class="#{bookingView.getDayTextClass(model)}">
 								<h:outputText id="dateId" value="#{model.date}" converter="dayShortTextConverter" />
-								<p:tooltip for="dateId" rendered="#{not empty model.holidayNotes}">
-									<h:outputText class="#{bookingView.getTooltipTitleClass()}" value="Notes"/>
+								<p:tooltip for="dateId" rendered="#{not empty model.notes}">
+									<h:outputText class="parking-tooltip-title" value="Notes"/>
 									<br/>
-									<ui:repeat value="#{model.holidayNotes}" var="note">
+									<ui:repeat value="#{model.notes}" var="note">
 										<br/>
 										<h:outputText value="#{note}" />
 									</ui:repeat>
@@ -69,12 +70,22 @@
 									<p:selectBooleanCheckbox value="#{model.selected}" rendered="#{(not model.holiday) and (not model.locked)}">
 										<p:ajax listener="#{bookingController.updateDirty(model)}" />
 									</p:selectBooleanCheckbox>
+									<h:graphicImage library="images" name="parking-locked.png" width="24" height="24" rendered="#{(not model.holiday) and model.locked}" />
 								</td>
 							</ui:repeat>
 						</tr>
 					</c:if>
 				</tbody>
 			</table>
+			<div class="parking-button-wrapper">
+				<p:commandButton value="Save" action="#{bookingController.save}" styleClass="parking-button" rendered="#{not readonly}"/>
+				<p:button value="Cancel" outcome="pretty:user-home" styleClass="parking-button" rendered="#{not readonly}"/>
+				<p:button value="Edit" outcome="pretty:user-booking" styleClass="parking-button" rendered="#{readonly}">
+					<f:param name="month" value="#{startDate.monthOfYear}" />
+					<f:param name="year" value="#{startDate.year}" />
+					<f:param name="parkingName" value="#{bookingModel.parking.name}" />
+				</p:button>
+			</div>
 		</p:panel>
 	</h:form>
 </composite:implementation>

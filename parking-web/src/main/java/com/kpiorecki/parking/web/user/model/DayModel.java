@@ -4,28 +4,17 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 
-import com.kpiorecki.parking.ejb.entity.BookingStatus;
-
 public class DayModel {
-
-	public enum Status {
-		EMPTY,
-		REJECTED,
-		ACCEPTED;
-	}
 
 	private int availableCapacity;
 	private boolean holiday;
+	private boolean selected;
+	private boolean locked;
+	private boolean accepted;
+	private boolean rejected;
 
 	private LocalDate date;
-	private Status status;
-	private BookingStatus bookingStatus;
-
-	private List<String> holidayNotes;
-
-	// TODO process users or delete it
-	private List<String> acceptedUsers;
-	private List<String> rejectedUsers;
+	private List<String> notes;
 
 	public int getAvailableCapacity() {
 		return availableCapacity;
@@ -43,6 +32,38 @@ public class DayModel {
 		this.holiday = holiday;
 	}
 
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+
+	public boolean isLocked() {
+		return locked;
+	}
+
+	public void setLocked(boolean locked) {
+		this.locked = locked;
+	}
+
+	public boolean isAccepted() {
+		return accepted;
+	}
+
+	public void setAccepted(boolean accepted) {
+		this.accepted = accepted;
+	}
+
+	public boolean isRejected() {
+		return rejected;
+	}
+
+	public void setRejected(boolean rejected) {
+		this.rejected = rejected;
+	}
+
 	public LocalDate getDate() {
 		return date;
 	}
@@ -51,56 +72,12 @@ public class DayModel {
 		this.date = date;
 	}
 
-	public boolean isSelected() {
-		return status != Status.EMPTY;
+	public List<String> getNotes() {
+		return notes;
 	}
 
-	public boolean isAccepted() {
-		return status == Status.ACCEPTED;
-	}
-
-	public boolean isRejected() {
-		return status == Status.REJECTED;
-	}
-
-	public void setStatus(Status status) {
-		this.status = status;
-	}
-
-	public boolean isLocked() {
-		return bookingStatus == BookingStatus.LOCKED;
-	}
-
-	public BookingStatus getBookingStatus() {
-		return bookingStatus;
-	}
-
-	public void setBookingStatus(BookingStatus bookingStatus) {
-		this.bookingStatus = bookingStatus;
-	}
-
-	public List<String> getHolidayNotes() {
-		return holidayNotes;
-	}
-
-	public void setHolidayNotes(List<String> holidayNotes) {
-		this.holidayNotes = holidayNotes;
-	}
-
-	public List<String> getAcceptedUsers() {
-		return acceptedUsers;
-	}
-
-	public void setAcceptedUsers(List<String> acceptedUsers) {
-		this.acceptedUsers = acceptedUsers;
-	}
-
-	public List<String> getRejectedUsers() {
-		return rejectedUsers;
-	}
-
-	public void setRejectedUsers(List<String> rejectedUsers) {
-		this.rejectedUsers = rejectedUsers;
+	public void setNotes(List<String> notes) {
+		this.notes = notes;
 	}
 
 }

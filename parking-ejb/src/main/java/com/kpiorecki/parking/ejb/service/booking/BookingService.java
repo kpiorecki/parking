@@ -19,7 +19,7 @@ public interface BookingService {
 
 	void lock(String parkingUuid, LocalDate date);
 	
-	ParkingBookingDto findBookings(String parkingUuid, String login, LocalDate startDate, LocalDate endDate);
+	ParkingBookingDto findBookings(String parkingName, String login, LocalDate startDate, LocalDate endDate);
 
 	List<ParkingBookingDto> findAllBookings(String login, LocalDate startDate, LocalDate endDate);
 

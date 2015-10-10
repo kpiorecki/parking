@@ -19,22 +19,20 @@ public class BookingView {
 	private static final String DAY_CAPACITY_POSITIVE = "parking-capacity-pos";
 	private static final String DAY_CAPACITY_NEGATIVE = "parking-capacity-neg";
 	private static final String DAY_HOLIDAY = "parking-day-holiday";
-	private static final String DAY_HOLIDAY_INFO = "parking-day-holiday-info";
+	private static final String DAY_NOTE = "parking-day-note";
 	private static final String DAY_PAST = "parking-day-past";
 	private static final String DAY_TODAY = "parking-day-today";
 
 	private static final String WEEK_DEFAULT = "parking-booking-week";
-
-	private static final String TOOLTIP_TITLE = "parking-tooltip-title";
 
 	public String getDayNumberClass(DayModel model) {
 		return getDayClass(model, DAY_NUMBER);
 	}
 
 	public String getDayTextClass(DayModel model) {
-		List<String> holidayNotes = model.getHolidayNotes();
-		if (!holidayNotes.isEmpty()) {
-			return getDayClass(model, DAY_TEXT, DAY_HOLIDAY_INFO);
+		List<String> notes = model.getNotes();
+		if (!notes.isEmpty()) {
+			return getDayClass(model, DAY_TEXT, DAY_NOTE);
 		}
 		return getDayClass(model, DAY_TEXT);
 	}
@@ -64,10 +62,6 @@ public class BookingView {
 		appendCssClass(builder, WEEK_DEFAULT);
 
 		return builder.toString();
-	}
-
-	public String getTooltipTitleClass() {
-		return TOOLTIP_TITLE;
 	}
 
 	private String getDayClass(DayModel model, String... nonDefaultClasses) {

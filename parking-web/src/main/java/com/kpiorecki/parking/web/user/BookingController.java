@@ -1,14 +1,21 @@
 package com.kpiorecki.parking.web.user;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -19,13 +26,22 @@ import com.kpiorecki.parking.ejb.util.DateFormatter;
 import com.kpiorecki.parking.web.user.model.BookingModel;
 import com.kpiorecki.parking.web.user.model.BookingModelFactory;
 import com.kpiorecki.parking.web.user.model.DayModel;
-import com.kpiorecki.parking.web.util.URLEncoder;
 
 @Named
 @ViewScoped
 public class BookingController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * maximum year supported by joda-time
+	 */
+	private static final int MAX_YEAR = 292278993;
+
+	/**
+	 * minimum year allowed
+	 */
+	private static final int MIN_YEAR = 1970;
 
 	@Inject
 	private Logger logger;
@@ -40,9 +56,6 @@ public class BookingController implements Serializable {
 	private BookingModelFactory bookingModelFactory;
 
 	@Inject
-	private URLEncoder urlEncoder;
-
-	@Inject
 	@DateFormatter
 	private transient DateTimeFormatter dateFormatter;
 
@@ -50,42 +63,66 @@ public class BookingController implements Serializable {
 
 	private int month;
 
-	private String encodedParkingUuid;
+	private String parkingName;
 
 	private BookingModel bookingModel;
 
 	private Set<DayModel> dirtyModels = new HashSet<>();
 
+	public int getYear() {
+		return year;
+	}
+
 	public void setYear(int year) {
 		this.year = year;
+	}
+
+	public int getMonth() {
+		return month;
 	}
 
 	public void setMonth(int month) {
 		this.month = month;
 	}
 
-	public void setEncodedParkingUuid(String encodedParkingUuid) {
-		this.encodedParkingUuid = encodedParkingUuid;
+	public String getParkingName() {
+		return parkingName;
+	}
+
+	public void setParkingName(String parkingName) {
+		this.parkingName = parkingName;
 	}
 
 	public BookingModel getBookingModel() {
 		return bookingModel;
 	}
 
-	public void loadUserBookings() {
+	public void validateYear(FacesContext context, UIComponent component, Object value) {
+		validateValue((Integer) value, MIN_YEAR, MAX_YEAR);
+	}
+
+	public void validateMonth(FacesContext context, UIComponent component, Object value) {
+		validateValue((Integer) value, DateTimeConstants.JANUARY, DateTimeConstants.DECEMBER);
+	}
+
+	public void loadUserBookings() throws IOException {
 		LocalDate startDate = new LocalDate().withYear(year).withMonthOfYear(month).withDayOfMonth(1);
 		LocalDate endDate = startDate.plusMonths(1);
 		String login = externalContext.getRemoteUser();
-		String parkingUuid = urlEncoder.decode(encodedParkingUuid);
 
-		// TODO parameter validation
-
-		if (parkingUuid != null) {
-			logger.info("loading bookings for parking={}, user={}, startDate={}, endDate={}", parkingUuid, login,
-					dateFormatter.print(startDate), dateFormatter.print(endDate));
-			ParkingBookingDto parkingBooking = bookingService.findBookings(parkingUuid, login, startDate, endDate);
+		logger.info("loading bookings for parkingName={}, user={}, startDate={}, endDate={}", parkingName, login,
+				dateFormatter.print(startDate), dateFormatter.print(endDate));
+		try {
+			ParkingBookingDto parkingBooking = bookingService.findBookings(parkingName, login, startDate, endDate);
 			bookingModel = bookingModelFactory.createModel(parkingBooking);
+		} catch (RuntimeException e) {
+			logger.info(String.format("did not find bookings for parkingName=%s", parkingName), e);
+			externalContext.responseSendError(HttpServletResponse.SC_NOT_FOUND, "could not find parking booking");
 		}
+	}
+
+	public void save() {
+		// TODO
 	}
 
 	public void updateDirty(DayModel model) {
@@ -101,6 +138,12 @@ public class BookingController implements Serializable {
 
 	public boolean isDirty() {
 		return !dirtyModels.isEmpty();
+	}
+
+	private void validateValue(Integer value, int min, int max) {
+		if (value == null || value < min || value > max) {
+			throw new ValidatorException(new FacesMessage(String.format("invalid value %d", value)));
+		}
 	}
 
 }

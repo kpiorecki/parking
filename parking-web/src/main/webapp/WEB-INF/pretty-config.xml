@@ -22,7 +22,7 @@
 	</url-mapping>
 
 	<url-mapping id="activation">
-		<pattern value="/activation/#{activationController.encodedActivationUuid}" />
+		<pattern value="/activation/#{encodedActivationUuid : activationController.encodedActivationUuid}" />
 		<view-id value="/WEB-INF/view/activation.xhtml" />
 		<action onPostback="false">#{activationController.activate}</action>
 	</url-mapping>
@@ -34,7 +34,10 @@
 	</url-mapping>
 
 	<url-mapping id="user-booking">
-		<pattern value="/user/booking/#{bookingController.encodedParkingUuid}/#{bookingController.year}/#{bookingController.month}" />
+		<pattern value="/user/booking/#{parkingName : bookingController.parkingName}/#{year : bookingController.year}/#{month : bookingController.month}" >
+			<validate index="1" validator="#{bookingController.validateYear}" />
+			<validate index="2" validator="#{bookingController.validateMonth}" />
+		</pattern>
 		<view-id value="/WEB-INF/view/user/booking.xhtml" />
 		<action onPostback="false">#{bookingController.loadUserBookings}</action>
 	</url-mapping>

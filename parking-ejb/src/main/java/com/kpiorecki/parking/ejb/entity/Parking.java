@@ -35,7 +35,7 @@ public class Parking implements Serializable {
 	@Column(length = UuidGenerator.UUID_LENGTH)
 	private String uuid;
 
-	@Column(nullable = false, length = ParkingDto.NAME_MAX_LEN)
+	@Column(nullable = false, unique = true, length = ParkingDto.NAME_MAX_LEN)
 	private String name;
 
 	@Column(nullable = false)

@@ -73,9 +73,9 @@ public class TestUtilities {
 
 		Parking parking = new Parking();
 		parking.setUuid(uuidGenerator.generateUuid());
+		parking.setName("parking_" + parking.getUuid());
 		parking.setAddress(address);
 		parking.setCapacity(50);
-		parking.setName("name");
 
 		for (User user : users) {
 			Record record = new Record();
