@@ -15,7 +15,7 @@
 	<c:set var="readonly" value="#{cc.attrs.readonly}" />
 	<c:set var="startDate" value="#{bookingModel.dayModels[0].date}" />
 	
-    <h:form>
+    <h:form id="bookingForm">
 		<p:panel header="#{bookingModel.parking.name}" class="parking-panel">
 			<table class="parking-booking">
 				<tbody>
@@ -68,7 +68,7 @@
 							<ui:repeat value="#{bookingModel.dayModels}" var="model">
 								<td class="#{bookingView.getDayEditClass(model)}">
 									<p:selectBooleanCheckbox value="#{model.selected}" rendered="#{(not model.holiday) and (not model.locked)}">
-										<p:ajax listener="#{bookingController.updateDirty(model)}" />
+											<p:ajax listener="#{bookingController.updateDirty(model)}" update=":#{cc.clientId}:bookingForm:buttonPanel"/>
 									</p:selectBooleanCheckbox>
 									<h:graphicImage library="images" name="parking-locked.png" width="24" height="24" rendered="#{(not model.holiday) and model.locked}" />
 								</td>
@@ -77,15 +77,15 @@
 					</c:if>
 				</tbody>
 			</table>
-			<div class="parking-button-wrapper">
-				<p:commandButton value="Save" action="#{bookingController.save}" styleClass="parking-button" rendered="#{not readonly}"/>
+			<p:outputPanel id="buttonPanel" class="parking-button-panel">
+				<p:commandButton value="Save" action="#{bookingController.save}" styleClass="parking-button" rendered="#{not readonly}" disabled="#{not bookingController.dirty}"/>
 				<p:button value="Cancel" outcome="pretty:user-home" styleClass="parking-button" rendered="#{not readonly}"/>
 				<p:button value="Edit" outcome="pretty:user-booking" styleClass="parking-button" rendered="#{readonly}">
 					<f:param name="month" value="#{startDate.monthOfYear}" />
 					<f:param name="year" value="#{startDate.year}" />
 					<f:param name="parkingName" value="#{bookingModel.parking.name}" />
 				</p:button>
-			</div>
+			</p:outputPanel>
 		</p:panel>
 	</h:form>
 </composite:implementation>

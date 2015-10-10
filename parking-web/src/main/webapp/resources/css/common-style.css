@@ -158,9 +158,10 @@ table {
 	font-weight: bold;
 }
 
-.parking-button-wrapper {
+.parking-button-panel {
 	text-align: right;
 	padding-top: 10px;
+	display: block;
 }
 
 .parking-button {
