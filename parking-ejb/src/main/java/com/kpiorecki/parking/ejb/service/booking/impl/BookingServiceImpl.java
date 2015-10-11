@@ -2,6 +2,7 @@ package com.kpiorecki.parking.ejb.service.booking.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -117,6 +118,19 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		throw new DomainException(String.format("%s - did not find entry", message));
+	}
+
+	@Override
+	public void update(String parkingUuid, String login, Collection<LocalDate> bookedDates,
+			Collection<LocalDate> cancelledDates) {
+		logger.info("updating parking={} for user={} with {} booked and {} cancelled dates", parkingUuid, login,
+				bookedDates.size(), cancelledDates.size());
+		for (LocalDate date : bookedDates) {
+			book(parkingUuid, login, date);
+		}
+		for (LocalDate date : cancelledDates) {
+			cancel(parkingUuid, login, date);
+		}
 	}
 
 	@Override
@@ -318,4 +332,5 @@ public class BookingServiceImpl implements BookingService {
 					dateFormatter.print(endDate), dateFormatter.print(startDate)));
 		}
 	}
+
 }

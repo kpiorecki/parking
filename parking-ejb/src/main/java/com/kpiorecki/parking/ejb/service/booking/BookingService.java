@@ -1,5 +1,6 @@
 package com.kpiorecki.parking.ejb.service.booking;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.ejb.Local;
@@ -15,10 +16,13 @@ public interface BookingService {
 
 	void cancel(String parkingUuid, String login, LocalDate date);
 
+	void update(String parkingUuid, String login, Collection<LocalDate> bookedDates,
+			Collection<LocalDate> cancelledDates);
+
 	void release(String parkingUuid, LocalDate date);
 
 	void lock(String parkingUuid, LocalDate date);
-	
+
 	ParkingBookingDto findBookings(String parkingName, String login, LocalDate startDate, LocalDate endDate);
 
 	List<ParkingBookingDto> findAllBookings(String login, LocalDate startDate, LocalDate endDate);

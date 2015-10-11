@@ -2,7 +2,11 @@ package com.kpiorecki.parking.web.user;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.faces.application.FacesMessage;
@@ -121,8 +125,29 @@ public class BookingController implements Serializable {
 		}
 	}
 
-	public void save() {
-		// TODO
+	public String save() {
+		List<LocalDate> bookedDates = new ArrayList<>();
+		List<LocalDate> cancelledDates = new ArrayList<>();
+
+		for (DayModel dayModel : dirtyModels) {
+			LocalDate date = dayModel.getDate();
+			if (dayModel.isSelected()) {
+				bookedDates.add(date);
+			} else {
+				cancelledDates.add(date);
+			}
+		}
+		Collections.sort(bookedDates);
+		Collections.sort(cancelledDates);
+
+		String login = externalContext.getRemoteUser();
+		String parkingUuid = bookingModel.getParking().getUuid();
+
+		logger.info("saving bookings for parkingName={}, user={}, bookedDates={}, cancelledDates={}", parkingName,
+				login, toString(bookedDates), toString(cancelledDates));
+		bookingService.update(parkingUuid, login, bookedDates, cancelledDates);
+
+		return "pretty:user-home";
 	}
 
 	public void updateDirty(DayModel model) {
@@ -146,4 +171,21 @@ public class BookingController implements Serializable {
 		}
 	}
 
+	private String toString(Collection<LocalDate> dates) {
+		StringBuilder builder = new StringBuilder();
+		builder.append('[');
+
+		boolean dateAdded = false;
+		for (LocalDate date : dates) {
+			if (dateAdded) {
+				builder.append(", ");
+			}
+			builder.append(dateFormatter.print(date));
+			dateAdded = true;
+		}
+
+		builder.append(']');
+
+		return builder.toString();
+	}
 }
