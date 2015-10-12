@@ -3,7 +3,7 @@
 
 	<!-- assemble unpacked parking-web content folder into zip archive -->
 
-	<id>${embedded-assembly-id}</id>
+	<id>${demo-assembly-id}</id>
 	<formats>
 		<format>zip</format>
 	</formats>

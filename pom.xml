@@ -8,9 +8,9 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>parking-web</module>
 		<module>parking-ejb</module>
-		<module>parking-it</module>
+		<module>parking-web</module>
+		<module>parking-demo</module>
 	</modules>
 
 	<properties>

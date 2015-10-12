@@ -9,17 +9,17 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>parking-it</artifactId>
+	<artifactId>parking-demo</artifactId>
 	<packaging>pom</packaging>
 
 	<profiles>
 		<profile>
-			<id>embedded</id>
+			<id>demo</id>
 			<properties>
 				<unpacked-war-dir>${project.build.directory}/unpacked-war</unpacked-war-dir>
 				<greenmail-dir>${project.build.directory}/greenmail</greenmail-dir>
 				<config-dir>${project.build.directory}/config</config-dir>
-				<embedded-assembly-id>embedded</embedded-assembly-id>
+				<demo-assembly-id>demo</demo-assembly-id>
 			</properties>
 			<dependencies>
 				<dependency>
@@ -172,7 +172,7 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-assembly-plugin</artifactId>
 						<executions>
-							<!-- assemble embedded war zip archive with overwritten persistence.xml and glassfish-resources.xml -->
+							<!-- assemble demo war zip archive with overwritten persistence.xml and glassfish-resources.xml -->
 							<execution>
 								<id>make-assembly</id>
 								<phase>package</phase>
@@ -183,7 +183,7 @@
 						</executions>
 						<configuration>
 							<descriptors>
-								<descriptor>src/assembly/embedded.xml</descriptor>
+								<descriptor>src/assembly/demo.xml</descriptor>
 							</descriptors>
 						</configuration>
 					</plugin>
@@ -225,13 +225,13 @@
 								</goals>
 								<configuration>
 									<name>parking</name>
-									<app>${project.build.directory}/${project.artifactId}-${project.version}-${embedded-assembly-id}.zip</app>
+									<app>${project.build.directory}/${project.artifactId}-${project.version}-${demo-assembly-id}.zip</app>
 								</configuration>
 							</execution>
 
 							<!-- run deployed applications -->
 							<execution>
-								<id>run-embedded</id>
+								<id>run-demo</id>
 								<goals>
 									<goal>run</goal>
 								</goals>
