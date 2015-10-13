@@ -19,7 +19,7 @@
 				<unpacked-war-dir>${project.build.directory}/unpacked-war</unpacked-war-dir>
 				<greenmail-dir>${project.build.directory}/greenmail</greenmail-dir>
 				<config-dir>${project.build.directory}/config</config-dir>
-				<demo-assembly-id>demo</demo-assembly-id>
+				<demo-assembly-id>embedded</demo-assembly-id>
 			</properties>
 			<dependencies>
 				<dependency>
