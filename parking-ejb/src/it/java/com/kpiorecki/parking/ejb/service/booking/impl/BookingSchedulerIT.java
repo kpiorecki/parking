@@ -33,7 +33,7 @@ import com.kpiorecki.parking.ejb.util.DateFormatter;
 import com.kpiorecki.parking.ejb.util.ResourceProducer;
 
 @RunWith(Arquillian.class)
-public class BookingSchedulerTest {
+public class BookingSchedulerIT {
 
 	@Deployment
 	public static Archive<?> createDeployment() {

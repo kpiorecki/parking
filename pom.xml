@@ -16,6 +16,7 @@
 	<properties>
 		<!-- encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- java version -->
 		<java-version>1.8</java-version>
@@ -29,6 +30,7 @@
 		<compiler-plugin-version>3.3</compiler-plugin-version>
 		<resources-plugin-version>2.7</resources-plugin-version>
 		<surefire-plugin-version>2.18.1</surefire-plugin-version>
+		<failsafe-plugin-version>2.18.1</failsafe-plugin-version>
 		<dependency-plugin-version>2.10</dependency-plugin-version>
 		<properties-plugin-version>1.0-alpha-2</properties-plugin-version>
 		<truezip-plugin-version>1.2</truezip-plugin-version>
@@ -208,6 +210,13 @@
 					<version>${surefire-plugin-version}</version>
 				</plugin>
 
+				<!-- maven failsafe plugin -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>${failsafe-plugin-version}</version>
+				</plugin>
+
 				<!-- maven resources plugin -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -297,4 +306,13 @@
 		</pluginManagement>
 	</build>
 
+	<profiles>
+		<profile>
+			<!-- demo profile by default skips tests -->
+			<id>demo</id>
+			<properties>
+				<skipTests>true</skipTests>
+			</properties>
+		</profile>
+	</profiles>
 </project>

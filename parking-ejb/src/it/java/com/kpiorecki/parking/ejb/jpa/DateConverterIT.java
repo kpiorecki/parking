@@ -23,7 +23,7 @@ import com.kpiorecki.parking.ejb.util.ResourceProducer;
 
 @RunWith(Arquillian.class)
 @Transactional(TransactionMode.ROLLBACK)
-public class DateConverterTest {
+public class DateConverterIT {
 
 	@Deployment
 	public static Archive<?> createDeployment() {

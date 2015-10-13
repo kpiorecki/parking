@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.kpiorecki.parking.ejb.ArquillianFactory;
-import com.kpiorecki.parking.ejb.GreenMailTest;
+import com.kpiorecki.parking.ejb.GreenMailIT;
 import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.Parking;
@@ -24,7 +24,7 @@ import com.kpiorecki.parking.ejb.util.ResourceProducer;
 import com.kpiorecki.parking.ejb.util.UuidGenerator;
 
 @RunWith(Arquillian.class)
-public class BookingEventHandlerTest extends GreenMailTest {
+public class BookingEventHandlerIT extends GreenMailIT {
 
 	@Deployment
 	public static Archive<?> createDeployment() {

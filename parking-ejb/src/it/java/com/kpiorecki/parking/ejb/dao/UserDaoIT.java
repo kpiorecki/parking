@@ -24,7 +24,7 @@ import com.kpiorecki.parking.ejb.util.UuidGenerator;
 
 @RunWith(Arquillian.class)
 @Transactional(TransactionMode.ROLLBACK)
-public class UserDaoTest {
+public class UserDaoIT {
 
 	@Deployment
 	public static Archive<?> createDeployment() {

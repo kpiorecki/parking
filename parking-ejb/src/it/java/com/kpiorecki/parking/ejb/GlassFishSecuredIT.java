@@ -16,11 +16,11 @@ import com.kpiorecki.parking.ejb.arquillian.BeforeUnDeploy;
 import com.sun.enterprise.security.auth.realm.file.FileRealm;
 import com.sun.enterprise.security.ee.auth.login.ProgrammaticLogin;
 
-public abstract class GlassFishSecuredTest {
+public abstract class GlassFishSecuredIT {
 
-	private static final Logger logger = LoggerFactory.getLogger(GlassFishSecuredTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(GlassFishSecuredIT.class);
 	private static final String realmName = "arquillian-file-realm";
-	private static final String keyFile = "src/test/resources/test-keyfile";
+	private static final String keyFile = "src/it/resources/test-keyfile";
 	private static final String keyFileUser = "arquillian";
 	private static final char[] keyFilePassword = new char[0];
 
@@ -29,7 +29,7 @@ public abstract class GlassFishSecuredTest {
 	private ProgrammaticLogin programmaticLogin;
 
 	/**
-	 * Creates new file realm using 'src/test/resources/test-keyfile' file
+	 * Creates new file realm using 'src/it/resources/test-keyfile' file
 	 */
 	@AfterDeploy
 	public static void createAuthFileRealm() throws Exception {

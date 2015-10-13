@@ -14,7 +14,7 @@ import com.kpiorecki.parking.ejb.ArquillianFactory;
 import com.kpiorecki.parking.ejb.util.ResourceProducer;
 
 @RunWith(Arquillian.class)
-public class UserPasswordEncoderTest {
+public class UserPasswordEncoderIT {
 
 	@Deployment
 	public static Archive<?> createDeployment() {

@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.kpiorecki.parking.ejb.ArquillianFactory;
-import com.kpiorecki.parking.ejb.GreenMailTest;
+import com.kpiorecki.parking.ejb.GreenMailIT;
 import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.dao.ParkingDao;
 import com.kpiorecki.parking.ejb.dao.UserDao;
@@ -32,7 +32,7 @@ import com.kpiorecki.parking.ejb.entity.User_;
 
 @RunWith(Arquillian.class)
 @Transactional(TransactionMode.ROLLBACK)
-public class UserServiceTest extends GreenMailTest {
+public class UserServiceIT extends GreenMailIT {
 
 	@Deployment
 	public static Archive<?> createDeployment() {

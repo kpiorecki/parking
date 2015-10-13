@@ -5,7 +5,7 @@
         http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 	<container qualifier="glassfish-embedded" default="true">
 		<configuration>
-			<property name="resourcesXml">src/test/resources/test-glassfish-resources.xml</property>
+			<property name="resourcesXml">src/it/resources/test-glassfish-resources.xml</property>
 			<property name="bindHttpPort">8182</property>
 		</configuration>
 	</container>

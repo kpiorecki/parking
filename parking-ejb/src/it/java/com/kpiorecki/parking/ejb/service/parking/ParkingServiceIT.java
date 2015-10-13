@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.kpiorecki.parking.ejb.ArquillianFactory;
-import com.kpiorecki.parking.ejb.GlassFishSecuredTest;
+import com.kpiorecki.parking.ejb.GlassFishSecuredIT;
 import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.dao.BookingDao;
 import com.kpiorecki.parking.ejb.dao.HolidayScheduleDao;
@@ -37,7 +37,7 @@ import com.kpiorecki.parking.ejb.entity.User;
 
 @RunWith(Arquillian.class)
 @Transactional(TransactionMode.ROLLBACK)
-public class ParkingServiceTest extends GlassFishSecuredTest {
+public class ParkingServiceIT extends GlassFishSecuredIT {
 
 	@Deployment
 	public static Archive<?> createDeployment() {

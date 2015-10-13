@@ -15,7 +15,7 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetupTest;
 
-public abstract class GreenMailTest extends GlassFishSecuredTest {
+public abstract class GreenMailIT extends GlassFishSecuredIT {
 
 	@Inject
 	private Logger logger;
