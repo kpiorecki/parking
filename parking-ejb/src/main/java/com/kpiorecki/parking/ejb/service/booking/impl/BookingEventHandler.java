@@ -1,7 +1,9 @@
 package com.kpiorecki.parking.ejb.service.booking.impl;
 
+import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 
 import org.joda.time.format.DateTimeFormatter;
@@ -23,12 +25,14 @@ public class BookingEventHandler {
 	@DateFormatter
 	private DateTimeFormatter dateFormatter;
 
-	public void onAssignedEvent(@Observes @BookingAssigned BookingEvent event) {
+	@Asynchronous
+	public void onAssignedEvent(@Observes(during = TransactionPhase.AFTER_SUCCESS) @BookingAssigned BookingEvent event) {
 		logger.info("received assigned {}", toString(event));
 		mailSender.sendBookingAssignedMail(event.getUser(), event.getParking(), event.getDate());
 	}
 
-	public void onRevokedEvent(@Observes @BookingRevoked BookingEvent event) {
+	@Asynchronous
+	public void onRevokedEvent(@Observes(during = TransactionPhase.AFTER_SUCCESS) @BookingRevoked BookingEvent event) {
 		logger.info("received revoked {}", toString(event));
 		mailSender.sendBookingRevokedMail(event.getUser(), event.getParking(), event.getDate());
 	}

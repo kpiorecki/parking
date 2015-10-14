@@ -28,8 +28,9 @@ public class BookingEventHandlerIT extends GreenMailIT {
 
 	@Deployment
 	public static Archive<?> createDeployment() {
-		return ArquillianFactory.createBaseDeployment().addClasses(BookingEventHandler.class, TestUtilities.class,
-				ResourceProducer.class, UuidGenerator.class, MailSender.class, ApplicationSetup.class);
+		return ArquillianFactory.createBaseDeployment().addClasses(BookingEventHandler.class,
+				SyncBookingEventHandler.class, TestUtilities.class, ResourceProducer.class, UuidGenerator.class,
+				MailSender.class, ApplicationSetup.class);
 	}
 
 	@Inject
