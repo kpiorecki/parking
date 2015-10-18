@@ -14,8 +14,8 @@ import com.kpiorecki.parking.ejb.ArquillianFactory;
 import com.kpiorecki.parking.ejb.GreenMailIT;
 import com.kpiorecki.parking.ejb.TestUtilities;
 import com.kpiorecki.parking.ejb.entity.Booking;
-import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.BookingStatus;
+import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.User;
 import com.kpiorecki.parking.ejb.util.ApplicationSetup;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
@@ -72,7 +72,7 @@ public class BookingEventHandlerIT extends GreenMailIT {
 		User user = testUtilities.createUser("login");
 		Parking parking = testUtilities.createParking(user);
 		Booking booking = testUtilities.createBooking(parking, date, user);
-		booking.setStatus(BookingStatus.RELEASED);
+		booking.updateStatus(BookingStatus.RELEASED);
 
 		BookingEvent event = new BookingEvent();
 		event.setDate(date);

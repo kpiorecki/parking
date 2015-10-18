@@ -1,5 +1,8 @@
 package com.kpiorecki.parking.ejb.entity;
 
+import static com.kpiorecki.parking.ejb.entity.BookingStatus.LOCKED;
+import static com.kpiorecki.parking.ejb.entity.BookingStatus.RELEASED;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,6 +10,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -21,12 +25,16 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.joda.time.LocalDate;
 
+import com.kpiorecki.parking.ejb.jpa.BookingUpdateStatusListener;
+
 @Entity
 @Table(name = "bookings", indexes = { @Index(columnList = "parking_uuid, date", unique = true) })
+@EntityListeners(BookingUpdateStatusListener.class)
 @NamedQueries({
 		@NamedQuery(name = "Booking.findByParkingAndDate", query = "select b from Booking b where b.parking.uuid = :parkingUuid and b.date = :date"),
 		@NamedQuery(name = "Booking.findIdsByParking", query = "select b.id from Booking b where b.parking.uuid = :parkingUuid"),
@@ -44,15 +52,18 @@ public class Booking implements Serializable {
 	@JoinColumn(name = "parking_uuid")
 	private Parking parking;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumn(name = "booking_id")
 	private Set<BookingEntry> entries = new HashSet<>();
 
 	@Column(nullable = false)
 	private LocalDate date;
 
-	@Column(nullable = false)
+	@Column
 	@Enumerated(EnumType.STRING)
+	private BookingStatus manualStatus;
+
+	@Transient
 	private BookingStatus status;
 
 	@Version
@@ -79,10 +90,12 @@ public class Booking implements Serializable {
 	}
 
 	public void addEntry(BookingEntry entry) {
+		BookingStatus.validateLowerStatus(status, LOCKED);
 		entries.add(entry);
 	}
 
 	public void removeEntry(BookingEntry entry) {
+		BookingStatus.validateLowerStatus(status, LOCKED);
 		entries.remove(entry);
 	}
 
@@ -116,7 +129,21 @@ public class Booking implements Serializable {
 		return status;
 	}
 
-	public void setStatus(BookingStatus status) {
+	public void release() {
+		BookingStatus.validateLowerStatus(status, RELEASED);
+		setManualStatus(RELEASED);
+	}
+
+	public void lock() {
+		BookingStatus.validateLowerStatus(status, LOCKED);
+		setManualStatus(LOCKED);
+	}
+
+	public void updateStatus(BookingStatus defaultStatus) {
+		BookingStatus status = defaultStatus;
+		if (manualStatus != null) {
+			status = BookingStatus.getHigherStatus(manualStatus, defaultStatus);
+		}
 		this.status = status;
 	}
 
@@ -126,6 +153,11 @@ public class Booking implements Serializable {
 
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+
+	private void setManualStatus(BookingStatus status) {
+		this.manualStatus = status;
+		this.status = status;
 	}
 
 }

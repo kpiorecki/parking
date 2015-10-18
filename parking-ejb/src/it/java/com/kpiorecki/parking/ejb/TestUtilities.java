@@ -92,7 +92,7 @@ public class TestUtilities {
 		Booking booking = new Booking();
 		booking.setParking(parking);
 		booking.setDate(date);
-		booking.setStatus(BookingStatus.DRAFT);
+		booking.updateStatus(BookingStatus.DRAFT);
 		for (User user : users) {
 			BookingEntry entry = new BookingEntry();
 			entry.setUser(user);

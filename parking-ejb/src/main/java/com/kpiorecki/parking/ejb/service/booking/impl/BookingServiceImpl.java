@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -32,7 +30,6 @@ import com.kpiorecki.parking.ejb.dto.ParkingBookingDto;
 import com.kpiorecki.parking.ejb.dto.ParkingDto;
 import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.BookingEntry;
-import com.kpiorecki.parking.ejb.entity.BookingStatus;
 import com.kpiorecki.parking.ejb.entity.HolidaySchedule;
 import com.kpiorecki.parking.ejb.entity.HolidaySchedule.DateStatus;
 import com.kpiorecki.parking.ejb.entity.Parking;
@@ -86,8 +83,6 @@ public class BookingServiceImpl implements BookingService {
 			booking = createNewBooking(parkingUuid, date);
 		}
 
-		validateStatus(booking, EnumSet.of(BookingStatus.DRAFT, BookingStatus.RELEASED));
-
 		User user = userDao.load(login);
 		BookingEntry entry = new BookingEntry();
 		entry.setUser(user);
@@ -105,7 +100,6 @@ public class BookingServiceImpl implements BookingService {
 		logger.info(message);
 
 		Booking booking = bookingDao.load(parkingUuid, date);
-		validateStatus(booking, EnumSet.of(BookingStatus.DRAFT, BookingStatus.RELEASED));
 
 		for (BookingEntry entry : booking.getEntries()) {
 			if (entry.getUser().getLogin().equals(login)) {
@@ -145,8 +139,7 @@ public class BookingServiceImpl implements BookingService {
 			return;
 		}
 
-		validateStatus(booking, EnumSet.of(BookingStatus.DRAFT));
-		booking.setStatus(BookingStatus.RELEASED);
+		booking.release();
 
 		scheduler.updateSchedule(booking);
 		bookingDao.save(booking);
@@ -164,8 +157,7 @@ public class BookingServiceImpl implements BookingService {
 			return;
 		}
 
-		validateStatus(booking, EnumSet.of(BookingStatus.DRAFT, BookingStatus.RELEASED));
-		booking.setStatus(BookingStatus.LOCKED);
+		booking.lock();
 
 		scheduler.lockSchedule(booking);
 		bookingDao.save(booking);
@@ -294,7 +286,7 @@ public class BookingServiceImpl implements BookingService {
 		Booking booking = new Booking();
 		booking.setDate(date);
 		booking.setParking(parking);
-		booking.setStatus(statusPolicy.getDefaultStatus(date, new DateTime()));
+		booking.updateStatus(statusPolicy.getDefaultStatus(date, new DateTime()));
 
 		return booking;
 	}
@@ -309,13 +301,6 @@ public class BookingServiceImpl implements BookingService {
 				bookingDto.setHoliday(dateStatus.isHoliday());
 				bookingDto.setNotes(dateStatus.getNotes());
 			}
-		}
-	}
-
-	private void validateStatus(Booking booking, Set<BookingStatus> allowedStatuses) {
-		BookingStatus bookingStatus = booking.getStatus();
-		if (!allowedStatuses.contains(bookingStatus)) {
-			throw new DomainException(String.format("invalid booking status %s", bookingStatus));
 		}
 	}
 

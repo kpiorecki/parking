@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import com.kpiorecki.parking.ejb.ArquillianFactory;
 import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.BookingEntry;
+import com.kpiorecki.parking.ejb.entity.BookingStatus;
 import com.kpiorecki.parking.ejb.entity.HolidaySchedule;
 import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.Record;
@@ -215,6 +216,7 @@ public class BookingSchedulerIT {
 		Booking booking = new Booking();
 		booking.setDate(new LocalDate());
 		booking.setParking(parking);
+		booking.updateStatus(BookingStatus.DRAFT);
 		for (BookingEntry entry : entries) {
 			booking.addEntry(entry);
 		}

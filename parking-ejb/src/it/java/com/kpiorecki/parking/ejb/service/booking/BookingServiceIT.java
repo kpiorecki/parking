@@ -65,7 +65,7 @@ public class BookingServiceIT extends GreenMailIT {
 		entityManager.flush();
 
 		// when
-		LocalDate date = new DateTime().toLocalDate().plusWeeks(1);
+		LocalDate date = getBookingDate();
 		bookingService.book(parkingUuid, "login1", date);
 
 		// then
@@ -85,7 +85,7 @@ public class BookingServiceIT extends GreenMailIT {
 		entityManager.flush();
 
 		// when
-		LocalDate date = new DateTime().toLocalDate();
+		LocalDate date = getBookingDate();
 		bookingService.book(parkingUuid, "login2", date);
 
 		// then exception should be thrown - user is not assigned to parking
@@ -99,7 +99,7 @@ public class BookingServiceIT extends GreenMailIT {
 		entityManager.flush();
 
 		// when
-		LocalDate date = new DateTime().toLocalDate();
+		LocalDate date = getBookingDate();
 		bookingService.book(parkingUuid, "login", date);
 		bookingService.book(parkingUuid, "login", date);
 		entityManager.flush();
@@ -110,7 +110,7 @@ public class BookingServiceIT extends GreenMailIT {
 	@Test
 	public void shouldCancelBooking() {
 		// given
-		LocalDate date = new DateTime().toLocalDate();
+		LocalDate date = getBookingDate();
 		User user1 = testUtilities.persistUser("login1");
 		User user2 = testUtilities.persistUser("login2");
 		Parking parking = testUtilities.persistParking(user1, user2);
@@ -138,7 +138,7 @@ public class BookingServiceIT extends GreenMailIT {
 	@Test(expected = Exception.class)
 	public void shouldNotCancelNonExistingBooking() {
 		// given
-		LocalDate date = new DateTime().toLocalDate();
+		LocalDate date = getBookingDate();
 		User user1 = testUtilities.persistUser("login1");
 		User user2 = testUtilities.persistUser("login2");
 		Parking parking = testUtilities.persistParking(user1, user2);
@@ -155,7 +155,7 @@ public class BookingServiceIT extends GreenMailIT {
 	@Test
 	public void shouldReleaseBooking() {
 		// given
-		LocalDate date = new DateTime().toLocalDate();
+		LocalDate date = getBookingDate();
 		User user = testUtilities.persistUser("login");
 		Parking parking = testUtilities.persistParking(user);
 		testUtilities.persistBooking(parking, date, user);
@@ -173,7 +173,7 @@ public class BookingServiceIT extends GreenMailIT {
 	@Test(expected = Exception.class)
 	public void shouldNotReleaseBookingTwice() {
 		// given
-		LocalDate date = new DateTime().toLocalDate();
+		LocalDate date = getBookingDate();
 		User user = testUtilities.persistUser("login");
 		Parking parking = testUtilities.persistParking(user);
 		testUtilities.persistBooking(parking, date, user);
@@ -190,7 +190,7 @@ public class BookingServiceIT extends GreenMailIT {
 	@Test
 	public void shouldLockBooking() {
 		// given
-		LocalDate date = new DateTime().toLocalDate();
+		LocalDate date = getBookingDate();
 		User user1 = testUtilities.persistUser("login1");
 		User user2 = testUtilities.persistUser("login2");
 		Parking parking = testUtilities.persistParking(user1, user2);
@@ -219,7 +219,7 @@ public class BookingServiceIT extends GreenMailIT {
 		entityManager.flush();
 
 		// when
-		LocalDate startDate = new DateTime().toLocalDate();
+		LocalDate startDate = getBookingDate();
 		LocalDate endDate = startDate.plusWeeks(1);
 		bookingService.findBookings(parking.getName(), "login", startDate, endDate);
 
@@ -227,13 +227,13 @@ public class BookingServiceIT extends GreenMailIT {
 	}
 
 	@Test
-	public void shouldNotFindAllBookings() {
+	public void shouldNotFindAnyBookings() {
 		// given
 		testUtilities.persistUser("login");
 		entityManager.flush();
 
 		// when
-		LocalDate startDate = new DateTime().toLocalDate();
+		LocalDate startDate = getBookingDate();
 		LocalDate endDate = startDate.plusWeeks(1);
 		List<ParkingBookingDto> bookings = bookingService.findAllBookings("login", startDate, endDate);
 
@@ -261,7 +261,7 @@ public class BookingServiceIT extends GreenMailIT {
 		parking3.setName("p3");
 		entityManager.persist(parking3);
 
-		LocalDate startDate = new DateTime().toLocalDate();
+		LocalDate startDate = getBookingDate();
 		LocalDate endDate = startDate.plusWeeks(1);
 		LocalDate cursorDate = startDate;
 		while (cursorDate.isBefore(endDate)) {
@@ -302,5 +302,9 @@ public class BookingServiceIT extends GreenMailIT {
 		for (String login : logins) {
 			assertTrue(entries.stream().anyMatch(e -> login.equals(e.getLogin())));
 		}
+	}
+
+	private LocalDate getBookingDate() {
+		return new DateTime().toLocalDate().plusWeeks(2);
 	}
 }
