@@ -10,6 +10,8 @@
 
 	<artifactId>parking-web</artifactId>
 	<packaging>war</packaging>
+	<name>parking-web</name>
+	<url>https://github.com/kpiorecki/parking</url>
 
 	<dependencies>
 		<dependency>

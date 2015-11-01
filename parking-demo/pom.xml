@@ -11,6 +11,8 @@
 
 	<artifactId>parking-demo</artifactId>
 	<packaging>pom</packaging>
+	<name>parking-demo</name>
+	<url>https://github.com/kpiorecki/parking</url>
 
 	<profiles>
 		<profile>
