@@ -109,8 +109,12 @@ public class BookingController implements Serializable {
 		validateValue((Integer) value, DateTimeConstants.JANUARY, DateTimeConstants.DECEMBER);
 	}
 
+	public LocalDate getStartDate() {
+		return new LocalDate().withYear(year).withMonthOfYear(month).withDayOfMonth(1);
+	}
+
 	public void loadUserBookings() throws IOException {
-		LocalDate startDate = new LocalDate().withYear(year).withMonthOfYear(month).withDayOfMonth(1);
+		LocalDate startDate = getStartDate();
 		LocalDate endDate = startDate.plusMonths(1);
 		String login = externalContext.getRemoteUser();
 

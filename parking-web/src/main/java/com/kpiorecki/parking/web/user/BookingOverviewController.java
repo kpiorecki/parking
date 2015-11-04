@@ -3,9 +3,10 @@ package com.kpiorecki.parking.web.user;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import javax.enterprise.context.RequestScoped;
 import javax.faces.context.ExternalContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -20,10 +21,12 @@ import com.kpiorecki.parking.web.user.model.BookingModel;
 import com.kpiorecki.parking.web.user.model.BookingModelFactory;
 
 @Named
-@RequestScoped
+@ViewScoped
 public class BookingOverviewController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	private static final String START_DATE_SESSION_KEY = BookingOverviewController.class.getName() + "START_DATE";
 
 	@Inject
 	private Logger logger;
@@ -39,7 +42,7 @@ public class BookingOverviewController implements Serializable {
 
 	@Inject
 	@DateFormatter
-	private DateTimeFormatter dateFormatter;
+	private transient DateTimeFormatter dateFormatter;
 
 	private List<BookingModel> bookingModels;
 
@@ -48,7 +51,7 @@ public class BookingOverviewController implements Serializable {
 	}
 
 	public void loadAllUserBookings() {
-		LocalDate startDate = new LocalDate().withDayOfMonth(1);
+		LocalDate startDate = getStartDate();
 		LocalDate endDate = startDate.plusMonths(1);
 		String login = externalContext.getRemoteUser();
 
@@ -61,6 +64,39 @@ public class BookingOverviewController implements Serializable {
 			BookingModel bookingModel = bookingModelFactory.createModel(parkingBooking);
 			bookingModels.add(bookingModel);
 		}
+	}
+
+	public LocalDate getStartDate() {
+		Map<String, Object> sessionMap = externalContext.getSessionMap();
+		LocalDate startDate = (LocalDate) sessionMap.get(START_DATE_SESSION_KEY);
+		if (startDate == null) {
+			startDate = getDefaultDate();
+		}
+		return startDate;
+	}
+
+	public LocalDate getDefaultDate() {
+		return new LocalDate().withDayOfMonth(1);
+	}
+
+	public String gotoPreviousMonth() {
+		addToStartDate(-1);
+		return "pretty:";
+	}
+
+	public String gotoCurrentMonth() {
+		externalContext.getSessionMap().remove(START_DATE_SESSION_KEY);
+		return "pretty:";
+	}
+
+	public String gotoNextMonth() {
+		addToStartDate(1);
+		return "pretty:";
+	}
+
+	private void addToStartDate(int months) {
+		LocalDate newStartDate = getStartDate().plusMonths(months);
+		externalContext.getSessionMap().put(START_DATE_SESSION_KEY, newStartDate);
 	}
 
 }

@@ -3,7 +3,8 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:parking="http://xmlns.jcp.org/jsf/composite/parking">
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:parking="http://xmlns.jcp.org/jsf/composite/parking"
+	xmlns:p="http://primefaces.org/ui">
 <h:body>
 
 	<ui:define name="metadata">
@@ -19,6 +20,20 @@
 					<h:outputText value="You are not assigned to any parking" />
 				</c:when>
 				<c:otherwise>
+					<h:form>
+						<p:outputPanel styleClass="month-panel">
+							<div class="left">
+								<h:outputText value="#{bookingOverviewController.startDate}" converter="monthAndYearTextConverter"
+									styleClass="month-indicator" />
+							</div>
+							<div class="right">
+								<p:commandButton id="prevButton" value="&lt;&lt;&lt;" action="#{bookingOverviewController.gotoPreviousMonth}" />
+								<p:commandButton id="currentButton" value="Current" action="#{bookingOverviewController.gotoCurrentMonth}"
+									disabled="#{bookingOverviewController.startDate eq bookingOverviewController.defaultDate}" />
+								<p:commandButton id="nextButton" value="&gt;&gt;&gt;" action="#{bookingOverviewController.gotoNextMonth}" />
+							</div>
+						</p:outputPanel>
+					</h:form>
 					<ui:repeat value="#{bookingOverviewController.bookingModels}" var="value">
 						<parking:parking-booking bookingModel="#{value}" readonly="true" />
 						<br />

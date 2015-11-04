@@ -167,3 +167,12 @@ table {
 .parking-button {
 	width: 90px;
 }
+
+.month-indicator {
+	font-size: 20px;
+	padding-left: 10px;
+}
+
+.month-panel {
+	height: 50px;
+}
