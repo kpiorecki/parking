@@ -128,6 +128,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@RolesAllowed(Role.ADMIN)
 	public List<UserDto> findAllUsers() {
 		logger.info("finding all users");
 

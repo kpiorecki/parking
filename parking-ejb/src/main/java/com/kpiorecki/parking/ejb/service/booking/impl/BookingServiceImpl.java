@@ -115,6 +115,7 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
+	@RolesAllowed(Role.USER)
 	public void update(String parkingUuid, String login, Collection<LocalDate> bookedDates,
 			Collection<LocalDate> cancelledDates) {
 		logger.info("updating parking={} for user={} with {} booked and {} cancelled dates", parkingUuid, login,
@@ -128,6 +129,7 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
+	@RolesAllowed(Role.ADMIN)
 	public void release(String parkingUuid, LocalDate date) {
 		String message = String.format("releasing booking entries from parking=%s and date=%s", parkingUuid,
 				dateFormatter.print(date));
@@ -146,6 +148,7 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
+	@RolesAllowed(Role.ADMIN)
 	public void lock(String parkingUuid, LocalDate date) {
 		String message = String.format("locking booking entries from parking=%s and date=%s", parkingUuid,
 				dateFormatter.print(date));
