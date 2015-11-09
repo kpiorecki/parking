@@ -27,10 +27,12 @@
 									styleClass="month-indicator" />
 							</div>
 							<div class="right">
-								<p:commandButton id="prevButton" value="&lt;&lt;&lt;" action="#{bookingOverviewController.gotoPreviousMonth}" />
+								<p:commandButton id="prevButton" value="&lt;&lt;&lt;" action="#{bookingOverviewController.gotoPreviousMonth}"
+									ajax="false" />
 								<p:commandButton id="currentButton" value="Current" action="#{bookingOverviewController.gotoCurrentMonth}"
-									disabled="#{bookingOverviewController.startDate eq bookingOverviewController.defaultDate}" />
-								<p:commandButton id="nextButton" value="&gt;&gt;&gt;" action="#{bookingOverviewController.gotoNextMonth}" />
+									disabled="#{bookingOverviewController.startDate eq bookingOverviewController.defaultDate}" ajax="false" />
+								<p:commandButton id="nextButton" value="&gt;&gt;&gt;" action="#{bookingOverviewController.gotoNextMonth}"
+									ajax="false" />
 							</div>
 						</p:outputPanel>
 					</h:form>
