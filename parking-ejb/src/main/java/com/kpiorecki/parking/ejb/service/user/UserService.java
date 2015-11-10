@@ -24,5 +24,7 @@ public interface UserService {
 	UserDto findUser(String login);
 
 	List<UserDto> findAllUsers();
+	
+	void deleteOutdatedNotActivatedUsers();
 
 }

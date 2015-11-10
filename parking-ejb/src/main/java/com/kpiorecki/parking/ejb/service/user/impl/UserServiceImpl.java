@@ -3,7 +3,6 @@ package com.kpiorecki.parking.ejb.service.user.impl;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -137,7 +136,8 @@ public class UserServiceImpl implements UserService {
 		return collectionMapper.mapToArrayList(users, UserDto.class);
 	}
 
-	@Schedule(dayOfWeek = "*", hour = "3", minute = "15", persistent = false)
+	@Override
+	@RolesAllowed(Role.ADMIN)
 	public void deleteOutdatedNotActivatedUsers() {
 		logger.info("deleting outdated not activated users");
 		userDao.deleteOutdatedNotActivatedUsers();

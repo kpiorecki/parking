@@ -7,11 +7,13 @@
 	<security-role-mapping>
 		<role-name>ADMIN</role-name>
 		<group-name>ADMIN</group-name>
+		<principal-name>SYS_ADMIN</principal-name>
 	</security-role-mapping>
 
 	<security-role-mapping>
 		<role-name>USER</role-name>
 		<group-name>USER</group-name>
+		<principal-name>SYS_USER</principal-name>
 	</security-role-mapping>
 
 	<class-loader delegate="true" />
