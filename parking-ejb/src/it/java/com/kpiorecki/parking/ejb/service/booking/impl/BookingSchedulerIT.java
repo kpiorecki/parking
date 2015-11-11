@@ -15,7 +15,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
@@ -162,11 +161,9 @@ public class BookingSchedulerIT {
 
 		Booking booking = createTestCase(records, entries, 20);
 
-		// holiday schedule that marks every day as holiday
+		// holiday schedule that marks booking date as holiday
 		HolidaySchedule holidaySchedule = new HolidaySchedule();
-		for (int day = DateTimeConstants.MONDAY; day <= DateTimeConstants.SUNDAY; ++day) {
-			holidaySchedule.addDayOfWeek(day);
-		}
+		holidaySchedule.addDayOfWeek(booking.getDate().getDayOfWeek());
 		booking.getParking().setHolidaySchedule(holidaySchedule);
 
 		// when

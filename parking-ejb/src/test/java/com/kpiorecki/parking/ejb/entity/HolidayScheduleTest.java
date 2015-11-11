@@ -26,22 +26,18 @@ public class HolidayScheduleTest {
 		assertTrue(daysOfWeek.isEmpty());
 	}
 
-	@Test
-	public void shouldContainAllDaysOfWeek() {
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldNotContainAllDaysOfWeek() {
 		// given
 		HolidaySchedule schedule = new HolidaySchedule();
-		for (int day = DateTimeConstants.MONDAY; day <= DateTimeConstants.SUNDAY; ++day) {
+		for (int day = DateTimeConstants.MONDAY; day < DateTimeConstants.SUNDAY; ++day) {
 			schedule.addDayOfWeek(day);
 		}
 
 		// when
-		List<Integer> daysOfWeek = schedule.getDaysOfWeek();
+		schedule.addDayOfWeek(DateTimeConstants.SUNDAY);
 
-		// then
-		assertEquals(7, daysOfWeek.size());
-		for (int day = DateTimeConstants.MONDAY; day <= DateTimeConstants.SUNDAY; ++day) {
-			assertTrue(daysOfWeek.contains(day));
-		}
+		// then exception should be thrown
 	}
 
 	@Test

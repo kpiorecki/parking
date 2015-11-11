@@ -31,6 +31,8 @@ public class HolidaySchedule implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private static final int ALL_DAYS_OF_WEEK_MASK = 0b1111111;
+
 	public static class DateStatus {
 
 		private boolean holiday;
@@ -164,10 +166,15 @@ public class HolidaySchedule implements Serializable {
 
 	public void addDayOfWeek(int dayOfWeek) {
 		validateDayOfWeek(dayOfWeek);
-		if (dayOfWeekMask == null) {
-			dayOfWeekMask = 0;
+
+		Integer newDayOfWeekMask = dayOfWeekMask;
+		if (newDayOfWeekMask == null) {
+			newDayOfWeekMask = 0;
 		}
-		dayOfWeekMask |= getDayOfWeekMarker(dayOfWeek);
+		newDayOfWeekMask |= getDayOfWeekMarker(dayOfWeek);
+
+		validateDayOfWeekMask(newDayOfWeekMask);
+		dayOfWeekMask = newDayOfWeekMask;
 	}
 
 	public Integer getVersion() {
@@ -211,4 +218,9 @@ public class HolidaySchedule implements Serializable {
 		}
 	}
 
+	private void validateDayOfWeekMask(Integer dayOfWeekMask) {
+		if ((ALL_DAYS_OF_WEEK_MASK & dayOfWeekMask) == ALL_DAYS_OF_WEEK_MASK) {
+			throw new IllegalArgumentException("holiday schedule cannot contain all days of week");
+		}
+	}
 }
