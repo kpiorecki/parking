@@ -46,11 +46,11 @@ public class BookingScheduler {
 	@DateFormatter
 	private DateTimeFormatter dateFormatter;
 
-	public void updateSchedule(Booking booking) {
+	public void updateSchedule(Booking booking, Set<BookingEntry> previousAcceptedEntries) {
 		logger.info("updating schedule for parking={} and date={}", booking.getParking().getUuid(),
 				dateFormatter.print(booking.getDate()));
 
-		generateSchedule(booking);
+		generateSchedule(booking, previousAcceptedEntries);
 	}
 
 	public void lockSchedule(Booking booking) {
@@ -58,14 +58,13 @@ public class BookingScheduler {
 		logger.info("locking schedule for parking={} and date={}", parking.getUuid(),
 				dateFormatter.print(booking.getDate()));
 
-		List<Element> schedule = generateSchedule(booking);
+		List<Element> schedule = generateSchedule(booking, booking.getAcceptedEntries());
 		addRecordPoints(parking, schedule);
 	}
 
-	private List<Element> generateSchedule(Booking booking) {
+	private List<Element> generateSchedule(Booking booking, Set<BookingEntry> previousAcceptedEntries) {
 		Parking parking = booking.getParking();
-		Set<BookingEntry> oldAcceptedEntries = booking.getAcceptedEntries();
-		Set<BookingEntry> newAcceptedEntries = new HashSet<>();
+		Set<BookingEntry> nextAcceptedEntries = new HashSet<>();
 		List<Element> schedule = new ArrayList<>();
 
 		if (isBookingAllowed(parking, booking)) {
@@ -73,12 +72,12 @@ public class BookingScheduler {
 			Ordering<Element> ordering = Ordering.from(new ElementComparator());
 			schedule = ordering.leastOf(elements, parking.getCapacity());
 			for (Element element : schedule) {
-				newAcceptedEntries.add(element.getBookingEntry());
+				nextAcceptedEntries.add(element.getBookingEntry());
 			}
 		}
 
-		booking.acceptEntries(newAcceptedEntries);
-		fireEvents(booking, oldAcceptedEntries, newAcceptedEntries);
+		booking.acceptEntries(nextAcceptedEntries);
+		fireEvents(booking, previousAcceptedEntries, nextAcceptedEntries);
 
 		return schedule;
 	}
@@ -111,14 +110,14 @@ public class BookingScheduler {
 		return elements;
 	}
 
-	private void fireEvents(Booking booking, Set<BookingEntry> oldAcceptedEntries, Set<BookingEntry> newAcceptedEntries) {
-		SetView<BookingEntry> revokedEntries = Sets.difference(oldAcceptedEntries, newAcceptedEntries);
+	private void fireEvents(Booking booking, Set<BookingEntry> previousAcceptedEntries, Set<BookingEntry> nextAcceptedEntries) {
+		SetView<BookingEntry> revokedEntries = Sets.difference(previousAcceptedEntries, nextAcceptedEntries);
 		for (BookingEntry revokedEntry : revokedEntries) {
 			BookingEvent event = createEvent(booking, revokedEntry);
 			revokedEvent.fire(event);
 		}
 
-		SetView<BookingEntry> assignedEntries = Sets.difference(newAcceptedEntries, oldAcceptedEntries);
+		SetView<BookingEntry> assignedEntries = Sets.difference(nextAcceptedEntries, previousAcceptedEntries);
 		for (BookingEntry assignedEntry : assignedEntries) {
 			BookingEvent event = createEvent(booking, assignedEntry);
 			assignedEvent.fire(event);

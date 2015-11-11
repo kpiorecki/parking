@@ -58,7 +58,7 @@ public class BookingServiceIT extends GreenMailIT {
 	private BookingDao bookingDao;
 
 	@Test
-	public void shouldBookParking() {
+	public void shouldAcceptParkingBooking() {
 		// given
 		User user1 = testUtilities.persistUser("login1");
 		User user2 = testUtilities.persistUser("login2");
@@ -75,6 +75,11 @@ public class BookingServiceIT extends GreenMailIT {
 
 		Set<BookingEntry> acceptedEntries = booking.getAcceptedEntries();
 		assertEquals(1, acceptedEntries.size());
+
+		BookingEntry entry = acceptedEntries.iterator().next();
+		assertEquals("login1", entry.getUser().getLogin());
+
+		assertOneMailSent();
 	}
 
 	@Test(expected = Exception.class)
@@ -109,13 +114,15 @@ public class BookingServiceIT extends GreenMailIT {
 	}
 
 	@Test
-	public void shouldCancelBooking() {
+	public void shouldCancelAcceptedBooking() {
 		// given
 		LocalDate date = getBookingDate();
 		User user1 = testUtilities.persistUser("login1");
-		User user2 = testUtilities.persistUser("login2");
-		Parking parking = testUtilities.persistParking(user1, user2);
-		testUtilities.persistBooking(parking, date, user1, user2);
+		Parking parking = testUtilities.persistParking(user1);
+		Booking booking = testUtilities.createBooking(parking, date, user1);
+		booking.acceptEntries(booking.getEntries());
+
+		entityManager.persist(booking);
 		entityManager.flush();
 
 		// when
@@ -123,17 +130,12 @@ public class BookingServiceIT extends GreenMailIT {
 		bookingService.cancel(parkingUuid, "login1", date);
 
 		// then
-		Booking booking = bookingDao.find(parkingUuid, date);
-		assertEquals(parkingUuid, booking.getParking().getUuid());
+		Booking foundBooking = bookingDao.find(parkingUuid, date);
+		assertEquals(parkingUuid, foundBooking.getParking().getUuid());
 
-		Set<BookingEntry> entries = booking.getEntries();
-		assertEquals(1, entries.size());
+		assertTrue(foundBooking.getEntries().isEmpty());
 
-		BookingEntry entry = entries.iterator().next();
-		assertEquals("login2", entry.getUser().getLogin());
-
-		Set<BookingEntry> acceptedEntries = booking.getAcceptedEntries();
-		assertEquals(1, acceptedEntries.size());
+		assertOneMailSent();
 	}
 
 	@Test(expected = Exception.class)

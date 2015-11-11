@@ -88,9 +88,11 @@ public class BookingServiceImpl implements BookingService {
 		User user = userDao.load(login);
 		BookingEntry entry = new BookingEntry();
 		entry.setUser(user);
+
+		Set<BookingEntry> previousAcceptedEntries = booking.getAcceptedEntries();
 		booking.addEntry(entry);
 
-		scheduler.updateSchedule(booking);
+		scheduler.updateSchedule(booking, previousAcceptedEntries);
 		bookingDao.save(booking);
 	}
 
@@ -103,11 +105,12 @@ public class BookingServiceImpl implements BookingService {
 
 		Booking booking = bookingDao.load(parkingUuid, date);
 
+		Set<BookingEntry> previousAcceptedEntries = booking.getAcceptedEntries();
 		for (BookingEntry entry : booking.getEntries()) {
 			if (entry.getUser().getLogin().equals(login)) {
 				booking.removeEntry(entry);
 
-				scheduler.updateSchedule(booking);
+				scheduler.updateSchedule(booking, previousAcceptedEntries);
 				bookingDao.save(booking);
 				return;
 			}
@@ -152,7 +155,7 @@ public class BookingServiceImpl implements BookingService {
 
 		booking.release();
 
-		scheduler.updateSchedule(booking);
+		scheduler.updateSchedule(booking, booking.getAcceptedEntries());
 		bookingDao.save(booking);
 	}
 
