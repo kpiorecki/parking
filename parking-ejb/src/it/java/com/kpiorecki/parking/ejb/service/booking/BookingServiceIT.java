@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -240,6 +241,25 @@ public class BookingServiceIT extends GreenMailIT {
 		// then
 		assertNotNull(bookings);
 		assertTrue(bookings.isEmpty());
+	}
+
+	@Test(expected = Exception.class)
+	public void shouldNotUpdateBookings() {
+		// given
+		Set<LocalDate> bookedDates = new HashSet<>();
+		bookedDates.add(new LocalDate());
+		bookedDates.add(new LocalDate().plusDays(1));
+
+		Set<LocalDate> cancelledDates = new HashSet<>();
+		cancelledDates.add(new LocalDate());
+		cancelledDates.add(new LocalDate().minusDays(1));
+		cancelledDates.add(new LocalDate().minusDays(2));
+		cancelledDates.add(new LocalDate().minusDays(3));
+
+		// when
+		bookingService.update("parkingUuid", "login", bookedDates, cancelledDates);
+
+		// then exception should be thrown
 	}
 
 	@Test

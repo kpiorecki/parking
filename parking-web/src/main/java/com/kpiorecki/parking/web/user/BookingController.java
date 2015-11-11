@@ -2,12 +2,10 @@ package com.kpiorecki.parking.web.user;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -130,8 +128,8 @@ public class BookingController implements Serializable {
 	}
 
 	public String save() {
-		List<LocalDate> bookedDates = new ArrayList<>();
-		List<LocalDate> cancelledDates = new ArrayList<>();
+		Set<LocalDate> bookedDates = new TreeSet<>();
+		Set<LocalDate> cancelledDates = new TreeSet<>();
 
 		for (DayModel dayModel : dirtyModels) {
 			LocalDate date = dayModel.getDate();
@@ -141,8 +139,6 @@ public class BookingController implements Serializable {
 				cancelledDates.add(date);
 			}
 		}
-		Collections.sort(bookedDates);
-		Collections.sort(cancelledDates);
 
 		String login = externalContext.getRemoteUser();
 		String parkingUuid = bookingModel.getParking().getUuid();

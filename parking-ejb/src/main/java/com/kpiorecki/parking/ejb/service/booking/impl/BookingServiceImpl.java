@@ -2,13 +2,13 @@ package com.kpiorecki.parking.ejb.service.booking.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -21,6 +21,8 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
 import com.kpiorecki.parking.ejb.dao.BookingDao;
 import com.kpiorecki.parking.ejb.dao.ParkingDao;
 import com.kpiorecki.parking.ejb.dao.UserDao;
@@ -116,10 +118,17 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	@RolesAllowed(Role.USER)
-	public void update(String parkingUuid, String login, Collection<LocalDate> bookedDates,
-			Collection<LocalDate> cancelledDates) {
+	public void update(String parkingUuid, String login, Set<LocalDate> bookedDates, Set<LocalDate> cancelledDates) {
 		logger.info("updating parking={} for user={} with {} booked and {} cancelled dates", parkingUuid, login,
 				bookedDates.size(), cancelledDates.size());
+
+		SetView<LocalDate> datesIntersection = Sets.intersection(bookedDates, cancelledDates);
+		if (!datesIntersection.isEmpty()) {
+			throw new DomainException(String.format(
+					"cannot update bookings - the dates %s are requested to be booked and cancelled at the same time",
+					datesIntersection));
+		}
+
 		for (LocalDate date : bookedDates) {
 			book(parkingUuid, login, date);
 		}

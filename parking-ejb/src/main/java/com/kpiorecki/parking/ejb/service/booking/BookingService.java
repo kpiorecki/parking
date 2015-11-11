@@ -1,7 +1,7 @@
 package com.kpiorecki.parking.ejb.service.booking;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Local;
 
@@ -16,8 +16,7 @@ public interface BookingService {
 
 	void cancel(String parkingUuid, String login, LocalDate date);
 
-	void update(String parkingUuid, String login, Collection<LocalDate> bookedDates,
-			Collection<LocalDate> cancelledDates);
+	void update(String parkingUuid, String login, Set<LocalDate> bookedDates, Set<LocalDate> cancelledDates);
 
 	void release(String parkingUuid, LocalDate date);
 
