@@ -101,7 +101,12 @@ public class MailSender {
 			message.setRecipient(RecipientType.TO, address);
 			message.setFrom();
 
+			String mailLog = String.format("sending mail '%s' to %s", subject, user.getLogin());
+			logger.info(mailLog);
+
 			Transport.send(message);
+
+			logger.info("{} - finished", mailLog);
 		} catch (Exception e) {
 			throw new DomainException(String.format("could not send mail - %s", e.getMessage()), e);
 		}
