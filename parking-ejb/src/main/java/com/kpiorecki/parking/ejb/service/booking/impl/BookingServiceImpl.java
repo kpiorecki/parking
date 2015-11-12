@@ -154,8 +154,7 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		booking.release();
-
-		scheduler.updateSchedule(booking, booking.getAcceptedEntries());
+		
 		bookingDao.save(booking);
 	}
 
@@ -176,7 +175,6 @@ public class BookingServiceImpl implements BookingService {
 
 		scheduler.lockSchedule(booking);
 		bookingDao.save(booking);
-		parkingDao.save(booking.getParking());
 	}
 
 	@Override
@@ -328,8 +326,8 @@ public class BookingServiceImpl implements BookingService {
 
 	private void validateBookingDates(LocalDate startDate, LocalDate endDate) {
 		if (!endDate.isAfter(startDate)) {
-			throw new DomainException(String.format("booking endDate=%s is not after startDate=%s",
-					dateFormatter.print(endDate), dateFormatter.print(startDate)));
+			throw new DomainException(String.format("booking endDate=%s is not after startDate=%s", dateFormatter
+					.print(endDate), dateFormatter.print(startDate)));
 		}
 	}
 
