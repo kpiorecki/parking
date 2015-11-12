@@ -78,8 +78,6 @@ public class BookingServiceIT extends GreenMailIT {
 
 		BookingEntry entry = acceptedEntries.iterator().next();
 		assertEquals("login1", entry.getUser().getLogin());
-
-		assertOneMailSent();
 	}
 
 	@Test(expected = Exception.class)
@@ -134,8 +132,6 @@ public class BookingServiceIT extends GreenMailIT {
 		assertEquals(parkingUuid, foundBooking.getParking().getUuid());
 
 		assertTrue(foundBooking.getEntries().isEmpty());
-
-		assertOneMailSent();
 	}
 
 	@Test(expected = Exception.class)
