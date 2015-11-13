@@ -32,6 +32,11 @@ public abstract class GreenMailIT extends GlassFishSecuredIT {
 	public void stopGreenMail() {
 		greenMail.stop();
 	}
+	
+	protected void assertNoMailsSent() {
+		MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
+		assertTrue(receivedMessages.length == 0);
+	}
 
 	protected void assertOneMailSent() {
 		MimeMessage[] receivedMessages = greenMail.getReceivedMessages();

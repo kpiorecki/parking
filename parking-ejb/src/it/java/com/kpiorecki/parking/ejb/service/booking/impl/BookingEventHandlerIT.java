@@ -46,7 +46,7 @@ public class BookingEventHandlerIT extends GreenMailIT {
 	@Test
 	public void shouldSendAssignedEmail() {
 		// given
-		BookingEvent event = createEvent();
+		BookingEvent event = createEvent(BookingStatus.RELEASED);
 
 		// when
 		eventHandler.onAssignedEvent(event);
@@ -58,7 +58,7 @@ public class BookingEventHandlerIT extends GreenMailIT {
 	@Test
 	public void shouldSendRevokedEmail() {
 		// given
-		BookingEvent event = createEvent();
+		BookingEvent event = createEvent(BookingStatus.RELEASED);
 
 		// when
 		eventHandler.onRevokedEvent(event);
@@ -67,12 +67,25 @@ public class BookingEventHandlerIT extends GreenMailIT {
 		assertOneMailSent();
 	}
 
-	private BookingEvent createEvent() {
+	@Test
+	public void shouldNotSendEmailsInDraftStatus() {
+		// given
+		BookingEvent event = createEvent(BookingStatus.DRAFT);
+
+		// when
+		eventHandler.onAssignedEvent(event);
+		eventHandler.onRevokedEvent(event);
+
+		// then
+		assertNoMailsSent();
+	}
+
+	private BookingEvent createEvent(BookingStatus status) {
 		LocalDate date = new LocalDate(2015, 4, 10);
 		User user = testUtilities.createUser("login");
 		Parking parking = testUtilities.createParking(user);
 		Booking booking = testUtilities.createBooking(parking, date, user);
-		booking.updateStatus(BookingStatus.RELEASED);
+		booking.updateStatus(status);
 
 		BookingEvent event = new BookingEvent();
 		event.setDate(date);
