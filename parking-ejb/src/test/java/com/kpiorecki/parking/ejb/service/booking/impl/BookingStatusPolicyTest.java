@@ -1,5 +1,10 @@
 package com.kpiorecki.parking.ejb.service.booking.impl;
 
+import static org.joda.time.DateTimeConstants.MONDAY;
+import static org.joda.time.DateTimeConstants.SUNDAY;
+import static org.joda.time.DateTimeConstants.THURSDAY;
+import static org.joda.time.DateTimeConstants.TUESDAY;
+import static org.joda.time.DateTimeConstants.WEDNESDAY;
 import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedList;
@@ -7,7 +12,6 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.junit.Test;
 
 import com.kpiorecki.parking.ejb.entity.BookingStatus;
@@ -35,16 +39,25 @@ public class BookingStatusPolicyTest {
 
 	@Test
 	public void shouldGetStatusReleased() {
-		// given date is Wednesday, bookingDate is Thursday
-		DateTime date = new DateTime(2015, 5, 20, 0, 0);
-		LocalDate bookingDate = new LocalDate(2015, 5, 21);
+		// given
+		DateTime monday = new DateTime(2015, 5, 18, 0, 0);
+		DateTime wednesdayBeforeRelease = monday.withDayOfWeek(WEDNESDAY).withHourOfDay(10).withMinuteOfHour(59)
+				.withSecondOfMinute(59);
+		DateTime wednesdayAfterRelease = wednesdayBeforeRelease.plusMinutes(2);
+		LocalDate localDate = monday.toLocalDate();
 
-		// when (by default lockHour == 12)
+		// when (by default releaseHour == 11, releaseDay == WEDNESDAY)
 		List<BookingStatus> statuses = new LinkedList<>();
-		statuses.add(policy.getDefaultStatus(bookingDate, date.withHourOfDay(12)));
-		statuses.add(policy.getDefaultStatus(bookingDate, date.withHourOfDay(11).withMinuteOfHour(58)));
-		statuses.add(policy.getDefaultStatus(bookingDate, date.withDayOfMonth(18)));
-		statuses.add(policy.getDefaultStatus(bookingDate, date.withDayOfMonth(18).withTime(LocalTime.MIDNIGHT)));
+		for (int day = TUESDAY; day <= SUNDAY; ++day) {
+			statuses.add(policy.getDefaultStatus(localDate.withDayOfWeek(day), monday));
+		}
+		for (int day = THURSDAY; day <= SUNDAY; ++day) {
+			statuses.add(policy.getDefaultStatus(localDate.withDayOfWeek(day), wednesdayBeforeRelease));
+			statuses.add(policy.getDefaultStatus(localDate.withDayOfWeek(day), wednesdayAfterRelease));
+		}
+		for (int day = MONDAY; day <= SUNDAY; ++day) {
+			statuses.add(policy.getDefaultStatus(localDate.withDayOfWeek(day).plusWeeks(1), wednesdayAfterRelease));
+		}
 
 		// then
 		assertStatus(BookingStatus.RELEASED, statuses);
@@ -52,17 +65,28 @@ public class BookingStatusPolicyTest {
 
 	@Test
 	public void shouldGetStatusDraft() {
-		// given date is Wednesday, bookingDate is Thursday
-		DateTime date = new DateTime(2015, 5, 20, 0, 0);
-		LocalDate bookingDate = new LocalDate(2015, 5, 21);
+		// given
+		DateTime monday = new DateTime(2015, 5, 18, 0, 0);
+		DateTime wednesdayBeforeRelease = monday.withDayOfWeek(WEDNESDAY).withHourOfDay(10).withMinuteOfHour(59)
+				.withSecondOfMinute(59);
+		DateTime wednesdayAfterRelease = wednesdayBeforeRelease.plusMinutes(2);
+		LocalDate nextMonday = monday.toLocalDate().plusWeeks(1);
 
-		// when
+		// when (by default releaseHour == 11, releaseDay == WEDNESDAY)
 		List<BookingStatus> statuses = new LinkedList<>();
-		statuses.add(policy.getDefaultStatus(bookingDate, date.withDayOfMonth(18).withTime(LocalTime.MIDNIGHT)
-				.minusMillis(1)));
-		statuses.add(policy.getDefaultStatus(bookingDate, date.withDayOfMonth(17)));
-		statuses.add(policy.getDefaultStatus(bookingDate, date.withMonthOfYear(4).withDayOfMonth(30)));
-		statuses.add(policy.getDefaultStatus(bookingDate, date.withYear(2014)));
+		for (int day = TUESDAY; day <= SUNDAY; ++day) {
+			statuses.add(policy.getDefaultStatus(nextMonday.withDayOfWeek(day), monday));
+		}
+		for (int day = THURSDAY; day <= SUNDAY; ++day) {
+			statuses.add(policy.getDefaultStatus(nextMonday.withDayOfWeek(day), wednesdayBeforeRelease));
+		}
+		for (int day = MONDAY; day <= SUNDAY; ++day) {
+			statuses.add(policy.getDefaultStatus(nextMonday.withDayOfWeek(day).plusWeeks(1), wednesdayAfterRelease));
+		}
+
+		statuses.add(policy.getDefaultStatus(new LocalDate(2015, 7, 10), monday));
+		statuses.add(policy.getDefaultStatus(new LocalDate(2016, 1, 1), monday));
+		statuses.add(policy.getDefaultStatus(new LocalDate(2035, 9, 14), monday));
 
 		// then
 		assertStatus(BookingStatus.DRAFT, statuses);
