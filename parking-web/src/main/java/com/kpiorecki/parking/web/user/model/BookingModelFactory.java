@@ -65,6 +65,7 @@ public class BookingModelFactory {
 		dayModel.setDate(booking.getDate());
 		dayModel.setHoliday(booking.isHoliday());
 		dayModel.setNotes(booking.getNotes());
+		dayModel.setReleased(booking.getStatus() == BookingStatus.RELEASED);
 		dayModel.setLocked(booking.getStatus() == BookingStatus.LOCKED);
 		dayModel.setSelected(userEntry != null);
 		dayModel.setAccepted(userEntry != null && userEntry.getAccepted());

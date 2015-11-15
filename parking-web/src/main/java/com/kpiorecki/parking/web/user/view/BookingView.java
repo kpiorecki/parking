@@ -1,5 +1,6 @@
 package com.kpiorecki.parking.web.user.view;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -18,6 +19,7 @@ public class BookingView {
 	private static final String DAY_TEXT = "parking-day-text";
 	private static final String DAY_CAPACITY_POSITIVE = "parking-capacity-pos";
 	private static final String DAY_CAPACITY_NEGATIVE = "parking-capacity-neg";
+	private static final String DAY_CAPACITY_RELEASED = "parking-capacity-released";
 	private static final String DAY_HOLIDAY = "parking-day-holiday";
 	private static final String DAY_NOTE = "parking-day-note";
 	private static final String DAY_PAST = "parking-day-past";
@@ -38,15 +40,19 @@ public class BookingView {
 	}
 
 	public String getDayCapacityClass(DayModel model) {
+		List<String> classes = new LinkedList<>();
 		if (!model.isHoliday()) {
 			int availableCapacity = model.getAvailableCapacity();
 			if (availableCapacity > 0) {
-				return getDayClass(model, DAY_CAPACITY_POSITIVE);
+				classes.add(DAY_CAPACITY_POSITIVE);
 			} else if (availableCapacity < 0) {
-				return getDayClass(model, DAY_CAPACITY_NEGATIVE);
+				classes.add(DAY_CAPACITY_NEGATIVE);
+			}
+			if (model.isReleased()) {
+				classes.add(DAY_CAPACITY_RELEASED);
 			}
 		}
-		return getDayClass(model);
+		return getDayClass(model, classes.toArray(new String[classes.size()]));
 	}
 
 	public String getDayStatusClass(DayModel model) {

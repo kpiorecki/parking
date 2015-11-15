@@ -9,6 +9,7 @@ public class DayModel {
 	private int availableCapacity;
 	private boolean holiday;
 	private boolean selected;
+	private boolean released;
 	private boolean locked;
 	private boolean accepted;
 	private boolean rejected;
@@ -38,6 +39,14 @@ public class DayModel {
 
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+	}
+
+	public boolean isReleased() {
+		return released;
+	}
+
+	public void setReleased(boolean released) {
+		this.released = released;
 	}
 
 	public boolean isLocked() {

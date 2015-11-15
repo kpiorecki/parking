@@ -135,6 +135,12 @@ table {
 	font-weight: bold;
 }
 
+.parking-capacity-released {
+	background-image: url("#{resource['images/released-marker.png']}");
+	background-repeat: no-repeat;
+	background-position: bottom right;
+}
+
 .parking-day-holiday {
 	background-color: #FCFC9A;
 }
