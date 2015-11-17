@@ -22,6 +22,7 @@ import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 import com.kpiorecki.parking.ejb.entity.Booking;
 import com.kpiorecki.parking.ejb.entity.BookingEntry;
+import com.kpiorecki.parking.ejb.entity.BookingStatus;
 import com.kpiorecki.parking.ejb.entity.HolidaySchedule;
 import com.kpiorecki.parking.ejb.entity.HolidaySchedule.DateStatus;
 import com.kpiorecki.parking.ejb.entity.Parking;
@@ -69,7 +70,8 @@ public class BookingScheduler {
 
 		if (isBookingAllowed(parking, booking)) {
 			List<Element> elements = merge(booking.getEntries(), parking.getRecords());
-			Ordering<Element> ordering = Ordering.from(new ElementComparator());
+			ElementComparator comparator = new ElementComparator(booking.getStatus());
+			Ordering<Element> ordering = Ordering.from(comparator);
 			schedule = ordering.leastOf(elements, parking.getCapacity());
 			for (Element element : schedule) {
 				nextAcceptedEntries.add(element.getBookingEntry());
@@ -110,7 +112,8 @@ public class BookingScheduler {
 		return elements;
 	}
 
-	private void fireEvents(Booking booking, Set<BookingEntry> previousAcceptedEntries, Set<BookingEntry> nextAcceptedEntries) {
+	private void fireEvents(Booking booking, Set<BookingEntry> previousAcceptedEntries,
+			Set<BookingEntry> nextAcceptedEntries) {
 		SetView<BookingEntry> revokedEntries = Sets.difference(previousAcceptedEntries, nextAcceptedEntries);
 		for (BookingEntry revokedEntry : revokedEntries) {
 			BookingEvent event = createEvent(booking, revokedEntry);
@@ -164,6 +167,12 @@ public class BookingScheduler {
 
 	private static class ElementComparator implements Comparator<Element> {
 
+		private final BookingStatus status;
+
+		public ElementComparator(BookingStatus status) {
+			this.status = status;
+		}
+
 		@Override
 		public int compare(Element e1, Element e2) {
 			Record r1 = e1.getRecord();
@@ -171,9 +180,14 @@ public class BookingScheduler {
 
 			int result = compareVip(r1, r2);
 			if (result == 0) {
-				result = comparePoints(r1, r2);
+				BookingEntry b1 = e1.getBookingEntry();
+				BookingEntry b2 = e2.getBookingEntry();
+				result = compareAccepted(b1, b2);
 				if (result == 0) {
-					result = compareCreationTimes(e1.getBookingEntry(), e2.getBookingEntry());
+					result = comparePoints(r1, r2);
+					if (result == 0) {
+						result = compareCreationTimes(b1, b2);
+					}
 				}
 			}
 
@@ -185,6 +199,16 @@ public class BookingScheduler {
 			 * first true, then false - opposite to natural order
 			 */
 			return Boolean.compare(r2.getVip(), r1.getVip());
+		}
+
+		private int compareAccepted(BookingEntry e1, BookingEntry e2) {
+			/**
+			 * first previously accepted entries for statuses other that DRAFT
+			 */
+			if (BookingStatus.DRAFT != status) {
+				return Boolean.compare(e2.getAccepted(), e1.getAccepted());
+			}
+			return 0;
 		}
 
 		private int comparePoints(Record r1, Record r2) {

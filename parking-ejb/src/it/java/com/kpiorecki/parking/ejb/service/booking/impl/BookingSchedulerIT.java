@@ -51,7 +51,7 @@ public class BookingSchedulerIT {
 	private DateTimeFormatter dateFormatter;
 
 	@Test
-	public void shouldLockSchedule1() {
+	public void shouldLockDraftSchedule1() {
 		// given
 		List<Record> records = new ArrayList<>();
 		records.add(createRecord("u1", true, 10));
@@ -72,7 +72,7 @@ public class BookingSchedulerIT {
 	}
 
 	@Test
-	public void shouldLockSchedule2() {
+	public void shouldLockDraftSchedule2() {
 		// given
 		List<Record> records = new ArrayList<>();
 		records.add(createRecord("u1", false, 10));
@@ -97,7 +97,7 @@ public class BookingSchedulerIT {
 	}
 
 	@Test
-	public void shouldLockSchedule3() {
+	public void shouldLockDraftSchedule3() {
 		// given
 		List<Record> records = new ArrayList<>();
 		records.add(createRecord("u1", false, 10));
@@ -121,7 +121,7 @@ public class BookingSchedulerIT {
 	}
 
 	@Test
-	public void shouldLockSchedule4() {
+	public void shouldLockDraftSchedule4() {
 		// given
 		List<Record> records = new ArrayList<>();
 		records.add(createRecord("u1", false, 10));
@@ -147,7 +147,7 @@ public class BookingSchedulerIT {
 	}
 
 	@Test
-	public void shouldLockHolidaySchedule() {
+	public void shouldLockHolidayDraftSchedule() {
 		// given
 		List<Record> records = new ArrayList<>();
 		records.add(createRecord("u1", false, 10));
@@ -174,6 +174,56 @@ public class BookingSchedulerIT {
 		validatePoints(booking, "u1", 10);
 		validatePoints(booking, "u2", 12);
 		validatePoints(booking, "u3", 14);
+	}
+
+	@Test
+	public void shouldLockReleasedSchedule1() {
+		// given
+		List<Record> records = new ArrayList<>();
+		records.add(createRecord("u1", false, 10));
+		records.add(createRecord("u2", false, 12));
+		records.add(createRecord("u3", false, 14));
+
+		List<BookingEntry> entries = new ArrayList<>();
+		entries.add(createEntry("u1", 10, 4));
+		entries.add(createEntry("u2", 10, 4));
+		entries.add(createEntry("u3", 10, 4, true));
+
+		Booking booking = createTestCase(records, entries, 20, BookingStatus.RELEASED);
+
+		// when
+		scheduler.lockSchedule(booking);
+
+		// then
+		validate(booking, "u3", "u1", "u2");
+		validatePoints(booking, "u1", 11);
+		validatePoints(booking, "u2", 13);
+		validatePoints(booking, "u3", 15);
+	}
+
+	@Test
+	public void shouldLockReleasedSchedule2() {
+		// given
+		List<Record> records = new ArrayList<>();
+		records.add(createRecord("u1", false, 20));
+		records.add(createRecord("u2", false, 10));
+		records.add(createRecord("u3", true, 14));
+
+		List<BookingEntry> entries = new ArrayList<>();
+		entries.add(createEntry("u1", 9, 4, true));
+		entries.add(createEntry("u2", 9, 4));
+		entries.add(createEntry("u3", 10, 4));
+
+		Booking booking = createTestCase(records, entries, 3, BookingStatus.RELEASED);
+
+		// when
+		scheduler.lockSchedule(booking);
+
+		// then
+		validate(booking, "u3", "u1", "u2");
+		validatePoints(booking, "u1", 21);
+		validatePoints(booking, "u2", 11);
+		validatePoints(booking, "u3", 15);
 	}
 
 	private void validatePoints(Booking booking, String login, Integer expectedPoints) {
@@ -203,6 +253,10 @@ public class BookingSchedulerIT {
 	}
 
 	private Booking createTestCase(List<Record> records, List<BookingEntry> entries, int capacity) {
+		return createTestCase(records, entries, capacity, BookingStatus.DRAFT);
+	}
+
+	private Booking createTestCase(List<Record> records, List<BookingEntry> entries, int capacity, BookingStatus status) {
 		Parking parking = new Parking();
 		parking.setUuid("uuid");
 		parking.setCapacity(capacity);
@@ -213,7 +267,7 @@ public class BookingSchedulerIT {
 		Booking booking = new Booking();
 		booking.setDate(new LocalDate());
 		booking.setParking(parking);
-		booking.updateStatus(BookingStatus.DRAFT);
+		booking.updateStatus(status);
 		for (BookingEntry entry : entries) {
 			booking.addEntry(entry);
 		}
@@ -238,8 +292,13 @@ public class BookingSchedulerIT {
 	}
 
 	private BookingEntry createEntry(String login, int day, int month) {
+		return createEntry(login, day, month, false);
+	}
+
+	private BookingEntry createEntry(String login, int day, int month, boolean accepted) {
 		BookingEntry entry = createEntry(login);
 		entry.setCreationTime(new DateTime(2015, month, day, 14, 0));
+		entry.setAccepted(accepted);
 
 		return entry;
 	}
