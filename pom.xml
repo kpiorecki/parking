@@ -7,6 +7,7 @@
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>parking</name>
+	<description>Java EE 7 application supporting parking space booking</description>
 	<url>https://github.com/kpiorecki/parking</url>
 
 	<modules>
@@ -67,6 +68,7 @@
 		<javax.mail-version>1.5.2</javax.mail-version>
 		<commons-lang3-version>3.3.2</commons-lang3-version>
 		<hamcrest-core-version>1.3</hamcrest-core-version>
+		<doxia-module-markdown-version>1.6</doxia-module-markdown-version>
 
 		<!-- ejb specification version -->
 		<ejb-spec-version>3.2</ejb-spec-version>
@@ -308,6 +310,13 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
 					<version>${site-plugin-version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.doxia</groupId>
+							<artifactId>doxia-module-markdown</artifactId>
+							<version>${doxia-module-markdown-version}</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 
 				<!-- maven embedded-glassfish plugin -->

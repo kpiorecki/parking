@@ -1,0 +1,104 @@
+Deployment
+----------
+
+Parking can be deployed to any application server supporting Java EE 7. To package the project, run in parking root directory:
+
+```
+mvn clean package
+```
+
+and deploy *parking-web-${project.version}.war* file from *./parking-web/target* folder to your application server.
+
+Application server needs to provide:
+
+- Data source ```jdbc/parking``` - database schema will be created when application is first time deployed.
+- Mail session ```mail/session``` that will be used for sending emails to the users.
+- JAAS JDBC realm ```parking-realm``` for user authentication and authorization.  
+Passwords are encoded by *SHA-256* algorithm and stored as *HEX* values in table *USERS* column *PASSWORD*. User groups assignment is stored in table *USER_GROUPS*:	
+	![JAAS Schema](images/jaas-schema.jpg)		
+
+$esc.h$esc.h$esc.h Deployment to GlassFish
+
+To deploy the application to GlassFish installed in *$GF_INSTALL* directory:
+
+1. Change current directory to ```$GF_INSTALL/glassfish/bin```
+
+2. Start domain and database
+
+	```
+	asadmin start-domain  
+	asadmin start-database
+	```
+3. Create JDBC connection pool
+
+	```
+	asadmin create-jdbc-connection-pool --datasourceclassname org.apache.derby.jdbc.ClientDataSource40 --restype javax.sql.DataSource --property portNumber=1527:password=parking:user=parking:serverName=localhost:databaseName=parking-db:connectionAttributes=create\\=true parking-pool
+	```
+	Connection URL (e.g. needed by [SQuirreL SQL Client](http://squirrel-sql.sourceforge.net/)) is
+
+	```
+	jdbc:derby://localhost:1527/parking-db;create=true
+	```
+4. Create JDBC resource
+
+	```
+	asadmin create-jdbc-resource --connectionpoolid parking-pool jdbc/parking
+	```
+5. Create Mail resource  
+You need to create ```mail/session``` resource with your dedicated SMTP server configuration. If it is not available, you can still use:
+
+	- [GreenMail](http://www.icegreen.com/greenmail/) test suite. Emails will not be sent, but the application will not fail either:
+	
+	```
+	asadmin create-javamail-resource --mailhost localhost --mailuser parking --fromaddress parking\@test\.com --property mail-smtp-port=10025 mail/session
+	```
+	
+	Beside that GreenMail web application needs to be deployed - download the file [greenmail-webapp-${greenmail-version}.war](http://central.maven.org/maven2/com/icegreen/greenmail-webapp/${greenmail-version}/greenmail-webapp-${greenmail-version}.war) and invoke:
+	
+	```
+	asadmin deploy $PATH_TO_GREEN_MAIL_WAR_FILE 
+	```
+	
+	- Free SMTP server, like *Gmail*:
+  	
+	```
+	asadmin create-javamail-resource --mailhost smtp.gmail.com --mailuser $GMAIL_USERNAME --fromaddress $GMAIL_USERNAME@gmail.com --property mail-smtp-port=465:mail.smtp.auth=true:mail.smtp.password=$GMAIL_PASSWORD:mail.smtp.ssl.enable=true mail/session
+	```  
+6. Create JDBC auth-realm
+
+	```
+	asadmin create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property jaas-context=jdbcRealm:encoding=Hex:password-column=password:datasource-jndi=jdbc/parking:group-table=user_groups:charset=UTF-8:user-table=users:group-name-column=group_name:digestrealm-password-enc-algorithm=AES:digest-algorithm=SHA-256:user-name-column=login parking-realm
+	```
+
+7. **Optional step** - Configure SLF4j and Logback  
+GlassFish by default uses JUL for logging. To use SLF4j and Logback:
+
+	- Save the following jars to ```$GF_INSTALL/glassfish/lib/endorsed``` directory
+		+ [jul-to-slf4j-${slf4j-version}.jar](http://central.maven.org/maven2/org/slf4j/jul-to-slf4j/${slf4j-version}/jul-to-slf4j-${slf4j-version}.jar)
+		+ [slf4j-api-${slf4j-version}.jar](http://central.maven.org/maven2/org/slf4j/slf4j-api/${slf4j-version}/slf4j-api-${slf4j-version}.jar)
+		+ [logback-classic-${logback-version}.jar](http://central.maven.org/maven2/ch/qos/logback/logback-classic/${logback-version}/logback-classic-${logback-version}.jar)
+		+ [logback-core-${logback-version}.jar](http://central.maven.org/maven2/ch/qos/logback/logback-core/${logback-version}/logback-core-${logback-version}.jar)
+	
+	- Save the following configuration files to ```$GF_INSTALL/glassfish/domains/domain1/config``` directory
+		+ [parking-logback.xml](config/parking-logback.xml)
+		+ [parking-logging.properties](config/parking-logging.properties)
+		
+	- Add jvm-options
+	
+	```	
+	asadmin create-jvm-options -Djava.util.logging.config.file=\${com.sun.aas.instanceRoot}/config/parking-logging.properties:-Dlogback.configurationFile=\${com.sun.aas.instanceRoot}/config/parking-logback.xml
+	```
+	
+	- Restart GlassFish
+	
+	```
+	asadmin stop-domain domain1
+	asadmin start-domain
+	```
+8. Deploy parking-web module
+
+	```
+	mvn clean package
+	asadmin deploy $PARKING_DIR/parking-web/target/parking-web-${project.version}.war
+	```
+	

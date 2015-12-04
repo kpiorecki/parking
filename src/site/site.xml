@@ -1,8 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/DECORATION/1.6.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0 http://maven.apache.org/xsd/decoration-1.6.0.xsd" name="parking-ejb">
+	xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0 http://maven.apache.org/xsd/decoration-1.6.0.xsd">
+
+	<version position="right" />
+	<publishDate position="right" />
+
+	<bannerLeft>
+		<src>images/parking-banner.png</src>
+	</bannerLeft>
+
+	<skin>
+		<groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-fluido-skin</artifactId>
+		<version>1.4</version>
+	</skin>
+
+	<custom>
+		<fluidoSkin>
+			<gitHub>
+				<projectId>kpiorecki/parking</projectId>
+				<ribbonOrientation>right</ribbonOrientation>
+				<ribbonColor>gray</ribbonColor>
+			</gitHub>
+		</fluidoSkin>
+	</custom>
+
 	<body>
+		<breadcrumbs>
+			<item name="parking" href="./index.html" />
+		</breadcrumbs>
+		<menu name="Overview">
+			<item name="Introduction" href="index.html" />
+			<item name="Requirements" href="requirements.html" />
+			<item name="Building and Running" href="building_running.html" />
+			<item name="Deployment" href="deployment.html" />
+			<item name="Documentation" href="documentation.html" />
+		</menu>
 		<menu ref="modules" />
-		<menu ref="reports" />
+		<menu ref="reports" inherit="top" />
 	</body>
+
 </project>
