@@ -210,6 +210,43 @@ public class BookingServiceIT extends GreenMailIT {
 		}
 	}
 
+	@Test
+	public void shouldLockBookingsAccordingToPolicy() {
+		// given
+		LocalDate today = new LocalDate();
+		LocalDate nextWeek = today.plusWeeks(1);
+
+		LocalDate bookingDate1 = today.minusDays(1);
+		LocalDate bookingDate2 = today.minusDays(2);
+
+		User user1 = testUtilities.persistUser("login1");
+		Parking parking1 = testUtilities.persistParking(user1);
+		Parking parking2 = testUtilities.persistParking(user1);
+
+		Booking booking1 = testUtilities.createBooking(parking1, bookingDate1, user1);
+		booking1.acceptEntries(booking1.getEntries());
+
+		Booking booking2 = testUtilities.createBooking(parking2, bookingDate2, user1);
+		booking2.acceptEntries(booking2.getEntries());
+
+		Booking nextWeekBooking = testUtilities.createBooking(parking1, nextWeek, user1);
+		nextWeekBooking.acceptEntries(nextWeekBooking.getEntries());
+		nextWeekBooking.release();
+
+		entityManager.persist(booking1);
+		entityManager.persist(booking2);
+		entityManager.persist(nextWeekBooking);
+		entityManager.flush();
+
+		// when
+		bookingService.lockAccordingToPolicy();
+
+		// then
+		validateBookingStatus(parking1.getUuid(), bookingDate1, BookingStatus.LOCKED);
+		validateBookingStatus(parking2.getUuid(), bookingDate2, BookingStatus.LOCKED);
+		validateBookingStatus(parking1.getUuid(), nextWeek, BookingStatus.RELEASED);
+	}
+
 	@Test(expected = Exception.class)
 	public void shouldNotFindBookings() {
 		// given
@@ -320,6 +357,12 @@ public class BookingServiceIT extends GreenMailIT {
 		for (String login : logins) {
 			assertTrue(entries.stream().anyMatch(e -> login.equals(e.getLogin())));
 		}
+	}
+
+	private void validateBookingStatus(String parkingUuid, LocalDate date, BookingStatus status) {
+		Booking booking = bookingDao.find(parkingUuid, date);
+		assertNotNull(booking);
+		assertEquals(status, booking.getStatus());
 	}
 
 	private LocalDate getBookingDate() {

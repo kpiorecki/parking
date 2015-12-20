@@ -38,7 +38,8 @@ import com.kpiorecki.parking.ejb.jpa.BookingUpdateStatusListener;
 @NamedQueries({
 		@NamedQuery(name = "Booking.findByParkingAndDate", query = "select b from Booking b where b.parking.uuid = :parkingUuid and b.date = :date"),
 		@NamedQuery(name = "Booking.findIdsByParking", query = "select b.id from Booking b where b.parking.uuid = :parkingUuid"),
-		@NamedQuery(name = "Booking.findByDateRangeAndParkings", query = "select b from Booking b where b.date >= :startDate and b.date < :endDate and b.parking in :parkingList order by b.date") })
+		@NamedQuery(name = "Booking.findByDateRangeAndParkings", query = "select b from Booking b where b.date >= :startDate and b.date < :endDate and b.parking in :parkingList order by b.date"),
+		@NamedQuery(name = "Booking.findNotLockedUntilDate", query = "select b from Booking b where b.date <= :endDate and (b.manualStatus is null or b.manualStatus != com.kpiorecki.parking.ejb.entity.BookingStatus.LOCKED)") })
 public class Booking implements Serializable {
 
 	private static final long serialVersionUID = 1L;

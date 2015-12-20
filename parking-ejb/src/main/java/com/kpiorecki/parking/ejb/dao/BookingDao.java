@@ -71,6 +71,15 @@ public class BookingDao extends GenericDao<Long, Booking> {
 		return findQuery.getResultList();
 	}
 
+	public List<Booking> findNotLockedBookings(LocalDate endDate) {
+		logger.info("finding not locked bookings until {}", dateFormatter.print(endDate));
+
+		TypedQuery<Booking> findQuery = entityManager.createNamedQuery("Booking.findNotLockedUntilDate", Booking.class);
+		findQuery.setParameter("endDate", endDate);
+
+		return findQuery.getResultList();
+	}
+
 	private TypedQuery<Booking> createFindQuery(String parkingUuid, LocalDate date) {
 		TypedQuery<Booking> findQuery = entityManager.createNamedQuery("Booking.findByParkingAndDate", Booking.class);
 		findQuery.setParameter("parkingUuid", parkingUuid);

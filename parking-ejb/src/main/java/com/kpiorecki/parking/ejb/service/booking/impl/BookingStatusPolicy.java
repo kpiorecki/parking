@@ -45,11 +45,23 @@ public class BookingStatusPolicy {
 		}
 	}
 
+	public LocalDate getLastLockedDate(DateTime now) {
+		// last locked date is today for hours before lockTime, otherwise tomorrow
+		LocalDate today = now.toLocalDate();
+		if (now.toLocalTime().isAfter(getLockTime())) {
+			return today.plusDays(1);
+		} else {
+			return today;
+		}
+	}
+
+	public LocalTime getLockTime() {
+		return LocalTime.MIDNIGHT.withHourOfDay(lockHour);
+	}
+
 	private boolean isAfterLockDeadline(LocalDate bookingDate, DateTime now) {
 		// lock deadline is the day before date with hour set to lockHour
-		LocalTime lockTime = LocalTime.MIDNIGHT.withHourOfDay(lockHour);
-		DateTime lockDeadline = bookingDate.minusDays(1).toDateTime(lockTime);
-
+		DateTime lockDeadline = bookingDate.minusDays(1).toDateTime(getLockTime());
 		return now.isAfter(lockDeadline);
 	}
 
@@ -74,4 +86,5 @@ public class BookingStatusPolicy {
 	private LocalDate getFutureMonday(LocalDate releaseDay, int futureWeeks) {
 		return releaseDay.plusWeeks(futureWeeks).withDayOfWeek(DateTimeConstants.MONDAY);
 	}
+
 }

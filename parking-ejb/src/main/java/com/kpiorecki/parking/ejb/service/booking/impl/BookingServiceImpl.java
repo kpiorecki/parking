@@ -73,8 +73,8 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	@RolesAllowed(Role.USER)
 	public void book(String parkingUuid, String login, LocalDate date) {
-		String message = String.format("adding booking entry to parking=%s for user=%s and date=%s", parkingUuid,
-				login, dateFormatter.print(date));
+		String message = String.format("adding booking entry to parking=%s for user=%s and date=%s", parkingUuid, login,
+				dateFormatter.print(date));
 		logger.info(message);
 
 		validateUser(parkingUuid, login);
@@ -154,7 +154,7 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		booking.release();
-		
+
 		bookingDao.save(booking);
 	}
 
@@ -171,10 +171,22 @@ public class BookingServiceImpl implements BookingService {
 			return;
 		}
 
-		booking.lock();
+		lock(booking);
+	}
 
-		scheduler.lockSchedule(booking);
-		bookingDao.save(booking);
+	@Override
+	@RolesAllowed(Role.ADMIN)
+	public void lockAccordingToPolicy() {
+		logger.info("locking bookings according to status policy");
+
+		LocalDate endDate = statusPolicy.getLastLockedDate(new DateTime());
+		List<Booking> bookings = bookingDao.findNotLockedBookings(endDate);
+
+		for (Booking booking : bookings) {
+			logger.info("locking booking for parkingName={} and date={}", booking.getParking().getName(),
+					dateFormatter.print(booking.getDate()));
+			lock(booking);
+		}
 	}
 
 	@Override
@@ -197,8 +209,8 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	@RolesAllowed(Role.USER)
 	public List<ParkingBookingDto> findAllBookings(String login, LocalDate startDate, LocalDate endDate) {
-		logger.info("finding all bookings for user={}, startDate={}, endDate={}", login,
-				dateFormatter.print(startDate), dateFormatter.print(endDate));
+		logger.info("finding all bookings for user={}, startDate={}, endDate={}", login, dateFormatter.print(startDate),
+				dateFormatter.print(endDate));
 
 		validateBookingDates(startDate, endDate);
 
@@ -208,7 +220,15 @@ public class BookingServiceImpl implements BookingService {
 		return findParkingBookings(startDate, endDate, parkings);
 	}
 
-	private List<ParkingBookingDto> findParkingBookings(LocalDate startDate, LocalDate endDate, List<Parking> parkings) {
+	private void lock(Booking booking) {
+		booking.lock();
+
+		scheduler.lockSchedule(booking);
+		bookingDao.save(booking);
+	}
+
+	private List<ParkingBookingDto> findParkingBookings(LocalDate startDate, LocalDate endDate,
+			List<Parking> parkings) {
 		// find bookings for given parking list and date range
 		List<Booking> bookings = bookingDao.findBookings(startDate, endDate, parkings);
 
@@ -326,8 +346,8 @@ public class BookingServiceImpl implements BookingService {
 
 	private void validateBookingDates(LocalDate startDate, LocalDate endDate) {
 		if (!endDate.isAfter(startDate)) {
-			throw new DomainException(String.format("booking endDate=%s is not after startDate=%s", dateFormatter
-					.print(endDate), dateFormatter.print(startDate)));
+			throw new DomainException(String.format("booking endDate=%s is not after startDate=%s",
+					dateFormatter.print(endDate), dateFormatter.print(startDate)));
 		}
 	}
 

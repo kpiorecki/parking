@@ -22,6 +22,8 @@ public interface BookingService {
 
 	void lock(String parkingUuid, LocalDate date);
 
+	void lockAccordingToPolicy();
+
 	ParkingBookingDto findBookings(String parkingName, String login, LocalDate startDate, LocalDate endDate);
 
 	List<ParkingBookingDto> findAllBookings(String login, LocalDate startDate, LocalDate endDate);
