@@ -30,7 +30,7 @@ INSERT INTO holiday_schedules (UUID, DAYOFWEEKMASK, NAME, VERSION) VALUES ('2', 
 
 -- insert parkings
 INSERT INTO parkings (UUID, CAPACITY, NAME, VERSION, CITY, NUMBER, POSTALCODE, STREET, holiday_schedule_uuid)
-VALUES ('1', 10, 'Moon', 1, 'Moon City', '11', '22876', 'Neil Armstrong St.', '1');
+VALUES ('1', 1, 'Moon', 1, 'Moon City', '11', '22876', 'Neil Armstrong St.', '1');
 
 INSERT INTO parkings (UUID, CAPACITY, NAME, VERSION, CITY, NUMBER, POSTALCODE, STREET, holiday_schedule_uuid)
 VALUES ('2', 20, 'Acme', 1, 'Acme City', '7', '19885', 'Acme St.', '2');
