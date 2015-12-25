@@ -131,12 +131,12 @@ public class Booking implements Serializable {
 	}
 
 	public void release() {
-		BookingStatus.validateLowerStatus(status, RELEASED);
+		BookingStatus.validateLowerStatus(manualStatus, RELEASED);
 		setManualStatus(RELEASED);
 	}
 
 	public void lock() {
-		BookingStatus.validateLowerStatus(status, LOCKED);
+		BookingStatus.validateLowerStatus(manualStatus, LOCKED);
 		setManualStatus(LOCKED);
 	}
 

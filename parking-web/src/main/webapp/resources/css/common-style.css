@@ -31,17 +31,22 @@ table {
 
 #header {
 	height: 60px;
-	margin-bottom: 40px;
+	margin-bottom: 20px;
 	padding-top: 20px;
 	padding-bottom: 20px;
 	border-bottom: 1px solid #EEE;
 	color: #333;
 }
 
+#menubar {
+	margin-bottom: 20px;
+}
+
 #content {
 	color: #333;
 	display: inline-block;
 	width: 100%;
+	margin-top: 20px;
 }
 
 #footer {

@@ -34,12 +34,28 @@
 	</url-mapping>
 
 	<url-mapping id="user-booking">
-		<pattern value="/user/booking/#{parkingName : bookingController.parkingName}/#{year : bookingController.year}/#{month : bookingController.month}">
+		<pattern
+			value="/user/booking/#{parkingName : bookingController.parkingName}/#{year : bookingController.year}/#{month : bookingController.month}">
 			<validate index="1" validator="#{bookingController.validateYear}" />
 			<validate index="2" validator="#{bookingController.validateMonth}" />
 		</pattern>
 		<view-id value="/WEB-INF/view/user/booking.xhtml" />
 		<action onPostback="false">#{bookingController.loadUserBookings}</action>
+	</url-mapping>
+
+	<url-mapping id="user-parking">
+		<pattern value="/user/parking" />
+		<view-id value="/WEB-INF/view/user/parking.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="user-account">
+		<pattern value="/user/account" />
+		<view-id value="/WEB-INF/view/user/account.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="user-password">
+		<pattern value="/user/password" />
+		<view-id value="/WEB-INF/view/user/password.xhtml" />
 	</url-mapping>
 
 	<!-- admin pages -->
