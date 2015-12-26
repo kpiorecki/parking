@@ -2,38 +2,38 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 <ui:composition>
-
+	<c:set var="model" value="#{registerController.userModel}" />
 	<h:form autocomplete="off">
 		<p:panel id="reg-panel" header="Sign Up Now">
 			<p:messages id="messages" autoUpdate="true" showIcon="false" />
 			<h:panelGrid columns="2">
-				<h:outputLabel for="login" value="Login:" />
-				<p:inputText id="login" value="#{registerController.login}" required="true" label="Login">
+				<h:outputLabel for="login" value="#{model.labelLogin}:" />
+				<p:inputText id="login" value="#{model.login}" required="true" label="#{model.labelLogin}">
 					<f:validator validatorId="loginAvailableValidator" />
 				</p:inputText>
 
-				<h:outputLabel for="firstName" value="First Name:" />
-				<p:inputText id="firstName" value="#{registerController.firstName}" label="First name" />
+				<h:outputLabel for="firstName" value="#{model.labelFirstName}:" />
+				<p:inputText id="firstName" value="#{model.firstName}" label="#{model.labelFirstName}" />
 
-				<h:outputLabel for="lastName" value="Last Name:" />
-				<p:inputText id="lastName" value="#{registerController.lastName}" label="Last name" />
+				<h:outputLabel for="lastName" value="#{model.labelLastName}:" />
+				<p:inputText id="lastName" value="#{model.lastName}" label="#{model.labelLastName}" />
 
-				<h:outputLabel for="email" value="Email:" />
-				<p:inputText id="email" value="#{registerController.email}" required="true" label="Email" />
+				<h:outputLabel for="email" value="#{model.labelEmail}:" />
+				<p:inputText id="email" value="#{model.email}" required="true" label="#{model.labelEmail}" />
 
-				<h:outputLabel for="password1" value="Password:" />
-				<p:password id="password1" value="#{registerController.password}" required="true" label="Password" match="password2" />
+				<h:outputLabel for="password1" value="#{model.labelPassword}:" />
+				<p:password id="password1" value="#{model.password}" required="true" label="#{model.labelPassword}" match="password2" />
 
-				<h:outputLabel for="password2" value="Repat Password:" />
-				<p:password id="password2" value="#{registerController.password}" label="Repat Password" required="true" />
+				<h:outputLabel for="password2" value="#{model.labelRepeatPassword}:" />
+				<p:password id="password2" value="#{model.password}" label="#{model.labelRepeatPassword}" required="true" />
 			</h:panelGrid>
 			<h:panelGrid columns="1" styleClass="panel-grid-center">
 				<p:commandButton value="Create Account" action="#{registerController.register}" update="reg-panel" />
 			</h:panelGrid>
 		</p:panel>
-
 	</h:form>
 
 </ui:composition>
