@@ -7,7 +7,7 @@
 <h:body>
 	<ui:define name="metadata">
 		<f:metadata>
-			<f:viewAction action="#{accountController.loadUser}" />
+			<f:viewAction action="#{settingsController.loadUser}" />
 		</f:metadata>
 	</ui:define>
 
@@ -15,9 +15,9 @@
 		<ui:define name="content">
 			<div class="center">
 				<div class="center-content">
-					<c:set var="model" value="#{accountController.userModel}" />
+					<c:set var="model" value="#{settingsController.userModel}" />
 					<h:form autocomplete="off">
-						<p:panel id="account-panel" header="Account Data">
+						<p:panel id="settings-panel" header="Account Data">
 							<p:messages id="messages" autoUpdate="true" showIcon="false" />
 							<h:panelGrid columns="2">
 								<h:outputLabel for="login" value="#{model.labelLogin}:" />
@@ -33,8 +33,8 @@
 								<p:inputText id="email" value="#{model.email}" required="true" label="#{model.labelEmail}" />
 							</h:panelGrid>
 							<h:panelGrid id="buttonPanel" columns="2" styleClass="panel-grid-center">
-								<p:commandButton value="Save" action="#{accountController.saveUser}" styleClass="parking-button"
-									update="account-panel" />
+								<p:commandButton value="Save" action="#{settingsController.saveAccount}" styleClass="parking-button"
+									update="settings-panel" />
 								<p:button value="Cancel" outcome="pretty:user-home" styleClass="parking-button" />
 							</h:panelGrid>
 						</p:panel>

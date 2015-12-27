@@ -37,6 +37,8 @@ public class UserModel implements Serializable {
 
 	@Size(min = UserDto.PASSWORD_MIN_LEN, max = UserDto.PASSWORD_MAX_LEN)
 	private String password;
+	
+	private String oldPassword;
 
 	public String getLogin() {
 		return login;
@@ -78,6 +80,14 @@ public class UserModel implements Serializable {
 		this.password = password;
 	}
 
+	public String getOldPassword() {
+		return oldPassword;
+	}
+
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
+	}
+
 	public String getLabelLogin() {
 		return "Login";
 	}
@@ -100,5 +110,13 @@ public class UserModel implements Serializable {
 
 	public String getLabelRepeatPassword() {
 		return "Repeat Password";
+	}
+
+	public String getLabelOldPassword() {
+		return "Old Password";
+	}
+
+	public String getLabelNewPassword() {
+		return "New Password";
 	}
 }
