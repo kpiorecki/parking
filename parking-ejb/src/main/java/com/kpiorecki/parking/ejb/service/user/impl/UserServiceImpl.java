@@ -3,6 +3,7 @@ package com.kpiorecki.parking.ejb.service.user.impl;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -74,6 +75,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Asynchronous
 	public void registerUser(UserDto userDto, String activationUuid, String activationURL) {
 		logger.info("registering user {}, activationUuid={}, activationURL={}", userDto, activationUuid, activationURL);
 
@@ -107,6 +109,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		user.setActivationDeadline(null);
+		user.setActivationUuid(null);
 		userDao.save(user);
 
 		logger.info("activated user={} with activationUuid={}", user.getLogin(), activationUuid);
