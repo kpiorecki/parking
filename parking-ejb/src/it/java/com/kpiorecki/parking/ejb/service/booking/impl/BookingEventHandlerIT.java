@@ -21,6 +21,7 @@ import com.kpiorecki.parking.ejb.util.ApplicationSetup;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
 import com.kpiorecki.parking.ejb.util.MailSender;
 import com.kpiorecki.parking.ejb.util.ResourceProducer;
+import com.kpiorecki.parking.ejb.util.SyncMailSender;
 import com.kpiorecki.parking.ejb.util.UuidGenerator;
 
 @RunWith(Arquillian.class)
@@ -28,9 +29,9 @@ public class BookingEventHandlerIT extends GreenMailIT {
 
 	@Deployment
 	public static Archive<?> createDeployment() {
-		return ArquillianFactory.createBaseDeployment().addClasses(BookingEventHandler.class,
-				SyncBookingEventHandler.class, TestUtilities.class, ResourceProducer.class, UuidGenerator.class,
-				MailSender.class, ApplicationSetup.class);
+		return ArquillianFactory.createBaseDeployment().addClasses(BookingEventHandler.class, TestUtilities.class,
+				ResourceProducer.class, UuidGenerator.class, MailSender.class, SyncMailSender.class,
+				ApplicationSetup.class);
 	}
 
 	@Inject

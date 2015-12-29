@@ -3,7 +3,6 @@ package com.kpiorecki.parking.ejb.service.booking.impl;
 import java.security.Principal;
 import java.util.Objects;
 
-import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
@@ -32,7 +31,6 @@ public class BookingEventHandler {
 	@DateFormatter
 	private DateTimeFormatter dateFormatter;
 
-	@Asynchronous
 	public void onAssignedEvent(@Observes(during = TransactionPhase.AFTER_SUCCESS) @BookingAssigned BookingEvent event) {
 		logger.info("received assigned {}", toString(event));
 		if (shouldSendMail(event)) {
@@ -40,7 +38,6 @@ public class BookingEventHandler {
 		}
 	}
 
-	@Asynchronous
 	public void onRevokedEvent(@Observes(during = TransactionPhase.AFTER_SUCCESS) @BookingRevoked BookingEvent event) {
 		logger.info("received revoked {}", toString(event));
 		if (shouldSendMail(event)) {

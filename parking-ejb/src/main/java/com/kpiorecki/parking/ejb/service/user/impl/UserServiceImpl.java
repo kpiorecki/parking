@@ -3,7 +3,6 @@ package com.kpiorecki.parking.ejb.service.user.impl;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -44,6 +43,10 @@ public class UserServiceImpl implements UserService {
 	@Property(value = "userService.activation.deadline.days", minIntValue = 0)
 	private int activationDeadlineDays = 5;
 
+	@Inject
+	@Property(value = "userService.reset.password.hours", minIntValue = 1)
+	private int resetPasswordHours = 2;
+
 	@Override
 	@RolesAllowed(Role.USER)
 	public void modifyUser(UserDto userDto) {
@@ -75,7 +78,6 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	@Asynchronous
 	public void registerUser(UserDto userDto, String activationUuid, String activationURL) {
 		logger.info("registering user {}, activationUuid={}, activationURL={}", userDto, activationUuid, activationURL);
 
@@ -145,4 +147,26 @@ public class UserServiceImpl implements UserService {
 		logger.info("deleting outdated not activated users");
 		userDao.deleteOutdatedNotActivatedUsers();
 	}
+
+	@Override
+	public boolean requestResetPassword(String login, String resetPasswordUuid, String resetPasswordURL) {
+		logger.info("requesting reset password for user={}, resetPasswordUuid={}, resetPasswordURL={}", login,
+				resetPasswordUuid, resetPasswordURL);
+
+		User user = userDao.find(login);
+		if (user == null) {
+			logger.warn("did not find user={} to request reset password", login);
+			return false;
+		}
+
+		DateTime resetPasswordDeadline = new DateTime().plusHours(resetPasswordHours);
+		user.setResetPasswordDeadline(resetPasswordDeadline);
+		user.setResetPasswordUuid(resetPasswordUuid);
+		userDao.save(user);
+
+		mailSender.sendResetPasswordMail(user, resetPasswordURL, resetPasswordHours);
+
+		return true;
+	}
+
 }

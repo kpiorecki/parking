@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.Message.RecipientType;
@@ -52,14 +53,16 @@ public class MailSender {
 	@Inject
 	private Session mailSession;
 
+	@Asynchronous
 	public void sendBookingAssignedMail(User user, Parking parking, LocalDate date) {
 		String dateString = dateFormatter.print(date);
 		String subject = String.format("Booking assigned for parking %s on %s", parking.getName(), dateString);
-		logger.info("sending booking assigned mail to user={}, parking={}, date={}", user.getLogin(),
-				parking.getName(), dateString);
+		logger.info("sending booking assigned mail to user={}, parking={}, date={}", user.getLogin(), parking.getName(),
+				dateString);
 		sendBookingMail(user, subject, "booking-assigned.ftl", parking, date, Image.BOOKING_ASSIGNED);
 	}
 
+	@Asynchronous
 	public void sendBookingRevokedMail(User user, Parking parking, LocalDate date) {
 		String dateString = dateFormatter.print(date);
 		String subject = String.format("Booking revoked from parking %s on %s", parking.getName(), dateString);
@@ -68,6 +71,7 @@ public class MailSender {
 		sendBookingMail(user, subject, "booking-revoked.ftl", parking, date, Image.BOOKING_REVOKED);
 	}
 
+	@Asynchronous
 	public void sendRegisterMail(User user, String activationURL, DateTime activationDeadline) {
 		logger.info("sending register mail to user={}, activationURL={}, activationDeadline={}", user.getLogin(),
 				activationURL, dateFormatter.print(activationDeadline));
@@ -78,6 +82,18 @@ public class MailSender {
 
 		sendMail(user, "Parking - confirm registration", "register-confirm.ftl", templateParameters,
 				Image.REGISTER_CONFIRM);
+	}
+
+	@Asynchronous
+	public void sendResetPasswordMail(User user, String resetPasswordURL, int validityHours) {
+		logger.info("sending reset password mail to user={}, resetPasswordURL={}, validityHours={}", user.getLogin(),
+				resetPasswordURL, validityHours);
+
+		Map<String, Object> templateParameters = new HashMap<>();
+		templateParameters.put("resetPasswordURL", resetPasswordURL);
+		templateParameters.put("validityHours", validityHours);
+
+		sendMail(user, "Parking - reset password", "reset-password.ftl", templateParameters, Image.RESET_PASSWORD);
 	}
 
 	private void sendBookingMail(User user, String subject, String templateFile, Parking parking, LocalDate date,
@@ -171,5 +187,4 @@ public class MailSender {
 			return firstName;
 		}
 	}
-
 }

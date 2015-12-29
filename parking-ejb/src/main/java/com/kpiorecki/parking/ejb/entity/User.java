@@ -29,8 +29,7 @@ import com.kpiorecki.parking.ejb.util.UuidGenerator;
 @Entity
 @Cacheable
 @Table(name = "users")
-@NamedQueries({
-		@NamedQuery(name = "User.findLoginCount", query = "select count(u) from User u where u.login = :login"),
+@NamedQueries({ @NamedQuery(name = "User.findLoginCount", query = "select count(u) from User u where u.login = :login"),
 		@NamedQuery(name = "User.findOutdatedNotActivatedUsers", query = "select u.login from User u where u.activationDeadline > :dateTime"),
 		@NamedQuery(name = "User.findUserToActivate", query = "select u from User u where u.activationUuid = :activationUuid") })
 public class User extends ArchivableEntity implements Serializable {
@@ -60,9 +59,15 @@ public class User extends ArchivableEntity implements Serializable {
 	@Column
 	private DateTime activationDeadline;
 
+	@Column(unique = true, length = UuidGenerator.UUID_LENGTH)
+	private String resetPasswordUuid;
+
+	@Column
+	private DateTime resetPasswordDeadline;
+
 	@ElementCollection
-	@CollectionTable(name = "user_groups", joinColumns = @JoinColumn(name = "login"), uniqueConstraints = @UniqueConstraint(columnNames = {
-			"login", "group_name" }))
+	@CollectionTable(name = "user_groups", joinColumns = @JoinColumn(name = "login") , uniqueConstraints = @UniqueConstraint(columnNames = {
+			"login", "group_name" }) )
 	@Column(name = "group_name", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Set<UserGroup> groups = new HashSet<>();
@@ -124,6 +129,22 @@ public class User extends ArchivableEntity implements Serializable {
 
 	public void setActivationDeadline(DateTime activationDeadline) {
 		this.activationDeadline = activationDeadline;
+	}
+
+	public String getResetPasswordUuid() {
+		return resetPasswordUuid;
+	}
+
+	public void setResetPasswordUuid(String resetPasswordUuid) {
+		this.resetPasswordUuid = resetPasswordUuid;
+	}
+
+	public DateTime getResetPasswordDeadline() {
+		return resetPasswordDeadline;
+	}
+
+	public void setResetPasswordDeadline(DateTime resetPasswordDeadline) {
+		this.resetPasswordDeadline = resetPasswordDeadline;
 	}
 
 	public Set<UserGroup> getGroups() {

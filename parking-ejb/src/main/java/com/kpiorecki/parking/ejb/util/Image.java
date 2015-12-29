@@ -5,6 +5,7 @@ public enum Image {
 	BOOKING_ASSIGNED("booking-assigned.png", "image/png", 100, 100),
 	BOOKING_REVOKED("booking-revoked.png", "image/png", 100, 100),
 	REGISTER_CONFIRM("register-confirm.png", "image/png", 100, 100),
+	RESET_PASSWORD("reset-password.png", "image/png", 100, 100),
 	PARKING_LOGO("parking-logo.png", "image/png", 80, 61);
 
 	private final String fileName;

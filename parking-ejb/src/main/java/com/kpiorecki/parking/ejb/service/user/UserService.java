@@ -26,5 +26,7 @@ public interface UserService {
 	List<UserDto> findAllUsers();
 	
 	void deleteOutdatedNotActivatedUsers();
-
+	
+	boolean requestResetPassword(String login, String resetPasswordUuid, String resetPasswordURL);
+	
 }

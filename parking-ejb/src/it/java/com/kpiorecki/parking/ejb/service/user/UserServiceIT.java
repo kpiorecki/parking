@@ -247,4 +247,24 @@ public class UserServiceIT extends GreenMailIT {
 		// then
 		assertNull(activatedUser);
 	}
+
+	@Test
+	public void shouldRequestResetPassword() {
+		// given
+		String resetPasswordUuid = "uuid";
+		String resetPasswordURL = "http://localhost:8080/reset/" + resetPasswordUuid;
+		testUtilities.persistUser("login");
+		entityManager.flush();
+
+		// when
+		userService.requestResetPassword("login", resetPasswordUuid, resetPasswordURL);
+
+		// then
+		User user = userDao.find("login");
+		assertNotNull(user);
+		assertNotNull(user.getResetPasswordDeadline());
+		assertEquals(resetPasswordUuid, user.getResetPasswordUuid());
+
+		assertOneMailSent();
+	}
 }
