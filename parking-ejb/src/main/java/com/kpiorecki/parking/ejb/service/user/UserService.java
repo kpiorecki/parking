@@ -24,9 +24,13 @@ public interface UserService {
 	UserDto findUser(String login);
 
 	List<UserDto> findAllUsers();
-	
+
 	void deleteOutdatedNotActivatedUsers();
-	
+
 	boolean requestResetPassword(String login, String resetPasswordUuid, String resetPasswordURL);
-	
+
+	String loadResetPasswordLogin(String resetPasswordUuid);
+
+	boolean resetPassword(String login, String password);
+
 }

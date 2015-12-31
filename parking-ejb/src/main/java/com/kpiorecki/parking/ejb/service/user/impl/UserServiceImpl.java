@@ -15,6 +15,7 @@ import com.kpiorecki.parking.ejb.dao.UserDao;
 import com.kpiorecki.parking.ejb.dto.UserDto;
 import com.kpiorecki.parking.ejb.entity.User;
 import com.kpiorecki.parking.ejb.entity.UserGroup;
+import com.kpiorecki.parking.ejb.entity.User_;
 import com.kpiorecki.parking.ejb.service.user.UserService;
 import com.kpiorecki.parking.ejb.util.CollectionMapper;
 import com.kpiorecki.parking.ejb.util.MailSender;
@@ -166,6 +167,55 @@ public class UserServiceImpl implements UserService {
 
 		mailSender.sendResetPasswordMail(user, resetPasswordURL, resetPasswordHours);
 
+		return true;
+	}
+
+	@Override
+	public String loadResetPasswordLogin(String resetPasswordUuid) {
+		logger.info("loading reset password login for resetPasswordUuid={}", resetPasswordUuid);
+
+		List<User> users = userDao.find(User_.resetPasswordUuid, resetPasswordUuid);
+		if (users.isEmpty()) {
+			logger.warn("did not find user with resetPasswordUuid={}", resetPasswordUuid);
+			return null;
+		}
+
+		User user = users.get(0);
+		if (!validateResetPasswordDeadline(user)) {
+			return null;
+		}
+
+		return user.getLogin();
+	}
+
+	@Override
+	public boolean resetPassword(String login, String password) {
+		logger.info("resetting user={} password", login);
+
+		User user = userDao.load(login);
+		if (!validateResetPasswordDeadline(user)) {
+			return false;
+		}
+
+		user.setPassword(password);
+		user.setResetPasswordUuid(null);
+		user.setResetPasswordDeadline(null);
+		userDao.save(user);
+
+		return true;
+	}
+
+	private boolean validateResetPasswordDeadline(User user) {
+		DateTime now = new DateTime();
+		if (now.isAfter(user.getResetPasswordDeadline())) {
+			logger.warn("user={} reset password deadline is invalid", user.getLogin());
+
+			user.setResetPasswordUuid(null);
+			user.setResetPasswordDeadline(null);
+			userDao.save(user);
+
+			return false;
+		}
 		return true;
 	}
 

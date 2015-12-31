@@ -267,4 +267,62 @@ public class UserServiceIT extends GreenMailIT {
 
 		assertOneMailSent();
 	}
+
+	@Test
+	public void shouldLoadResetPasswordLogin() {
+		// given
+		String resetPasswordUuid = "uuid";
+		User user = testUtilities.createUser("login");
+		user.setResetPasswordUuid(resetPasswordUuid);
+		user.setResetPasswordDeadline(new DateTime().plusDays(1));
+
+		entityManager.persist(user);
+		entityManager.flush();
+
+		// when
+		String login = userService.loadResetPasswordLogin(resetPasswordUuid);
+
+		// then
+		assertEquals("login", login);
+	}
+
+	@Test
+	public void shouldNotLoadResetPasswordLogin() {
+		// given
+		String resetPasswordUuid = "uuid";
+		User user = testUtilities.createUser("login");
+		user.setResetPasswordUuid(resetPasswordUuid);
+		user.setResetPasswordDeadline(new DateTime().minusDays(1));
+
+		entityManager.persist(user);
+		entityManager.flush();
+
+		// when
+		String login = userService.loadResetPasswordLogin(resetPasswordUuid);
+
+		// then
+		assertNull(login);
+	}
+
+	@Test
+	public void shouldResetPassword() {
+		// given
+		String newPassword = "new password";
+
+		User user = testUtilities.createUser("login");
+		user.setResetPasswordUuid("uuid");
+		user.setResetPasswordDeadline(new DateTime().plusDays(1));
+
+		entityManager.persist(user);
+		entityManager.flush();
+
+		// when
+		boolean result = userService.resetPassword("login", newPassword);
+		entityManager.flush();
+
+		// then
+		assertTrue(result);
+		User foundUser = userDao.find("login");
+		assertEquals(newPassword, foundUser.getPassword());
+	}
 }

@@ -6,7 +6,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import org.joda.time.DateTime;
 
-@Generated(value="Dali", date="2015-12-29T23:07:21.640+0100")
+@Generated(value="Dali", date="2015-12-31T14:56:57.950+0100")
 @StaticMetamodel(User.class)
 public class User_ extends ArchivableEntity_ {
 	public static volatile SingularAttribute<User, String> login;
@@ -16,8 +16,8 @@ public class User_ extends ArchivableEntity_ {
 	public static volatile SingularAttribute<User, String> password;
 	public static volatile SingularAttribute<User, String> activationUuid;
 	public static volatile SingularAttribute<User, DateTime> activationDeadline;
-	public static volatile SetAttribute<User, UserGroup> groups;
-	public static volatile SingularAttribute<User, Integer> version;
 	public static volatile SingularAttribute<User, String> resetPasswordUuid;
 	public static volatile SingularAttribute<User, DateTime> resetPasswordDeadline;
+	public static volatile SetAttribute<User, UserGroup> groups;
+	public static volatile SingularAttribute<User, Integer> version;
 }
