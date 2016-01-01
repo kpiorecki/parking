@@ -21,7 +21,7 @@ table {
 
 /* prime faces widgets should be smaller than default */
 .ui-widget {
-	font-size: 90%;
+	font-size: 0.9em;
 }
 
 #page {
@@ -186,4 +186,14 @@ table {
 
 .month-panel {
 	height: 50px;
+}
+
+.forgot-password-link-panel {
+	text-align: right;
+	padding: 0px 10px 10px;
+}
+
+.forgot-password-link-panel .ui-link {
+	text-decoration: none;
+	font-size: 0.9em;
 }

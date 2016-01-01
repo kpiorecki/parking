@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 
 import com.kpiorecki.parking.ejb.dto.UserDto;
 import com.kpiorecki.parking.ejb.service.user.UserService;
-import com.kpiorecki.parking.web.util.URLEncoder;
+import com.kpiorecki.parking.web.util.WebUtil;
 
 @Named
 @RequestScoped
@@ -27,10 +27,7 @@ public class ActivationController implements Serializable {
 	private UserService userService;
 
 	@Inject
-	private URLEncoder urlEncoder;
-
-	@Inject
-	private MessageController messageController;
+	private WebUtil webUtil;
 
 	@Inject
 	private AuthController authController;
@@ -61,7 +58,7 @@ public class ActivationController implements Serializable {
 	public String activate() throws IOException {
 		logger.info("activating user with parameter={}", encodedActivationUuid);
 
-		String activationUuid = urlEncoder.decode(encodedActivationUuid);
+		String activationUuid = webUtil.decode(encodedActivationUuid);
 		if (activationUuid != null) {
 			UserDto user = userService.activateUser(activationUuid);
 			if (user != null) {
@@ -75,7 +72,6 @@ public class ActivationController implements Serializable {
 			}
 		}
 
-		messageController.setMessageId("activation-wrong-param");
-		return "/WEB-INF/view/message.xhtml";
+		return webUtil.navigateToMessage("activation-wrong-param");
 	}
 }

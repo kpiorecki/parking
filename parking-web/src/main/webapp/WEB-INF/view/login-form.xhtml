@@ -12,6 +12,7 @@
 			<h:form autocomplete="off">
 				<p:panel id="login-panel" header="Please login">
 					<p:messages id="messages" autoUpdate="true" showIcon="false" />
+
 					<h:panelGrid columns="2">
 						<h:outputLabel for="login" value="Login:" />
 						<p:inputText id="login" value="#{authController.login}" required="true" label="Login" />
@@ -19,8 +20,14 @@
 						<h:outputLabel for="password" value="Password:" />
 						<p:password id="password" value="#{authController.password}" required="true" label="Password" />
 					</h:panelGrid>
-					<h:panelGrid columns="1" styleClass="panel-grid-center">
-						<p:commandButton value="Login" action="#{authController.login}" update="login-panel" />
+
+					<p:outputPanel class="forgot-password-link-panel">
+						<p:link outcome="pretty:forgot-password" value="Forgot password?" />
+					</p:outputPanel>
+
+					<h:panelGrid columns="2" styleClass="panel-grid-center">
+						<p:commandButton value="Login" action="#{authController.login}" update="login-panel" styleClass="parking-button" />
+						<p:button value="Cancel" outcome="pretty:index" styleClass="parking-button" />
 					</h:panelGrid>
 				</p:panel>
 			</h:form>

@@ -27,6 +27,17 @@
 		<action onPostback="false">#{activationController.activate}</action>
 	</url-mapping>
 
+	<url-mapping id="forgot-password">
+		<pattern value="/forgot-password" />
+		<view-id value="/WEB-INF/view/forgot-password.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="reset-password">
+		<pattern value="/reset-password/#{encodedResetPasswordUuid : resetPasswordController.encodedResetPasswordUuid}" />
+		<view-id value="/WEB-INF/view/reset-password.xhtml" />
+		<action onPostback="false">#{resetPasswordController.processResetRequest}</action>
+	</url-mapping>
+	
 	<!-- user pages -->
 	<url-mapping id="user-home">
 		<pattern value="/user" />

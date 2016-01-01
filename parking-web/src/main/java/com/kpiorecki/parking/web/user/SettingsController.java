@@ -16,8 +16,8 @@ import org.slf4j.Logger;
 import com.kpiorecki.parking.ejb.dto.UserDto;
 import com.kpiorecki.parking.ejb.service.user.UserService;
 import com.kpiorecki.parking.ejb.service.user.impl.UserPasswordEncoder;
-import com.kpiorecki.parking.web.MessageController;
 import com.kpiorecki.parking.web.user.model.UserModel;
+import com.kpiorecki.parking.web.util.WebUtil;
 
 @Named
 @ViewScoped
@@ -38,7 +38,7 @@ public class SettingsController implements Serializable {
 	private UserPasswordEncoder passwordEncoder;
 
 	@Inject
-	private MessageController messageController;
+	private WebUtil webUtil;
 
 	private UserModel userModel;
 
@@ -87,8 +87,7 @@ public class SettingsController implements Serializable {
 		logger.info("saving user={}", user);
 		userService.modifyUser(user);
 
-		messageController.setMessageId(messageId);
-		return "/WEB-INF/view/message.xhtml";
+		return webUtil.navigateToMessage(messageId);
 	}
 
 }
