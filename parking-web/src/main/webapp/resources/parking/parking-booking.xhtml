@@ -8,15 +8,17 @@
 <composite:interface>
 	<composite:attribute name="bookingModel" required="true" />
 	<composite:attribute name="readonly" required="true" />
+	<composite:attribute name="parkingPanelClass" required="false" />
 </composite:interface>
 
 <composite:implementation>
 	<c:set var="bookingModel" value="#{cc.attrs.bookingModel}" />
 	<c:set var="readonly" value="#{cc.attrs.readonly}" />
 	<c:set var="startDate" value="#{bookingModel.dayModels[0].date}" />
+	<c:set var="parkingPanelClass" value="#{cc.attrs.parkingPanelClass}" />
 	
     <h:form id="bookingForm">
-		<p:panel header="#{bookingModel.parking.name}" class="parking-panel">
+		<p:panel header="#{bookingModel.parking.name}" class="parking-panel #{parkingPanelClass}">
 			<table class="parking-booking">
 				<tbody>
 					<tr>
@@ -39,11 +41,11 @@
 								<h:outputText id="dateId" value="#{model.date}" converter="dayShortTextConverter" />
 								<p:tooltip for="dateId" rendered="#{not empty model.notes}">
 									<h:outputText class="parking-tooltip-title" value="Notes"/>
-									<br/>
-									<ui:repeat value="#{model.notes}" var="note">
-										<br/>
-										<h:outputText value="#{note}" />
-									</ui:repeat>
+									<ul class="no-bullet-list">
+										<ui:repeat value="#{model.notes}" var="note">
+											<li><h:outputText value="#{note}" /></li>
+										</ui:repeat>
+									</ul>
 								</p:tooltip>
 							</td>
 						</ui:repeat>
@@ -68,7 +70,7 @@
 							<ui:repeat value="#{bookingModel.dayModels}" var="model">
 								<td class="#{bookingView.getDayEditClass(model)}">
 									<p:selectBooleanCheckbox value="#{model.selected}" rendered="#{(not model.holiday) and (not model.locked)}">
-											<p:ajax listener="#{bookingController.updateDirty(model)}" update=":#{cc.clientId}:bookingForm:buttonPanel"/>
+										<p:ajax listener="#{bookingController.updateDirty(model)}" update=":#{cc.clientId}:bookingForm:buttonPanel"/>
 									</p:selectBooleanCheckbox>
 									<h:graphicImage library="images" name="parking-locked.png" width="24" height="24" rendered="#{(not model.holiday) and model.locked}" />
 								</td>

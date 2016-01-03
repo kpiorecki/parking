@@ -17,7 +17,7 @@
 		<ui:define name="content">
 			<c:choose>
 				<c:when test="#{empty bookingOverviewController.bookingModels}">
-					<h:outputText value="You are not assigned to any parking" />
+					<h:outputText value="You are not assigned to any parking" styleClass="info-label" />
 				</c:when>
 				<c:otherwise>
 					<h:form>
@@ -36,10 +36,9 @@
 							</div>
 						</p:outputPanel>
 					</h:form>
-					<ui:repeat value="#{bookingOverviewController.bookingModels}" var="value">
-						<parking:parking-booking bookingModel="#{value}" readonly="true" />
-						<br />
-						<br />
+					<ui:repeat value="#{bookingOverviewController.bookingModels}" var="value" varStatus="status">
+						<parking:parking-booking bookingModel="#{value}" readonly="true"
+							parkingPanelClass="#{status.first ? '' : 'spacer-top'}" />
 					</ui:repeat>
 				</c:otherwise>
 			</c:choose>
