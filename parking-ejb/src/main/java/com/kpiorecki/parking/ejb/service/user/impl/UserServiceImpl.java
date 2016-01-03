@@ -144,9 +144,9 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@RolesAllowed(Role.ADMIN)
-	public void deleteOutdatedNotActivatedUsers() {
-		logger.info("deleting outdated not activated users");
-		userDao.deleteOutdatedNotActivatedUsers();
+	public void deleteExpiredUsers() {
+		logger.info("deleting expired not activated users");
+		userDao.deleteExpiredUsers();
 	}
 
 	@Override
@@ -171,9 +171,32 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String loadResetPasswordLogin(String resetPasswordUuid) {
-		logger.info("loading reset password login for resetPasswordUuid={}", resetPasswordUuid);
+	public boolean isResetPasswordValid(String resetPasswordUuid) {
+		logger.info("validating resetPasswordUuid={}", resetPasswordUuid);
 
+		return findResetPasswordUser(resetPasswordUuid) != null;
+	}
+
+	@Override
+	public boolean resetPassword(String resetPasswordUuid, String password) {
+		logger.info("resetting password for resetPasswordUuid={}", resetPasswordUuid);
+
+		User user = findResetPasswordUser(resetPasswordUuid);
+		if (user == null) {
+			return false;
+		}
+
+		user.setPassword(password);
+		user.setResetPasswordUuid(null);
+		user.setResetPasswordDeadline(null);
+
+		logger.info("saving user={} with reset password for resetPasswordUuid={}", user.getLogin(), resetPasswordUuid);
+		userDao.save(user);
+
+		return true;
+	}
+
+	private User findResetPasswordUser(String resetPasswordUuid) {
 		List<User> users = userDao.find(User_.resetPasswordUuid, resetPasswordUuid);
 		if (users.isEmpty()) {
 			logger.warn("did not find user with resetPasswordUuid={}", resetPasswordUuid);
@@ -181,42 +204,12 @@ public class UserServiceImpl implements UserService {
 		}
 
 		User user = users.get(0);
-		if (!validateResetPasswordDeadline(user)) {
+		DateTime now = new DateTime();
+		if (now.isAfter(user.getResetPasswordDeadline())) {
+			logger.warn("resetPasswordUuid={} for user={} has expired", resetPasswordUuid, user.getLogin());
 			return null;
 		}
 
-		return user.getLogin();
+		return user;
 	}
-
-	@Override
-	public boolean resetPassword(String login, String password) {
-		logger.info("resetting user={} password", login);
-
-		User user = userDao.load(login);
-		if (!validateResetPasswordDeadline(user)) {
-			return false;
-		}
-
-		user.setPassword(password);
-		user.setResetPasswordUuid(null);
-		user.setResetPasswordDeadline(null);
-		userDao.save(user);
-
-		return true;
-	}
-
-	private boolean validateResetPasswordDeadline(User user) {
-		DateTime now = new DateTime();
-		if (now.isAfter(user.getResetPasswordDeadline())) {
-			logger.warn("user={} reset password deadline is invalid", user.getLogin());
-
-			user.setResetPasswordUuid(null);
-			user.setResetPasswordDeadline(null);
-			userDao.save(user);
-
-			return false;
-		}
-		return true;
-	}
-
 }

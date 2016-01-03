@@ -169,6 +169,32 @@ public class UserServiceIT extends GreenMailIT {
 		assertTrue(user2Assigned);
 	}
 
+	@Test
+	public void shouldDeleteExpiredUsers() {
+		// given
+		testUtilities.persistUser("regularUser");
+
+		User naUser1 = testUtilities.createUser("notActiveUser1");
+		naUser1.setActivationDeadline(new DateTime().plusDays(-1));
+		naUser1.setActivationUuid("uuid1");
+		entityManager.persist(naUser1);
+
+		User naUser2 = testUtilities.createUser("notActiveUser2");
+		naUser2.setActivationDeadline(new DateTime().plusDays(1));
+		naUser2.setActivationUuid("uuid2");
+		entityManager.persist(naUser2);
+
+		entityManager.flush();
+
+		// when
+		userService.deleteExpiredUsers();
+
+		// then
+		assertNotNull(entityManager.find(User.class, "regularUser"));
+		assertNotNull(entityManager.find(User.class, "notActiveUser1"));
+		assertNull(entityManager.find(User.class, "notActiveUser2"));
+	}
+
 	@Test(expected = Exception.class)
 	public void shouldNotDeleteNonExistingUser() {
 		// when
@@ -269,7 +295,7 @@ public class UserServiceIT extends GreenMailIT {
 	}
 
 	@Test
-	public void shouldLoadResetPasswordLogin() {
+	public void shouldValidateResetPassword() {
 		// given
 		String resetPasswordUuid = "uuid";
 		User user = testUtilities.createUser("login");
@@ -280,14 +306,14 @@ public class UserServiceIT extends GreenMailIT {
 		entityManager.flush();
 
 		// when
-		String login = userService.loadResetPasswordLogin(resetPasswordUuid);
+		boolean valid = userService.isResetPasswordValid(resetPasswordUuid);
 
 		// then
-		assertEquals("login", login);
+		assertTrue(valid);
 	}
 
 	@Test
-	public void shouldNotLoadResetPasswordLogin() {
+	public void shouldNotValidateResetPassword() {
 		// given
 		String resetPasswordUuid = "uuid";
 		User user = testUtilities.createUser("login");
@@ -298,26 +324,27 @@ public class UserServiceIT extends GreenMailIT {
 		entityManager.flush();
 
 		// when
-		String login = userService.loadResetPasswordLogin(resetPasswordUuid);
+		boolean valid = userService.isResetPasswordValid(resetPasswordUuid);
 
 		// then
-		assertNull(login);
+		assertFalse(valid);
 	}
 
 	@Test
 	public void shouldResetPassword() {
 		// given
 		String newPassword = "new password";
+		String resetPasswordUuid = "uuid";
 
 		User user = testUtilities.createUser("login");
-		user.setResetPasswordUuid("uuid");
+		user.setResetPasswordUuid(resetPasswordUuid);
 		user.setResetPasswordDeadline(new DateTime().plusDays(1));
 
 		entityManager.persist(user);
 		entityManager.flush();
 
 		// when
-		boolean result = userService.resetPassword("login", newPassword);
+		boolean result = userService.resetPassword(resetPasswordUuid, newPassword);
 		entityManager.flush();
 
 		// then

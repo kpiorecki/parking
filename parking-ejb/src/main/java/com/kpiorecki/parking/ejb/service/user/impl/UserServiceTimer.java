@@ -56,7 +56,7 @@ public class UserServiceTimer {
 
 	@Timeout
 	void onTimeout() {
-		logger.info("triggering user service 'deleteOutdatedNotActivatedUsers' method");
-		userService.deleteOutdatedNotActivatedUsers();
+		logger.info("triggering user service 'deleteExpiredUsers' method");
+		userService.deleteExpiredUsers();
 	}
 }

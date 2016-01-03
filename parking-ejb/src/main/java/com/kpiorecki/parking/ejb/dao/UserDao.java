@@ -57,11 +57,11 @@ public class UserDao extends ArchivableDao<String, User> {
 		return result.longValue() == 0;
 	}
 
-	public void deleteOutdatedNotActivatedUsers() {
-		logger.info("finding outdated not activated users to delete");
+	public void deleteExpiredUsers() {
+		logger.info("finding expired not activated users to delete");
 		DateTime dateTime = new DateTime();
 
-		TypedQuery<String> query = entityManager.createNamedQuery("User.findOutdatedNotActivatedUsers", String.class);
+		TypedQuery<String> query = entityManager.createNamedQuery("User.findExpiredNotActivatedUsers", String.class);
 		query.setParameter("dateTime", dateTime);
 
 		List<String> userLogins = query.getResultList();

@@ -43,9 +43,16 @@ public class ResetPasswordController implements Serializable {
 	@Inject
 	private UserPasswordEncoder passwordEncoder;
 
+	/**
+	 * UserModel is used for password validation
+	 */
 	private UserModel userModel = new UserModel();
 
+	private String login;
+
 	private String encodedResetPasswordUuid;
+
+	private String resetPasswordUuid;
 
 	public UserModel getUserModel() {
 		return userModel;
@@ -53,6 +60,14 @@ public class ResetPasswordController implements Serializable {
 
 	public void setUserModel(UserModel userModel) {
 		this.userModel = userModel;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
 	}
 
 	public String getEncodedResetPasswordUuid() {
@@ -64,7 +79,6 @@ public class ResetPasswordController implements Serializable {
 	}
 
 	public String sendResetRequest() {
-		String login = userModel.getLogin();
 		logger.info("sending reset password request to user={}", login);
 
 		String resetPasswordUuid = uuidGenerator.generateUuid();
@@ -87,11 +101,10 @@ public class ResetPasswordController implements Serializable {
 	public String processResetRequest() {
 		logger.info("processing reset password request with parameter={}", encodedResetPasswordUuid);
 
-		String resetPasswordUuid = webUtil.decode(encodedResetPasswordUuid);
+		resetPasswordUuid = webUtil.decode(encodedResetPasswordUuid);
 		if (resetPasswordUuid != null) {
-			String login = userService.loadResetPasswordLogin(resetPasswordUuid);
-			if (login != null) {
-				userModel.setLogin(login);
+			boolean valid = userService.isResetPasswordValid(resetPasswordUuid);
+			if (valid) {
 				return null;
 			}
 		}
@@ -100,11 +113,10 @@ public class ResetPasswordController implements Serializable {
 	}
 
 	public String resetPassword() {
-		String login = userModel.getLogin();
-		logger.info("resetting user={} password", login);
+		logger.info("resetting password for resetPasswordUuid={}", resetPasswordUuid);
 
 		String encodedPassword = passwordEncoder.encode(userModel.getPassword());
-		boolean succeeded = userService.resetPassword(login, encodedPassword);
+		boolean succeeded = userService.resetPassword(resetPasswordUuid, encodedPassword);
 		return webUtil.navigateToMessage(succeeded ? MESSAGE_ID_SUCCEEDED : MESSAGE_ID_FAILED);
 	}
 
