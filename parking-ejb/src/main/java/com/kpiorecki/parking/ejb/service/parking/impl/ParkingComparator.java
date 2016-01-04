@@ -1,4 +1,4 @@
-package com.kpiorecki.parking.ejb.service.booking.impl;
+package com.kpiorecki.parking.ejb.service.parking.impl;
 
 import java.util.Comparator;
 

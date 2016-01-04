@@ -38,6 +38,7 @@ import com.kpiorecki.parking.ejb.entity.Parking;
 import com.kpiorecki.parking.ejb.entity.Parking_;
 import com.kpiorecki.parking.ejb.entity.User;
 import com.kpiorecki.parking.ejb.service.booking.BookingService;
+import com.kpiorecki.parking.ejb.service.parking.impl.ParkingComparator;
 import com.kpiorecki.parking.ejb.util.DateFormatter;
 import com.kpiorecki.parking.ejb.util.DomainException;
 import com.kpiorecki.parking.ejb.util.Role;

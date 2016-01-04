@@ -1,7 +1,5 @@
 package com.kpiorecki.parking.ejb.service.parking.impl;
 
-import java.math.RoundingMode;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -12,9 +10,6 @@ import javax.inject.Inject;
 import org.dozer.Mapper;
 import org.slf4j.Logger;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Iterators;
-import com.google.common.math.DoubleMath;
 import com.kpiorecki.parking.ejb.dao.HolidayScheduleDao;
 import com.kpiorecki.parking.ejb.dao.ParkingDao;
 import com.kpiorecki.parking.ejb.dao.UserDao;
@@ -55,6 +50,9 @@ public class ParkingServiceImpl implements ParkingService {
 	@Inject
 	private UuidGenerator uuidGenerator;
 
+	@Inject
+	private ParkingProcessor parkingProcessor;
+
 	@Override
 	@RolesAllowed(Role.ADMIN)
 	public String addParking(ParkingDto parkingDto) {
@@ -80,7 +78,7 @@ public class ParkingServiceImpl implements ParkingService {
 		Parking parking = parkingDao.load(parkingDto.getUuid());
 		mapper.map(parkingDto, parking);
 		fillEntitySchedule(parking, parkingDto);
-		
+
 		parkingDao.save(parking);
 	}
 
@@ -99,11 +97,12 @@ public class ParkingServiceImpl implements ParkingService {
 
 		User user = userDao.load(login);
 		Parking parking = parkingDao.load(parkingUuid);
+		int points = parkingProcessor.calculateNewRecordPoints(parking);
 
 		Record record = new Record();
 		record.setUser(user);
 		record.setVip(vip);
-		record.setPoints(calculateRecordPoints(parking));
+		record.setPoints(points);
 
 		parking.addRecord(record);
 
@@ -173,27 +172,6 @@ public class ParkingServiceImpl implements ParkingService {
 		Parking parking = parkingDao.load(parkingUuid);
 		Set<Record> records = parking.getRecords();
 		return collectionMapper.mapToArrayList(records, RecordDto.class);
-	}
-
-	private int calculateRecordPoints(Parking parking) {
-		int recordPoints = 0;
-		Set<Record> records = parking.getRecords();
-		if (!records.isEmpty()) {
-			/**
-			 * calculate new record's points as mean value of existing records points (rounded upwards)
-			 */
-			Function<Record, Integer> getPointsFunction = new Function<Record, Integer>() {
-
-				@Override
-				public Integer apply(Record record) {
-					return record.getPoints();
-				}
-			};
-			Iterator<Integer> pointsIterator = Iterators.transform(records.iterator(), getPointsFunction);
-			double pointsMean = DoubleMath.mean(pointsIterator);
-			recordPoints = DoubleMath.roundToInt(pointsMean, RoundingMode.CEILING);
-		}
-		return recordPoints;
 	}
 
 	private void fillEntitySchedule(Parking parking, ParkingDto parkingDto) {
