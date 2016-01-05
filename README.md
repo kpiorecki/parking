@@ -64,7 +64,7 @@ Project documentation is generated using [Maven Site Plugin](https://maven.apach
 To generate the documentation, invoke in parking root directory:
 
 ```
-mvn clean site site:stage
+mvn clean compile site site:stage
 ```
 
 and open *index.html* file located in *./target/staging/* directory.
