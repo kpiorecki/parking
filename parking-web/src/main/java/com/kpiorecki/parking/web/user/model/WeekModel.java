@@ -1,6 +1,10 @@
 package com.kpiorecki.parking.web.user.model;
 
-public class WeekModel {
+import java.io.Serializable;
+
+public class WeekModel implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private int week;
 	private int columnSpan;

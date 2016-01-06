@@ -162,7 +162,7 @@ public class MailSender {
 	}
 
 	private MimeBodyPart createImagePart(String imageId, Image image) throws Exception {
-		try (InputStream imageStream = getClass().getResourceAsStream(image.getFilePath())) {
+		try (InputStream imageStream = MailSender.class.getResourceAsStream(image.getFilePath())) {
 			DataSource dataSource = new ByteArrayDataSource(imageStream, image.getMimeType());
 
 			MimeBodyPart imagePart = new MimeBodyPart();

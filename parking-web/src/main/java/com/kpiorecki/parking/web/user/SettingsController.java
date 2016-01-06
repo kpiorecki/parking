@@ -26,23 +26,23 @@ public class SettingsController implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	private Logger logger;
+	private transient Logger logger;
 
 	@Inject
-	private ExternalContext externalContext;
+	private transient ExternalContext externalContext;
 
 	@Inject
-	private UserService userService;
+	private transient UserService userService;
 
 	@Inject
-	private UserPasswordEncoder passwordEncoder;
+	private transient UserPasswordEncoder passwordEncoder;
 
 	@Inject
-	private WebUtil webUtil;
+	private transient WebUtil webUtil;
 
-	private UserModel userModel;
+	private UserModel userModel = new UserModel();
 
-	private UserDto user;
+	private UserDto user = new UserDto();
 
 	public void loadUser() {
 		String login = externalContext.getRemoteUser();

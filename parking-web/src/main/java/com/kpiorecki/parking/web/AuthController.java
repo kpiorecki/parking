@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -29,16 +30,16 @@ public class AuthController implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	private Logger logger;
+	private transient Logger logger;
 
 	@Inject
-	private FacesContext context;
+	private transient FacesContext context;
 
 	@Inject
-	private ExternalContext externalContext;
+	private transient ExternalContext externalContext;
 
 	@Inject
-	private UserService userService;
+	private transient UserService userService;
 
 	private String login;
 	private String password;
@@ -126,7 +127,7 @@ public class AuthController implements Serializable {
 	private boolean isSecuredURL(String url) {
 		for (String prefix : getSecuredURLPrefixes()) {
 			String securedURL = externalContext.getRequestContextPath() + prefix;
-			if (url.toLowerCase().startsWith(securedURL)) {
+			if (url.toLowerCase(Locale.ROOT).startsWith(securedURL)) {
 				return true;
 			}
 		}

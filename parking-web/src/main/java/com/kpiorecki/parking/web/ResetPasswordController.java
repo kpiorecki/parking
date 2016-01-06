@@ -26,22 +26,22 @@ public class ResetPasswordController implements Serializable {
 	private static final String MESSAGE_ID_FAILED = "reset-password-wrong-param";
 
 	@Inject
-	private Logger logger;
+	private transient Logger logger;
 
 	@Inject
-	private FacesContext context;
+	private transient FacesContext context;
 
 	@Inject
-	private WebUtil webUtil;
+	private transient WebUtil webUtil;
 
 	@Inject
-	private UserService userService;
+	private transient UserService userService;
 
 	@Inject
-	private UuidGenerator uuidGenerator;
+	private transient UuidGenerator uuidGenerator;
 
 	@Inject
-	private UserPasswordEncoder passwordEncoder;
+	private transient UserPasswordEncoder passwordEncoder;
 
 	/**
 	 * UserModel is used for password validation

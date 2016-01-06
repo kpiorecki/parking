@@ -1,11 +1,14 @@
 package com.kpiorecki.parking.web.user.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.joda.time.LocalDate;
 
-public class DayModel {
+public class DayModel implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private int availableCapacity;
 	private boolean holiday;
 	private boolean selected;

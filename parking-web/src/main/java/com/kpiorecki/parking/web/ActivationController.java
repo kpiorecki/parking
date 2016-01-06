@@ -21,19 +21,19 @@ public class ActivationController implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	private Logger logger;
+	private transient Logger logger;
 
 	@Inject
-	private UserService userService;
+	private transient UserService userService;
 
 	@Inject
-	private WebUtil webUtil;
+	private transient WebUtil webUtil;
 
+	@Inject
+	private transient ExternalContext externalContext;
+	
 	@Inject
 	private AuthController authController;
-
-	@Inject
-	private ExternalContext externalContext;
 
 	private String login;
 

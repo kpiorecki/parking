@@ -22,19 +22,19 @@ public class RegisterController implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	private Logger logger;
+	private transient Logger logger;
 
 	@Inject
-	private UserService userService;
+	private transient UserService userService;
 
 	@Inject
-	private UserPasswordEncoder passwordEncoder;
+	private transient UserPasswordEncoder passwordEncoder;
 
 	@Inject
-	private UuidGenerator uuidGenerator;
+	private transient UuidGenerator uuidGenerator;
 
 	@Inject
-	private WebUtil webUtil;
+	private transient WebUtil webUtil;
 
 	private UserModel userModel = new UserModel();
 

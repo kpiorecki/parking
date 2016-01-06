@@ -46,16 +46,16 @@ public class BookingController implements Serializable {
 	private static final int MIN_YEAR = 1970;
 
 	@Inject
-	private Logger logger;
+	private transient Logger logger;
 
 	@Inject
-	private BookingService bookingService;
+	private transient BookingService bookingService;
 
 	@Inject
-	private ExternalContext externalContext;
+	private transient ExternalContext externalContext;
 
 	@Inject
-	private BookingModelFactory bookingModelFactory;
+	private transient BookingModelFactory bookingModelFactory;
 
 	@Inject
 	@DateFormatter
@@ -128,6 +128,9 @@ public class BookingController implements Serializable {
 	}
 
 	public String save() {
+		if (bookingModel == null) {
+			throw new IllegalStateException("booking model has not been initialized");
+		}
 		Set<LocalDate> bookedDates = new TreeSet<>();
 		Set<LocalDate> cancelledDates = new TreeSet<>();
 

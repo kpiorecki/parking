@@ -1,5 +1,6 @@
 package com.kpiorecki.parking.ejb.service.booking.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -165,7 +166,9 @@ public class BookingScheduler {
 		}
 	}
 
-	private static class ElementComparator implements Comparator<Element> {
+	private static class ElementComparator implements Comparator<Element>, Serializable {
+
+		private static final long serialVersionUID = 1L;
 
 		private final BookingStatus status;
 

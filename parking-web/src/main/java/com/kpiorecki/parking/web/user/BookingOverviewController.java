@@ -29,16 +29,16 @@ public class BookingOverviewController implements Serializable {
 	private static final String START_DATE_SESSION_KEY = BookingOverviewController.class.getName() + "START_DATE";
 
 	@Inject
-	private Logger logger;
+	private transient Logger logger;
 
 	@Inject
-	private BookingService bookingService;
+	private transient BookingService bookingService;
 
 	@Inject
-	private ExternalContext externalContext;
+	private transient ExternalContext externalContext;
 
 	@Inject
-	private BookingModelFactory bookingModelFactory;
+	private transient BookingModelFactory bookingModelFactory;
 
 	@Inject
 	@DateFormatter

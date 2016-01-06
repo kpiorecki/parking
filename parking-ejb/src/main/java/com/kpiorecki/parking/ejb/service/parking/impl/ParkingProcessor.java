@@ -22,19 +22,12 @@ public class ParkingProcessor {
 			/**
 			 * calculate new record's points as mean value of existing records points (rounded upwards)
 			 */
-			Function<Record, Integer> getPointsFunction = new Function<Record, Integer>() {
-
-				@Override
-				public Integer apply(Record record) {
-					return record.getPoints();
-				}
-			};
+			Function<Record, Integer> getPointsFunction = record -> (record != null) ? record.getPoints() : null;
 			Iterator<Integer> pointsIterator = Iterators.transform(records.iterator(), getPointsFunction);
 			double pointsMean = DoubleMath.mean(pointsIterator);
 			recordPoints = DoubleMath.roundToInt(pointsMean, RoundingMode.CEILING);
 		}
 		return recordPoints;
 	}
-	
 
 }

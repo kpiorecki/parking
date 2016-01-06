@@ -25,7 +25,7 @@ public class PropertyProducer {
 		logger.info("loading configuration properties");
 		properties = new Properties();
 
-		try (InputStream inputStream = getClass().getResourceAsStream("/configuration.properties")) {
+		try (InputStream inputStream = PropertyProducer.class.getResourceAsStream("/configuration.properties")) {
 			properties.load(inputStream);
 		} catch (IOException e) {
 			throw new IllegalStateException(String.format("could not read properties - %s", e.getMessage()), e);
@@ -35,6 +35,9 @@ public class PropertyProducer {
 	@Produces
 	@Property("")
 	String getStringProperty(InjectionPoint point) {
+		if (properties == null) {
+			throw new IllegalStateException("properties have not been initialized");
+		}
 		String name = getAnnotation(point).value();
 		String value = properties.getProperty(name);
 		if (value == null) {
@@ -73,18 +76,18 @@ public class PropertyProducer {
 		double doubleMaxValue = maxValue.doubleValue();
 
 		if (doubleMinValue > doubleMaxValue) {
-			throw new IllegalStateException(String.format(
-					"property %s minimum value %s is bigger than maximum value %s", name, minValue, maxValue));
+			throw new IllegalStateException(String
+					.format("property %s minimum value %s is bigger than maximum value %s", name, minValue, maxValue));
 		}
 
 		if (doubleValue < doubleMinValue) {
-			throw new IllegalStateException(String.format("property %s value %s is smaller than minimum value %s",
-					name, value, minValue));
+			throw new IllegalStateException(
+					String.format("property %s value %s is smaller than minimum value %s", name, value, minValue));
 		}
 
 		if (doubleValue > doubleMaxValue) {
-			throw new IllegalStateException(String.format("property %s value %s is bigger than maximum value %s", name,
-					value, maxValue));
+			throw new IllegalStateException(
+					String.format("property %s value %s is bigger than maximum value %s", name, value, maxValue));
 		}
 	}
 

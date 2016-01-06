@@ -1,11 +1,14 @@
 package com.kpiorecki.parking.web.user.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.kpiorecki.parking.ejb.dto.ParkingDto;
 
-public class BookingModel {
+public class BookingModel implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private ParkingDto parking;
 	private List<DayModel> dayModels;
 	private List<WeekModel> weekModels;
